@@ -44,29 +44,21 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            margin: 0;
-            padding: 10px;
-            text-align: center;
+            margin: 0; padding: 10px;
         }
 
         .container {
-            max-width: 550px;
-            width: 95%;
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            position: relative;
+            max-width: 550px; width: 95%; background: var(--card-bg);
+            padding: 25px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative; text-align: center;
         }
 
         .hidden { display: none !important; }
-        .settings-btn { position: absolute; top: 15px; left: 15px; font-size: 1.5rem; cursor: pointer; z-index: 100; }
 
         .btn {
             padding: 15px; border-radius: 15px; border: none;
             font-size: 1.1rem; font-weight: bold; cursor: pointer;
-            width: 100%; margin: 10px 0;
-            transition: 0.2s;
+            width: 100%; margin: 8px 0; transition: 0.2s;
         }
 
         .btn-main { background: var(--primary); color: white; }
@@ -76,18 +68,28 @@
         .mode-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
         .menu-card {
-            background: var(--bg); padding: 20px; border-radius: 20px;
-            margin-bottom: 15px; cursor: pointer; border: 2px solid transparent;
+            background: var(--bg); padding: 15px; border-radius: 20px;
+            margin-bottom: 12px; cursor: pointer; border: 2px solid transparent;
         }
-        .menu-card:hover { border-color: var(--primary); }
 
-        .card { font-size: 1.6rem; padding: 25px; background: rgba(74, 144, 226, 0.1); border-radius: 20px; margin: 20px 0; line-height: 1.5; white-space: pre-wrap; }
+        .card { font-size: 1.7rem; padding: 25px; background: rgba(74, 144, 226, 0.1); border-radius: 20px; margin: 15px 0; line-height: 1.4; white-space: pre-wrap; }
 
         input {
-            font-size: 1.8rem; width: 85%; text-align: center; padding: 12px;
+            font-size: 2rem; width: 80%; text-align: center; padding: 12px;
             border: 3px solid var(--input-border); border-radius: 15px;
-            background: var(--card-bg); color: var(--text); margin-bottom: 20px;
+            background: var(--card-bg); color: var(--text);
         }
+
+        /* לוח כפל צף */
+        #mul-table-modal {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: white; padding: 15px; border-radius: 15px; z-index: 3000;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5); max-width: 95%; overflow: auto;
+        }
+
+        table { border-collapse: collapse; margin: auto; color: #000; }
+        td, th { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background: #f2f2f2; }
 
         #splash {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -100,230 +102,187 @@
 
     <div id="splash">
         <div style="font-size: 5rem; animation: pulse 1.5s infinite;">🧮</div>
-        <h1 id="splash-welcome" style="font-weight: 800; color:var(--text)">ברוכים הבאים!</h1>
+        <h1 id="splash-welcome" style="font-weight: 800; color:var(--text)">טוען...</h1>
     </div>
 
     <div class="container">
-        <div class="settings-btn" onclick="showPage('settings')">⚙️</div>
+        <div style="position:absolute; top:15px; left:15px; cursor:pointer;" onclick="showPage('settings')">⚙️</div>
 
         <div id="page-settings" class="hidden">
             <h2>הגדרות</h2>
-            <input type="text" id="nameInput" placeholder="איך קוראים לך?">
-            <p>מראה האפליקציה:</p>
-            <div style="display: flex;">
-                <button class="btn mode-btn" onclick="setTheme('light')">יום ☀️</button>
-                <button class="btn mode-btn" onclick="setTheme('dark')">לילה 🌙</button>
-            </div>
-            <button class="btn btn-main" onclick="saveSettings()">שמירה וחזרה</button>
+            <input type="text" id="nameInput" placeholder="שם הילד/ה">
+            <button class="btn btn-main" onclick="saveSettings()" style="margin-top:20px">שמירה</button>
         </div>
 
         <div id="page-lobby" class="hidden">
-            <h1 id="lobby-title" style="margin-top: 20px;">שלום!</h1>
-            <div class="menu-card" onclick="showPage('setup-add')">
-                <div style="font-size: 3rem;">➕</div>
-                <h3>חיבור וחיסור</h3>
-            </div>
-            <div class="menu-card" onclick="showPage('setup-mul')">
-                <div style="font-size: 3rem;">✖️</div>
-                <h3>כפל וחילוק</h3>
-            </div>
-            <div class="menu-card" onclick="showPage('setup-story')" style="background: #e9d8fd; color: #553c9a;">
-                <div style="font-size: 3rem;">📖</div>
-                <h3>בעיות מילוליות וחשיבה</h3>
-                <p>סיפורים ושאלות אתגר</p>
-            </div>
+            <h1 id="lobby-title">שלום!</h1>
+            <div class="menu-card" onclick="showPage('setup-add')"><h3>➕ חיבור וחיסור</h3></div>
+            <div class="menu-card" onclick="showPage('setup-mul')"><h3>✖️ כפל וחילוק</h3></div>
+            <div class="menu-card" onclick="showPage('setup-story')" style="background: #e9d8fd;"><h3>📖 בעיות מילוליות</h3></div>
         </div>
 
         <div id="page-setup-add" class="hidden">
-            <button onclick="showPage('lobby')" style="background:none; border:none; color:var(--primary); cursor:pointer;">⬅️ חזרה</button>
+            <button onclick="showPage('lobby')">⬅️ חזרה</button>
             <h2>חיבור וחיסור</h2>
-            <p>בחר טווח מספרים:</p>
-            <div style="display: flex;">
+            <div style="display:flex;">
                 <button class="btn mode-btn active" id="range-10" onclick="setRange(10)">עד 10</button>
                 <button class="btn mode-btn" id="range-100" onclick="setRange(100)">עד 100</button>
                 <button class="btn mode-btn" id="range-1000" onclick="setRange(1000)">עד 1000</button>
             </div>
-            <div style="display: flex; margin-top: 10px;">
+            <div style="display:flex; margin-top:10px;">
                 <button class="btn mode-btn active" id="btn-add" onclick="setOpAdd('add')">חיבור +</button>
                 <button class="btn mode-btn" id="btn-sub" onclick="setOpAdd('sub')">חיסור -</button>
             </div>
-            <button class="btn btn-main" onclick="startGame('add-logic')">מתחילים!</button>
+            <button class="btn btn-main" onclick="startGame('add-logic')">מתחילים</button>
         </div>
 
         <div id="page-setup-mul" class="hidden">
-            <button onclick="showPage('lobby')" style="background:none; border:none; color:var(--primary); cursor:pointer;">⬅️ חזרה</button>
+            <button onclick="showPage('lobby')">⬅️ חזרה</button>
             <h2>כפל וחילוק</h2>
-            <div style="display: flex;">
+            <div style="display:flex;">
                 <button class="btn mode-btn active" id="btn-mul" onclick="setOp('mul')">כפל ×</button>
                 <button class="btn mode-btn" id="btn-div" onclick="setOp('div')">חילוק ÷</button>
             </div>
-            <div id="mul-num-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin: 15px 0;"></div>
-            <button class="btn btn-main" onclick="startGame('mul-logic')">מתחילים!</button>
+            <div id="mul-num-grid" style="display:grid; grid-template-columns: repeat(5,1fr); gap:5px; margin:10px 0;"></div>
+            <button class="btn btn-main" onclick="startGame('mul-logic')">מתחילים</button>
         </div>
 
         <div id="page-setup-story" class="hidden">
-            <button onclick="showPage('lobby')" style="background:none; border:none; color:var(--primary); cursor:pointer;">⬅️ חזרה</button>
-            <h2>סיפורי חשבון וחשיבה</h2>
-            <p>רמת קושי (טווח מספרים):</p>
-            <div style="display: flex;">
-                <button class="btn mode-btn active" id="story-range-10" onclick="setRange(10)">עד 10</button>
-                <button class="btn mode-btn" id="story-range-100" onclick="setRange(100)">עד 100</button>
-                <button class="btn mode-btn" id="story-range-1000" onclick="setRange(1000)">עד 1000</button>
+            <button onclick="showPage('lobby')">⬅️ חזרה</button>
+            <h2>סיפורי חשבון</h2>
+            <p>מה נתרגל בסיפור?</p>
+            <button class="btn mode-btn" id="story-m-addsub" onclick="setStoryMode('addsub')">חיבור וחיסור</button>
+            <button class="btn mode-btn" id="story-m-muldiv" onclick="setStoryMode('muldiv')">כפל וחילוק</button>
+            <button class="btn mode-btn active" id="story-m-mix" onclick="setStoryMode('mix')">הכל מעורב</button>
+            <button class="btn mode-btn" id="story-m-advanced" onclick="setStoryMode('advanced')">שאלות מתקדמות 💡</button>
+            
+            <p>טווח מספרים:</p>
+            <div style="display:flex;">
+                <button class="btn mode-btn active" id="s-range-10" onclick="setRange(10)">עד 10</button>
+                <button class="btn mode-btn" id="s-range-100" onclick="setRange(100)">עד 100</button>
+                <button class="btn mode-btn" id="s-range-1000" onclick="setRange(1000)">עד 1000</button>
             </div>
-            <p>סוג האתגר:</p>
-            <button class="btn mode-btn active" id="story-mode-logic" onclick="setStoryMode('logic')">שאלות חשיבה (כמו מר חשבוני) 💡</button>
-            <button class="btn mode-btn" id="story-mode-mix" onclick="setStoryMode('mix')">סיפורי חשבון מעורבים 🎲</button>
-            <button class="btn btn-alt" onclick="startGame('story-logic')">בואו נתחיל!</button>
+            <button class="btn btn-alt" onclick="startGame('story-logic')">מתחילים</button>
         </div>
 
         <div id="page-game" class="hidden">
             <div id="question" class="card"></div>
             <input type="number" id="ansInput" inputmode="numeric" onkeypress="if(event.key==='Enter') check()">
             <button class="btn btn-main" onclick="check()">בדיקה</button>
-            <div id="msg" style="margin-top:20px; font-weight:bold; font-size:1.2rem;"></div>
-            <p onclick="showPage('lobby')" style="color:gray; cursor:pointer; margin-top:30px; text-decoration:underline;">חזרה לתפריט</p>
+            <button id="showMulTableBtn" class="btn hidden" style="background:#edf2f7; color:#2d3748;" onclick="toggleMulTable(true)">הצץ בלוח הכפל 🔍</button>
+            <div id="msg" style="margin-top:15px; font-weight:bold;"></div>
+            <p onclick="showPage('lobby')" style="color:gray; cursor:pointer; margin-top:20px; text-decoration:underline;">חזרה לתפריט</p>
         </div>
+    </div>
+
+    <div id="mul-table-modal" class="hidden">
+        <button onclick="toggleMulTable(false)" style="float:left; cursor:pointer; border:none; background:red; color:white; border-radius:50%; width:30px; height:30px;">X</button>
+        <h3>לוח הכפל</h3>
+        <div id="table-container"></div>
     </div>
 
 <script>
     let childName = localStorage.getItem('childName') || '';
-    let theme = localStorage.getItem('theme') || 'light';
-    let currentModule = '', currentQ = {};
-    let opMul = 'mul', mulSelected = new Set(), opAdd = 'add', addRange = 10, storyMode = 'logic';
+    let currentModule = '', currentQ = {}, opMul = 'mul', mulSelected = new Set(), opAdd = 'add', addRange = 10, storyMode = 'mix';
 
-    const objects = ["חרוזים", "גולות", "מדבקות", "סוכריות", "בולים", "קלפים"];
-    const characters = ["מר חשבוני", "גברת מספר", "פרופסור פלוס", "דוקטור מינוס"];
-
-    function setTheme(t) {
-        theme = t; localStorage.setItem('theme', t);
-        document.documentElement.setAttribute('data-theme', t);
+    // יצירת לוח כפל
+    let tableHtml = '<table><tr><th>×</th>' + Array.from({length:10}, (_,i)=>`<th>${i+1}</th>`).join('') + '</tr>';
+    for(let i=1; i<=10; i++) {
+        tableHtml += `<tr><th>${i}</th>` + Array.from({length:10}, (_,j)=>`<td>${i*(j+1)}</td>`).join('') + '</tr>';
     }
-    setTheme(theme);
+    document.getElementById('table-container').innerHTML = tableHtml + '</table>';
+
+    function toggleMulTable(show) { document.getElementById('mul-table-modal').classList.toggle('hidden', !show); }
 
     window.onload = () => {
         if(childName) document.getElementById('splash-welcome').innerText = `שלום, ${childName}!`;
-        document.getElementById('nameInput').value = childName;
-        setTimeout(() => { document.getElementById('splash').style.display = 'none'; showPage(childName ? 'lobby' : 'settings'); }, 2500);
+        setTimeout(() => { document.getElementById('splash').style.display='none'; showPage(childName?'lobby':'settings'); }, 2000);
     };
 
-    function saveSettings() {
-        childName = document.getElementById('nameInput').value.trim();
-        localStorage.setItem('childName', childName);
-        document.getElementById('lobby-title').innerText = `שלום, ${childName}! 👋`;
-        showPage('lobby');
-    }
-
     function showPage(id) {
-        document.querySelectorAll('.container > div').forEach(d => { if(!d.classList.contains('settings-btn')) d.classList.add('hidden'); });
+        document.querySelectorAll('.container > div').forEach(d => { if(d.id.startsWith('page')) d.classList.add('hidden'); });
         document.getElementById('page-' + id).classList.remove('hidden');
     }
 
-    // יצירת גריד מספרים לכפל
+    function saveSettings() {
+        childName = document.getElementById('nameInput').value;
+        localStorage.setItem('childName', childName);
+        document.getElementById('lobby-title').innerText = `שלום, ${childName}!`;
+        showPage('lobby');
+    }
+
+    // הגדרות כפתורים
     const grid = document.getElementById('mul-num-grid');
     for(let i=1; i<=10; i++) {
-        const b = document.createElement('button'); b.className = 'num-btn mode-btn'; b.innerText = i;
-        b.onclick = () => { b.classList.toggle('active'); mulSelected.has(i) ? mulSelected.delete(i) : mulSelected.add(i); };
+        const b = document.createElement('button'); b.className='num-btn mode-btn'; b.innerText=i;
+        b.onclick=()=>{ b.classList.toggle('active'); mulSelected.has(i)?mulSelected.delete(i):mulSelected.add(i); };
         grid.appendChild(b);
     }
 
-    function setOp(o) { opMul = o; document.getElementById('btn-mul').classList.toggle('active', o==='mul'); document.getElementById('btn-div').classList.toggle('active', o==='div'); }
-    function setOpAdd(o) { opAdd = o; document.getElementById('btn-add').classList.toggle('active', o==='add'); document.getElementById('btn-sub').classList.toggle('active', o==='sub'); }
-    
-    function setRange(r) { 
-        addRange = r; 
-        document.querySelectorAll('[id^="range-"], [id^="story-range-"]').forEach(btn => {
-            btn.classList.toggle('active', btn.id.endsWith('-' + r));
-        });
-    }
-
-    function setStoryMode(m) { 
-        storyMode = m; 
-        ['logic', 'mix'].forEach(v => document.getElementById('story-mode-'+v).classList.toggle('active', v===m)); 
-    }
+    function setOp(o) { opMul=o; document.getElementById('btn-mul').classList.toggle('active',o==='mul'); document.getElementById('btn-div').classList.toggle('active',o==='div'); }
+    function setOpAdd(o) { opAdd=o; document.getElementById('btn-add').classList.toggle('active',o==='add'); document.getElementById('btn-sub').classList.toggle('active',o==='sub'); }
+    function setRange(r) { addRange=r; document.querySelectorAll('[id$="-'+r+'"]').forEach(b=>b.classList.add('active')); document.querySelectorAll('[id^="range-"],[id^="s-range-"]').forEach(b=>{if(!b.id.endsWith(r)) b.classList.remove('active')}); }
+    function setStoryMode(m) { storyMode=m; ['mix','addsub','muldiv','advanced'].forEach(v=>document.getElementById('story-m-'+v).classList.toggle('active',v===m)); }
 
     function startGame(logic) {
-        if(logic === 'mul-logic' && mulSelected.size === 0) return alert("בחרו מספרים");
-        currentModule = logic; showPage('game'); next();
+        currentModule = logic;
+        showPage('game');
+        next();
     }
 
-    // מנוע שאלות חשיבה (מר חשבוני)
-    function generateLogicQuestion() {
-        const char = characters[Math.floor(Math.random()*characters.length)];
-        const obj = objects[Math.floor(Math.random()*objects.length)];
-        
-        // יצירת מספר אקראי לפי הטווח
-        let num = Math.floor(Math.random() * (addRange - 10)) + 10;
-        if (addRange === 10) num = Math.floor(Math.random() * 9) + 1;
-
-        const units = num % 10;
-        const tens = Math.floor((num % 100) / 10);
-        const hundreds = Math.floor(num / 100);
-
-        let text = `ל${char} יש ${obj}.\n`;
-        if (addRange >= 1000 && hundreds > 0) {
-            text += `אם יסדר אותם ב-100 שקיות, ישארו לו ${hundreds * 0 + units + tens*10} בצד.\n`; // פה אפשר לשכלל
-        }
-        
-        // גרסה מפושטת ומאתגרת של מבנה מספר
-        if (addRange >= 100) {
-            text += `אם יסדר בערמות של 100, ישארו ${num % 100} ${obj} בצד.\n`;
-            text += `אם יסדר בערמות של 10, ישארו ${num % 10} ${obj} בצד.`;
-        } else {
-            text += `אם יסדר בערמות של 10, ישארו לו ${num % 10} ${obj} בצד.`;
-        }
-        
-        text += `\n\nכמה ${obj} יש לו בסך הכל?`;
-        return { ans: num, text: text };
+    function generateAdvanced() {
+        let num = Math.floor(Math.random() * (addRange - 11)) + 11;
+        const u = num % 10, t = Math.floor((num % 100) / 10), h = Math.floor(num / 100);
+        let txt = `שאלה לאלופים:\n`;
+        if(addRange === 1000) txt += `אם נסדר ב-100 קופסאות, ישארו ${num % 100} בצד.\n`;
+        txt += `אם נסדר ב-10 קופסאות, ישארו ${u} בצד.\nכמה יש בסך הכל?`;
+        return { ans: num, text: txt, isMul: false };
     }
 
     function generateStory() {
-        if (storyMode === 'logic') return generateLogicQuestion();
-
-        const type = ['add', 'sub', 'mul', 'div'][Math.floor(Math.random()*4)];
-        const obj = objects[Math.floor(Math.random()*objects.length)];
+        if(storyMode === 'advanced') return generateAdvanced();
+        let type = storyMode === 'mix' ? ['add','sub','mul','div'][Math.floor(Math.random()*4)] : 
+                   (storyMode === 'addsub' ? ['add','sub'][Math.floor(Math.random()*2)] : ['mul','div'][Math.floor(Math.random()*2)]);
+        
+        let a, b, ans, txt;
         const name = childName || "הילד";
-        let a, b, ans, text;
-
-        if(type === 'add') {
-            a = Math.floor(Math.random()*addRange/2)+1; b = Math.floor(Math.random()*addRange/2)+1;
-            ans = a+b; text = `ל${name} היו ${a} ${obj}. הוא קיבל עוד ${b}. כמה יש לו?`;
-        } else if(type === 'sub') {
-            a = Math.floor(Math.random()*addRange/2)+5; b = Math.floor(Math.random()*a);
-            ans = a-b; text = `היו ${a} ${obj}. ${b} אבדו. כמה נשארו?`;
-        } else if(type === 'mul') {
-            a = Math.floor(Math.random()*10)+1; b = Math.floor(Math.random()*5)+1;
-            ans = a*b; text = `יש ${a} שקיות, ובכל אחת ${b} ${obj}. כמה בסך הכל?`;
-        } else {
-            b = Math.floor(Math.random()*5)+2; ans = Math.floor(Math.random()*10)+1; a = b*ans;
-            text = `חילקו ${a} ${obj} ל-${b} ילדים. כמה כל אחד קיבל?`;
-        }
-        return { ans, text };
+        if(type === 'add') { a=Math.floor(Math.random()*addRange/2)+1; b=Math.floor(Math.random()*addRange/2)+1; ans=a+b; txt=`ל${name} היו ${a} מדבקות. הוא קיבל עוד ${b}. כמה יש לו?`; }
+        else if(type === 'sub') { a=Math.floor(Math.random()*addRange/2)+10; b=Math.floor(Math.random()*a); ans=a-b; txt=`היו ${a} תפוחים. ${b} נאכלו. כמה נשארו?`; }
+        else if(type === 'mul') { a=Math.floor(Math.random()*9)+2; b=Math.floor(Math.random()*9)+2; ans=a*b; txt=`יש ${a} שקיות, ובכל אחת ${b} סוכריות. כמה בסך הכל?`; return {ans, text:txt, isMul:true}; }
+        else { b=Math.floor(Math.random()*8)+2; ans=Math.floor(Math.random()*9)+1; a=b*ans; txt=`חילקו ${a} גולות ל-${b} ילדים. כמה כל אחד קיבל?`; return {ans, text:txt, isMul:true}; }
+        return { ans, text: txt, isMul: false };
     }
 
     function next() {
+        toggleMulTable(false);
+        let isMulType = false;
         if(currentModule === 'mul-logic') {
             const arr = Array.from(mulSelected);
             const a = arr[Math.floor(Math.random()*arr.length)], b = Math.floor(Math.random()*10)+1;
-            currentQ = opMul === 'mul' ? { ans: a*b, text: `${a} × ${b}` } : { ans: b, text: `${a*b} ÷ ${a}` };
+            currentQ = opMul==='mul' ? { ans:a*b, text:`${a} × ${b}` } : { ans:b, text:`${a*b} ÷ ${a}` };
+            isMulType = true;
         } else if(currentModule === 'add-logic') {
             const a = Math.floor(Math.random()*addRange)+1, b = Math.floor(Math.random()*addRange)+1;
-            if(opAdd === 'add') currentQ = { ans: a+b, text: `${a} + ${b}` };
-            else { const big = Math.max(a,b), small = Math.min(a,b); currentQ = { ans: big-small, text: `${big} - ${small}` }; }
+            if(opAdd==='add') currentQ = { ans:a+b, text:`${a} + ${b}` };
+            else { const big=Math.max(a,b), small=Math.min(a,b); currentQ={ ans:big-small, text:`${big} - ${small}` }; }
         } else {
             currentQ = generateStory();
+            isMulType = currentQ.isMul;
         }
         document.getElementById('question').innerText = currentQ.text;
-        document.getElementById('ansInput').value = ''; document.getElementById('ansInput').focus();
+        document.getElementById('ansInput').value = '';
+        document.getElementById('showMulTableBtn').classList.toggle('hidden', !isMulType);
+        document.getElementById('ansInput').focus();
     }
 
     function check() {
         const val = parseInt(document.getElementById('ansInput').value);
         const msg = document.getElementById('msg');
         if(val === currentQ.ans) {
-            msg.innerText = "נכון מאוד! כל הכבוד! ✨"; msg.style.color = "var(--success)";
-            setTimeout(() => { msg.innerText = ""; next(); }, 1500);
+            msg.innerText = "נכון מאוד! ✨"; msg.style.color = "green";
+            setTimeout(() => { msg.innerText = ""; next(); }, 1200);
         } else {
-            msg.innerText = "נסו שוב... 🤔"; msg.style.color = "var(--error)";
+            msg.innerText = "נסו שוב... 🤔"; msg.style.color = "red";
         }
     }
 </script>
