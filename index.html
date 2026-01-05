@@ -21,6 +21,7 @@
             --primary: #4a90e2;
             --secondary: #9f7aea;
             --success: #48bb78;
+            --warning: #ed8936;
             --error: #f56565;
             --bg: #f7fafc;
             --card-bg: #ffffff;
@@ -45,6 +46,7 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0; padding: 10px;
+            transition: background 0.3s;
         }
 
         .container {
@@ -69,10 +71,11 @@
 
         .menu-card {
             background: var(--bg); padding: 15px; border-radius: 20px;
-            margin-bottom: 12px; cursor: pointer; border: 2px solid transparent;
+            margin-bottom: 12px; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s;
         }
+        .menu-card:hover { transform: scale(1.02); }
 
-        .card { font-size: 1.7rem; padding: 25px; background: rgba(74, 144, 226, 0.1); border-radius: 20px; margin: 15px 0; line-height: 1.4; white-space: pre-wrap; }
+        .card { font-size: 1.7rem; padding: 25px; background: rgba(74, 144, 226, 0.1); border-radius: 20px; margin: 15px 0; line-height: 1.4; white-space: pre-wrap; transition: all 0.3s; }
 
         input {
             font-size: 2rem; width: 80%; text-align: center; padding: 12px;
@@ -80,14 +83,13 @@
             background: var(--card-bg); color: var(--text);
         }
 
-        /* לוח כפל צף */
         #mul-table-modal {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: white; padding: 15px; border-radius: 15px; z-index: 3000;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5); max-width: 95%; overflow: auto;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5); max-width: 95%; max-height: 90vh; overflow: auto;
         }
 
-        table { border-collapse: collapse; margin: auto; color: #000; }
+        table { border-collapse: collapse; margin: auto; color: #000; width: 100%; }
         td, th { border: 1px solid #ddd; padding: 8px; text-align: center; }
         th { background: #f2f2f2; }
 
@@ -96,21 +98,23 @@
             background: var(--bg); display: flex; flex-direction: column;
             align-items: center; justify-content: center; z-index: 2000;
         }
+
+        .feedback-hint { font-size: 1.1rem; margin-top: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div id="splash">
         <div style="font-size: 5rem; animation: pulse 1.5s infinite;">🧮</div>
-        <h1 id="splash-welcome" style="font-weight: 800; color:var(--text)">טוען...</h1>
+        <h1 id="splash-welcome" style="font-weight: 800; color:var(--text)">מרכז המתמטיקה</h1>
     </div>
 
     <div class="container">
-        <div style="position:absolute; top:15px; left:15px; cursor:pointer;" onclick="showPage('settings')">⚙️</div>
+        <div style="position:absolute; top:15px; left:15px; cursor:pointer; font-size: 1.5rem;" onclick="showPage('settings')">⚙️</div>
 
         <div id="page-settings" class="hidden">
             <h2>הגדרות</h2>
-            <input type="text" id="nameInput" placeholder="שם הילד/ה">
+            <input type="text" id="nameInput" placeholder="איך קוראים לך?">
             <button class="btn btn-main" onclick="saveSettings()" style="margin-top:20px">שמירה</button>
         </div>
 
@@ -143,6 +147,7 @@
                 <button class="btn mode-btn active" id="btn-mul" onclick="setOp('mul')">כפל ×</button>
                 <button class="btn mode-btn" id="btn-div" onclick="setOp('div')">חילוק ÷</button>
             </div>
+            <p>בחר מספרים לתרגול:</p>
             <div id="mul-num-grid" style="display:grid; grid-template-columns: repeat(5,1fr); gap:5px; margin:10px 0;"></div>
             <button class="btn btn-main" onclick="startGame('mul-logic')">מתחילים</button>
         </div>
@@ -150,19 +155,19 @@
         <div id="page-setup-story" class="hidden">
             <button onclick="showPage('lobby')">⬅️ חזרה</button>
             <h2>סיפורי חשבון</h2>
-            <p>מה נתרגל בסיפור?</p>
-            <button class="btn mode-btn" id="story-m-addsub" onclick="setStoryMode('addsub')">חיבור וחיסור</button>
-            <button class="btn mode-btn" id="story-m-muldiv" onclick="setStoryMode('muldiv')">כפל וחילוק</button>
-            <button class="btn mode-btn active" id="story-m-mix" onclick="setStoryMode('mix')">הכל מעורב</button>
-            <button class="btn mode-btn" id="story-m-advanced" onclick="setStoryMode('advanced')">שאלות מתקדמות 💡</button>
-            
+            <div style="display:flex; flex-direction:column;">
+                <button class="btn mode-btn active" id="story-m-mix" onclick="setStoryMode('mix')">הכל מעורב 🎲</button>
+                <button class="btn mode-btn" id="story-m-addsub" onclick="setStoryMode('addsub')">חיבור וחיסור ➕</button>
+                <button class="btn mode-btn" id="story-m-muldiv" onclick="setStoryMode('muldiv')">כפל וחילוק ✖️</button>
+                <button class="btn mode-btn" id="story-m-advanced" onclick="setStoryMode('advanced')">שאלות מתקדמות 💡</button>
+            </div>
             <p>טווח מספרים:</p>
             <div style="display:flex;">
                 <button class="btn mode-btn active" id="s-range-10" onclick="setRange(10)">עד 10</button>
                 <button class="btn mode-btn" id="s-range-100" onclick="setRange(100)">עד 100</button>
                 <button class="btn mode-btn" id="s-range-1000" onclick="setRange(1000)">עד 1000</button>
             </div>
-            <button class="btn btn-alt" onclick="startGame('story-logic')">מתחילים</button>
+            <button class="btn btn-alt" onclick="startGame('story-logic')">בואו נתחיל</button>
         </div>
 
         <div id="page-game" class="hidden">
@@ -170,20 +175,21 @@
             <input type="number" id="ansInput" inputmode="numeric" onkeypress="if(event.key==='Enter') check()">
             <button class="btn btn-main" onclick="check()">בדיקה</button>
             <button id="showMulTableBtn" class="btn hidden" style="background:#edf2f7; color:#2d3748;" onclick="toggleMulTable(true)">הצץ בלוח הכפל 🔍</button>
-            <div id="msg" style="margin-top:15px; font-weight:bold;"></div>
+            <div id="msg" class="feedback-hint"></div>
             <p onclick="showPage('lobby')" style="color:gray; cursor:pointer; margin-top:20px; text-decoration:underline;">חזרה לתפריט</p>
         </div>
     </div>
 
     <div id="mul-table-modal" class="hidden">
-        <button onclick="toggleMulTable(false)" style="float:left; cursor:pointer; border:none; background:red; color:white; border-radius:50%; width:30px; height:30px;">X</button>
-        <h3>לוח הכפל</h3>
+        <button onclick="toggleMulTable(false)" style="float:left; cursor:pointer; border:none; background:red; color:white; border-radius:50%; width:30px; height:30px; font-weight:bold;">X</button>
+        <h3 style="color:#000">לוח הכפל</h3>
         <div id="table-container"></div>
     </div>
 
 <script>
     let childName = localStorage.getItem('childName') || '';
     let currentModule = '', currentQ = {}, opMul = 'mul', mulSelected = new Set(), opAdd = 'add', addRange = 10, storyMode = 'mix';
+    let lastOpType = '';
 
     // יצירת לוח כפל
     let tableHtml = '<table><tr><th>×</th>' + Array.from({length:10}, (_,i)=>`<th>${i+1}</th>`).join('') + '</tr>';
@@ -196,6 +202,7 @@
 
     window.onload = () => {
         if(childName) document.getElementById('splash-welcome').innerText = `שלום, ${childName}!`;
+        document.getElementById('nameInput').value = childName;
         setTimeout(() => { document.getElementById('splash').style.display='none'; showPage(childName?'lobby':'settings'); }, 2000);
     };
 
@@ -205,13 +212,12 @@
     }
 
     function saveSettings() {
-        childName = document.getElementById('nameInput').value;
+        childName = document.getElementById('nameInput').value.trim();
         localStorage.setItem('childName', childName);
         document.getElementById('lobby-title').innerText = `שלום, ${childName}!`;
         showPage('lobby');
     }
 
-    // הגדרות כפתורים
     const grid = document.getElementById('mul-num-grid');
     for(let i=1; i<=10; i++) {
         const b = document.createElement('button'); b.className='num-btn mode-btn'; b.innerText=i;
@@ -221,10 +227,15 @@
 
     function setOp(o) { opMul=o; document.getElementById('btn-mul').classList.toggle('active',o==='mul'); document.getElementById('btn-div').classList.toggle('active',o==='div'); }
     function setOpAdd(o) { opAdd=o; document.getElementById('btn-add').classList.toggle('active',o==='add'); document.getElementById('btn-sub').classList.toggle('active',o==='sub'); }
-    function setRange(r) { addRange=r; document.querySelectorAll('[id$="-'+r+'"]').forEach(b=>b.classList.add('active')); document.querySelectorAll('[id^="range-"],[id^="s-range-"]').forEach(b=>{if(!b.id.endsWith(r)) b.classList.remove('active')}); }
+    function setRange(r) { 
+        addRange=r; 
+        document.querySelectorAll('[id$="-'+r+'"]').forEach(b=>b.classList.add('active')); 
+        document.querySelectorAll('[id^="range-"],[id^="s-range-"]').forEach(b=>{if(!b.id.endsWith(r)) b.classList.remove('active')}); 
+    }
     function setStoryMode(m) { storyMode=m; ['mix','addsub','muldiv','advanced'].forEach(v=>document.getElementById('story-m-'+v).classList.toggle('active',v===m)); }
 
     function startGame(logic) {
+        if(logic === 'mul-logic' && mulSelected.size === 0) return alert("אנא בחר לפחות מספר אחד לתרגול");
         currentModule = logic;
         showPage('game');
         next();
@@ -232,11 +243,11 @@
 
     function generateAdvanced() {
         let num = Math.floor(Math.random() * (addRange - 11)) + 11;
-        const u = num % 10, t = Math.floor((num % 100) / 10), h = Math.floor(num / 100);
-        let txt = `שאלה לאלופים:\n`;
-        if(addRange === 1000) txt += `אם נסדר ב-100 קופסאות, ישארו ${num % 100} בצד.\n`;
-        txt += `אם נסדר ב-10 קופסאות, ישארו ${u} בצד.\nכמה יש בסך הכל?`;
-        return { ans: num, text: txt, isMul: false };
+        const u = num % 10;
+        let txt = `שאלה למתקדמים:\n`;
+        if(addRange === 1000) txt += `אם נסדר את הפריטים ב-100 קופסאות, ישארו ${num % 100} פריטים בצד.\n`;
+        txt += `אם נסדר אותם ב-10 קופסאות, ישארו ${u} פריטים בצד.\nכמה פריטים יש בסך הכל?`;
+        return { ans: num, text: txt, type: 'logic' };
     }
 
     function generateStory() {
@@ -246,43 +257,71 @@
         
         let a, b, ans, txt;
         const name = childName || "הילד";
-        if(type === 'add') { a=Math.floor(Math.random()*addRange/2)+1; b=Math.floor(Math.random()*addRange/2)+1; ans=a+b; txt=`ל${name} היו ${a} מדבקות. הוא קיבל עוד ${b}. כמה יש לו?`; }
-        else if(type === 'sub') { a=Math.floor(Math.random()*addRange/2)+10; b=Math.floor(Math.random()*a); ans=a-b; txt=`היו ${a} תפוחים. ${b} נאכלו. כמה נשארו?`; }
-        else if(type === 'mul') { a=Math.floor(Math.random()*9)+2; b=Math.floor(Math.random()*9)+2; ans=a*b; txt=`יש ${a} שקיות, ובכל אחת ${b} סוכריות. כמה בסך הכל?`; return {ans, text:txt, isMul:true}; }
-        else { b=Math.floor(Math.random()*8)+2; ans=Math.floor(Math.random()*9)+1; a=b*ans; txt=`חילקו ${a} גולות ל-${b} ילדים. כמה כל אחד קיבל?`; return {ans, text:txt, isMul:true}; }
-        return { ans, text: txt, isMul: false };
+        if(type === 'add') { a=Math.floor(Math.random()*addRange/2)+1; b=Math.floor(Math.random()*addRange/2)+1; ans=a+b; txt=`ל${name} היו ${a} מדבקות. הוא קיבל עוד ${b}. כמה יש לו עכשיו?`; }
+        else if(type === 'sub') { a=Math.floor(Math.random()*addRange/2)+10; b=Math.floor(Math.random()*a); ans=a-b; txt=`על העץ היו ${a} ציפורים. ${b} מהן עפו. כמה נשארו?`; }
+        else if(type === 'mul') { a=Math.floor(Math.random()*9)+2; b=Math.floor(Math.random()*9)+2; ans=a*b; txt=`יש ${a} שקיות, ובכל אחת ${b} סוכריות. כמה סוכריות יש בסך הכל?`; }
+        else { b=Math.floor(Math.random()*8)+2; ans=Math.floor(Math.random()*9)+1; a=b*ans; txt=`חילקו ${a} גולות שווה בשווה בין ${b} ילדים. כמה גולות קיבל כל ילד?`; }
+        return { ans, text: txt, type: type };
     }
 
     function next() {
         toggleMulTable(false);
-        let isMulType = false;
+        let isMulOrDiv = false;
+        
         if(currentModule === 'mul-logic') {
             const arr = Array.from(mulSelected);
             const a = arr[Math.floor(Math.random()*arr.length)], b = Math.floor(Math.random()*10)+1;
-            currentQ = opMul==='mul' ? { ans:a*b, text:`${a} × ${b}` } : { ans:b, text:`${a*b} ÷ ${a}` };
-            isMulType = true;
+            currentQ = opMul==='mul' ? { ans:a*b, text:`${a} × ${b}`, type:'mul' } : { ans:b, text:`${a*b} ÷ ${a}`, type:'div' };
         } else if(currentModule === 'add-logic') {
             const a = Math.floor(Math.random()*addRange)+1, b = Math.floor(Math.random()*addRange)+1;
-            if(opAdd==='add') currentQ = { ans:a+b, text:`${a} + ${b}` };
-            else { const big=Math.max(a,b), small=Math.min(a,b); currentQ={ ans:big-small, text:`${big} - ${small}` }; }
+            if(opAdd==='add') currentQ = { ans:a+b, text:`${a} + ${b}`, type:'add' };
+            else { const big=Math.max(a,b), small=Math.min(a,b); currentQ={ ans:big-small, text:`${big} - ${small}`, type:'sub' }; }
         } else {
             currentQ = generateStory();
-            isMulType = currentQ.isMul;
         }
+
+        isMulOrDiv = (currentQ.type === 'mul' || currentQ.type === 'div');
+        
+        // חיווי ויזואלי על שינוי סוג תרגיל (שבירת אוטומט)
+        if (lastOpType && lastOpType !== currentQ.type) {
+            const card = document.getElementById('question');
+            card.style.background = "rgba(159, 122, 234, 0.2)";
+            setTimeout(() => card.style.background = "rgba(74, 144, 226, 0.1)", 600);
+        }
+        lastOpType = currentQ.type;
+
         document.getElementById('question').innerText = currentQ.text;
         document.getElementById('ansInput').value = '';
-        document.getElementById('showMulTableBtn').classList.toggle('hidden', !isMulType);
+        document.getElementById('showMulTableBtn').classList.toggle('hidden', !isMulOrDiv);
+        document.getElementById('msg').innerText = "";
         document.getElementById('ansInput').focus();
     }
 
     function check() {
         const val = parseInt(document.getElementById('ansInput').value);
         const msg = document.getElementById('msg');
+        if (isNaN(val)) return;
+
         if(val === currentQ.ans) {
-            msg.innerText = "נכון מאוד! ✨"; msg.style.color = "green";
-            setTimeout(() => { msg.innerText = ""; next(); }, 1200);
+            msg.innerText = "נכון מאוד! ✨ כל הכבוד!"; msg.style.color = "var(--success)";
+            setTimeout(() => { next(); }, 1200);
         } else {
-            msg.innerText = "נסו שוב... 🤔"; msg.style.color = "red";
+            // זיהוי טעויות אוטומטיות (חיבור במקום כפל)
+            let nums = currentQ.text.match(/\d+/g);
+            if (nums && nums.length >= 2) {
+                let n1 = parseInt(nums[0]), n2 = parseInt(nums[1]);
+                if (currentQ.type === 'mul' && val === (n1 + n2)) {
+                    msg.innerText = "רגע, שמת לב לסימן? 🤔 נראה שחיברת במקום לכפול...";
+                    msg.style.color = "var(--warning)";
+                    return;
+                }
+                if (currentQ.type === 'add' && val === (n1 * n2)) {
+                    msg.innerText = "שים לב... כפלת במקום לחבר! ➕";
+                    msg.style.color = "var(--warning)";
+                    return;
+                }
+            }
+            msg.innerText = "לא בדיוק... כדאי לקרוא שוב בעיון 🤔"; msg.style.color = "var(--error)";
         }
     }
 </script>
