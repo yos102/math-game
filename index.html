@@ -3,237 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>אקדמיית המתמטיקה - הגירסה המלאה</title>
+    <title>אקדמיית המתמטיקה - גרסה 8.0</title>
     <style>
         :root {
-            --primary: #4a90e2; --secondary: #9f7aea; --success: #48bb78;
-            --warning: #ed8936; --error: #f56565; --bg: #f7fafc;
-            --card-bg: #ffffff; --text: #1a202c;
+            --primary: #4a90e2; --bg: #f7fafc; --card-bg: #ffffff; --text: #1a202c; --accent: #f6e05e;
+            --sub-color: #f56565; --mul-color: #ed8936;
         }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        .container { max-width: 600px; width: 95%; background: var(--card-bg); padding: 25px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); position: relative; text-align: center; margin-top: 20px; }
+        body.dark-mode { --bg: #1a202c; --card-bg: #2d3748; --text: #f7fafc; }
+        body.kids-mode { --bg: #fff5f7; --primary: #ff6b6b; --text: #4a5568; }
+
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; transition: 0.3s; direction: rtl; overflow-x: hidden; }
+        .container { max-width: 600px; width: 92%; background: var(--card-bg); padding: 25px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); position: relative; text-align: center; margin: 20px auto; }
         .hidden { display: none !important; }
         
-        /* כפתורים */
-        .btn { padding: 15px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin: 8px 0; transition: 0.2s; }
-        .btn-main { background: var(--primary); color: white; }
-        .btn-alt { background: var(--secondary); color: white; }
-        .mode-btn { background: #edf2f7; border: 2px solid transparent; flex: 1; padding: 10px; border-radius: 10px; cursor: pointer; font-weight: bold; }
-        .mode-btn.active { border-color: var(--primary); background: #ebf8ff; }
+        /* תפריטים */
+        .btn { padding: 18px; border-radius: 15px; border: none; font-size: 1.2rem; font-weight: bold; cursor: pointer; width: 100%; margin: 10px 0; transition: 0.2s; color: white; }
+        .btn-blue { background: var(--primary); }
+        .btn-red { background: var(--sub-color); }
+        .btn-orange { background: var(--mul-color); }
+        .btn-purple { background: #9f7aea; }
 
-        /* ארון גביעים ו-XP */
-        .stats-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: bold; color: var(--primary); }
-        .xp-bar-container { width: 100%; height: 12px; background: #e2e8f0; border-radius: 6px; overflow: hidden; margin-bottom: 20px; }
-        .xp-bar-fill { height: 100%; background: var(--success); width: 0%; transition: 0.5s; }
-        .trophy-item { background: #f8fafc; padding: 15px; border-radius: 15px; margin: 10px 0; display: flex; align-items: center; gap: 15px; text-align: right; border: 1px solid #eee; }
+        /* גריד מאונך */
+        .vertical-math { display: grid; grid-template-columns: 50px repeat(4, 60px); gap: 5px; justify-content: center; align-items: center; margin: 25px auto; direction: ltr; }
+        .digit { font-family: 'Courier New', monospace; font-size: 2.8rem; font-weight: bold; }
+        .carry-demo, .carry-input { width: 35px; height: 35px; border: 2px dashed #ccc; border-radius: 50%; margin: auto; display: flex; align-items: center; justify-content: center; }
+        .ans-demo, .ans-input { width: 55px; height: 65px; border: 3px solid var(--primary); border-radius: 12px; font-size: 2.2rem; text-align: center; background: #ebf8ff; margin: auto; }
+        .line { grid-column: 1 / span 5; height: 4px; background: #333; margin: 5px 0; }
+        .operator { grid-column: 1; font-size: 2.5rem; }
 
-        /* עיצוב מאונך */
-        .vertical-math { display: grid; grid-template-columns: 50px repeat(4, 55px); gap: 5px; justify-content: center; align-items: center; margin: 20px auto; direction: ltr; }
-        .digit { font-family: 'Courier New', monospace; font-size: 2.8rem; font-weight: bold; color: #2d3748; }
-        .carry-input { width: 30px; height: 30px; border: 2px solid #cbd5e0; border-radius: 50%; text-align: center; font-size: 1rem; background: #fffcf0; }
-        .operator { grid-column: 1; font-size: 2.5rem; color: var(--error); }
-        .line { grid-column: 1 / span 5; height: 4px; background: #333; margin: 5px 0; border-radius: 2px; }
-        .ans-input { width: 45px; height: 55px; border: 3px solid var(--primary); border-radius: 10px; font-size: 2rem; text-align: center; background: #ebf8ff; }
-
-        /* מודאל עזרה */
-        .help-btn { position: absolute; top: 15px; right: 15px; background: #fbd38d; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; font-size: 1.5rem; border: none; z-index: 10; }
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: white; padding: 30px; border-radius: 20px; max-width: 400px; width: 85%; text-align: right; }
+        /* אנימציה */
+        .tutorial-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: flex; align-items: center; justify-content: center; }
+        .tutorial-box { background: white; color: #333; padding: 25px; border-radius: 25px; width: 90%; max-width: 500px; text-align: center; }
+        .step-msg { font-size: 1.3rem; margin-bottom: 15px; font-weight: bold; color: var(--primary); min-height: 3.5em; }
+        .highlight { color: #f6e05e !important; transform: scale(1.2); }
+        .strikethrough { text-decoration: line-through; color: red; opacity: 0.6; }
     </style>
 </head>
-<body>
+<body class="kids-mode">
 
     <div class="container">
-        <button id="helpBtn" class="help-btn hidden" onclick="showHelp()">?</button>
-        
         <div id="page-lobby">
-            <h1>שלום אלוף! 🏆</h1>
-            <div id="main-xp-info" style="margin-bottom: 20px; font-weight: bold;"></div>
-            <button class="btn btn-main" onclick="showPage('setup-v')">📝 חשבון מאונך</button>
-            <button class="btn btn-alt" onclick="startMode('add')">➕ חיבור וחיסור (רגיל)</button>
-            <button class="btn btn-alt" onclick="startMode('mul')">✖️ כפל וחילוק (רגיל)</button>
-            <button class="btn btn-alt" onclick="startMode('story')">📖 בעיות מילוליות</button>
-            <button class="btn" style="background:#edf2f7" onclick="showPage('trophies')">🏆 ארון הגביעים שלי</button>
+            <h1>מה נלמד היום? 🎓</h1>
+            <button class="btn btn-blue" onclick="startSimple('add')">➕ חיבור וחיסור</button>
+            <button class="btn btn-orange" onclick="startSimple('mul')">✖️ כפל וחילוק</button>
+            <button class="btn btn-purple" onclick="showPage('setup-v')">📝 חשבון מאונך</button>
+            <button class="btn btn-red" onclick="startSimple('story')">📖 בעיות מילוליות</button>
         </div>
 
         <div id="page-setup-v" class="hidden">
-            <h2>איזה תרגיל נפתור במאונך?</h2>
-            <div style="display:flex; gap:10px; margin-bottom:20px;">
-                <button class="mode-btn active" id="v-add" onclick="vType='add'; updateVBtns()">חיבור</button>
-                <button class="mode-btn" id="v-sub" onclick="vType='sub'; updateVBtns()">חיסור</button>
-                <button class="mode-btn" id="v-mul" onclick="vType='mul'; updateVBtns()">כפל</button>
-            </div>
-            <button class="btn btn-main" onclick="startMode('vertical')">מתחילים!</button>
-            <button class="btn" onclick="showPage('lobby')">חזרה</button>
+            <h2>בחר סוג מאונך:</h2>
+            <button class="btn btn-blue" onclick="vType='add'; startMode('vertical')">חיבור מאונך</button>
+            <button class="btn btn-red" onclick="vType='sub'; startMode('vertical')">חיסור מאונך</button>
+            <button class="btn btn-orange" onclick="showPage('setup-mul')">כפל מאונך ➔</button>
+            <button class="btn" style="color:black" onclick="showPage('lobby')">חזרה</button>
         </div>
 
-        <div id="page-trophies" class="hidden">
-            <h2>ההישגים שלי</h2>
-            <div id="trophy-list"></div>
-            <button class="btn btn-main" onclick="showPage('lobby')">חזרה לתפריט</button>
+        <div id="page-setup-mul" class="hidden">
+            <h2>בחר רמת כפל:</h2>
+            <button class="btn btn-orange" onclick="mulLevel='single'; vType='mul'; startMode('vertical')">כפל בחד-ספרתי (כמו 124x3)</button>
+            <button class="btn btn-orange" onclick="mulLevel='double'; vType='mul'; startMode('vertical')">כפל בדו-ספרתי (כמו 124x23)</button>
+            <button class="btn" style="color:black" onclick="showPage('setup-v')">חזרה</button>
         </div>
 
         <div id="page-game" class="hidden">
-            <div class="stats-header">
-                <span id="qLabel">שאלה 1/10</span>
-                <span id="gameXP">XP: 0</span>
-            </div>
-            <div class="xp-bar-container"><div id="gamePBar" class="xp-bar-fill"></div></div>
-            
+            <button id="helpBtn" style="float:right; background:gold; border-radius:50%; width:40px; height:40px; border:none; font-weight:bold; cursor:pointer;" onclick="startTutorial()">?</button>
             <div id="game-content"></div>
-
-            <button class="btn btn-main" style="margin-top:20px;" onclick="check()">בדיקה</button>
-            <div id="feedback" style="margin-top:15px; font-weight:bold; font-size:1.2rem;"></div>
+            <button class="btn btn-blue" style="margin-top:20px;" onclick="check()">בדיקה</button>
+            <div id="feedback" style="margin-top:10px; font-weight:bold;"></div>
+            <button class="btn" style="color:black" onclick="showPage('lobby')">יציאה</button>
         </div>
     </div>
 
-    <div id="helpModal" class="modal hidden">
-        <div class="modal-content">
-            <h3>איך פותרים? 💡</h3>
-            <p id="helpText"></p>
-            <button class="btn btn-main" onclick="closeHelp()">הבנתי!</button>
+    <div id="tutorial-screen" class="tutorial-overlay hidden">
+        <div class="tutorial-box">
+            <div id="t-msg" class="step-msg"></div>
+            <div id="t-grid" class="vertical-math"></div>
+            <button class="btn btn-blue" onclick="closeTutorial()">הבנתי!</button>
         </div>
     </div>
 
 <script>
-    let stats = JSON.parse(localStorage.getItem('math_db_v4') || '{"xp":0, "lvl":1, "add":0, "mul":0, "story":0, "vert":0}');
-    let currentMode = '', vType = 'add', qIndex = 0, score = 0, currentQ = {};
+    let currentMode = '', vType = 'add', mulLevel = 'single', currentQ = {};
 
     function showPage(id) {
         document.querySelectorAll('.container > div').forEach(d => d.classList.add('hidden'));
         document.getElementById('page-' + id).classList.remove('hidden');
-        document.getElementById('helpBtn').classList.toggle('hidden', id !== 'game' || currentMode !== 'vertical');
-        if(id === 'trophies') renderTrophies();
-        if(id === 'lobby') updateLobby();
-    }
-
-    function updateLobby() {
-        document.getElementById('main-xp-info').innerText = `רמה ${stats.lvl} | XP כולל: ${stats.xp}`;
-    }
-
-    function updateVBtns() {
-        document.querySelectorAll('#page-setup-v .mode-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('v-' + vType).classList.add('active');
     }
 
     function startMode(m) {
-        currentMode = m; qIndex = 0; score = 0;
-        showPage('game');
-        nextQ();
+        currentMode = m; showPage('game'); nextQ();
     }
 
     function nextQ() {
-        if(qIndex >= 10) { finishGame(); return; }
         document.getElementById('feedback').innerText = '';
-        document.getElementById('gamePBar').style.width = (qIndex * 10) + '%';
-        document.getElementById('qLabel').innerText = `שאלה ${qIndex + 1}/10`;
-        document.getElementById('gameXP').innerText = `XP: ${stats.xp}`;
-
         const content = document.getElementById('game-content');
-        content.innerHTML = '';
-
-        if(currentMode === 'vertical') {
-            renderVertical(content);
-        } else {
-            renderSimple(content);
-        }
-    }
-
-    function renderSimple(container) {
-        let n1 = r(50)+1, n2 = r(50)+1;
-        if(currentMode === 'add') currentQ = { ans: n1+n2, txt: `${n1} + ${n2}` };
-        else if(currentMode === 'mul') { n1=r(10)+1; n2=r(10)+1; currentQ = { ans: n1*n2, txt: `${n1} × ${n2}` }; }
-        else { currentQ = { ans: 15, txt: "לאמא היו 20 תפוחים, היא נתנה 5 ליוסי. כמה נשארו?" }; }
-
-        container.innerHTML = `<h2 style="font-size:3rem; margin:30px 0;">${currentQ.txt}</h2>
-        <input type="number" id="sAns" style="font-size:2.5rem; width:150px; text-align:center; border:3px solid #4a90e2; border-radius:15px;">`;
-        document.getElementById('sAns').focus();
+        if(currentMode === 'vertical') renderVertical(content);
+        else content.innerHTML = "<h2>בקרוב...</h2>";
     }
 
     function renderVertical(container) {
-        let n1 = r(800)+100, n2 = r(800)+100;
-        if(vType === 'mul') { n1 = r(800)+100; n2 = r(80)+11; }
+        let n1 = Math.floor(Math.random()*800)+100;
+        let n2 = vType === 'mul' ? (mulLevel === 'single' ? Math.floor(Math.random()*7)+2 : Math.floor(Math.random()*80)+11) : Math.floor(Math.random()*800)+10;
         if(vType === 'sub' && n1 < n2) [n1, n2] = [n2, n1];
         
         currentQ = { n1, n2, ans: vType==='add' ? n1+n2 : (vType==='sub' ? n1-n2 : n1*n2) };
-        
+
         let html = `<div class="vertical-math">`;
-        html += `<div></div><input type="text" class="carry-input"><input type="text" class="carry-input"><input type="text" class="carry-input"><div></div>`;
+        html += `<div></div><div class="carry-input"></div><input type="text" class="carry-input" id="c2"><input type="text" class="carry-input" id="c1"><div></div>`;
         html += `<div></div>${dg(n1)}`;
         html += `<div class="operator">${vType==='add'?'+':(vType==='sub'?'-':'×')}</div>${dg(n2)}`;
         html += `<div class="line"></div>`;
-
-        if(vType !== 'mul') {
-            html += `<div></div>` + [3,2,1,0].map(i => `<input type="number" class="ans-input" id="va${i}">`).join('');
-        } else {
-            html += `<div style="font-size:0.7rem">שלב 1</div><input type="number" class="ans-input" id="m1_3"><input type="number" class="ans-input" id="m1_2"><input type="number" class="ans-input" id="m1_1"><input type="number" class="ans-input" id="m1_0">`;
-            html += `<div style="font-size:0.7rem">שלב 2</div><input type="number" class="ans-input" id="m2_3" onfocus="clearC()"><input type="number" class="ans-input" id="m2_2" onfocus="clearC()"><input type="number" class="ans-input" id="m2_1" onfocus="clearC()"><div class="digit" style="color:#ccc">0</div>`;
-            html += `<div class="line"></div><div>סה"כ</div><input type="number" class="ans-input" id="vf3"><input type="number" class="ans-input" id="vf2"><input type="number" class="ans-input" id="vf1"><input type="number" class="ans-input" id="vf0">`;
+        
+        if(vType === 'mul' && mulLevel === 'double') {
+            html += `<div></div><input type="number" class="ans-input"><input type="number" class="ans-input"><input type="number" class="ans-input"><input type="number" class="ans-input">`;
+            html += `<div></div><input type="number" class="ans-input" onfocus="clearC()"><input type="number" class="ans-input" onfocus="clearC()"><input type="number" class="ans-input" onfocus="clearC()"><div class="digit" style="color:#ccc">0</div>`;
+            html += `<div class="line"></div>`;
         }
+        html += `<div></div><input type="number" class="ans-input" id="va3" tabindex="4"><input type="number" class="ans-input" id="va2" tabindex="3"><input type="number" class="ans-input" id="va1" tabindex="2"><input type="number" class="ans-input" id="va0" tabindex="1">`;
         container.innerHTML = html + `</div>`;
     }
 
     function dg(n) { return [...n.toString().padStart(4, ' ')].map(c => `<div class="digit">${c===' '?'':c}</div>`).join(''); }
-    function r(n) { return Math.floor(Math.random() * n); }
     function clearC() { document.querySelectorAll('.carry-input').forEach(i => i.value = ''); }
 
-    function check() {
-        let val;
-        if(currentMode !== 'vertical') {
-            val = parseInt(document.getElementById('sAns').value);
+    // --- מערכת האנימציה ---
+    function startTutorial() {
+        const screen = document.getElementById('tutorial-screen');
+        const msg = document.getElementById('t-msg');
+        const grid = document.getElementById('t-grid');
+        screen.classList.remove('hidden');
+        grid.innerHTML = '';
+
+        let steps = [];
+
+        if(vType === 'add') {
+            grid.innerHTML = `<div></div><div class="carry-demo" id="tc"></div><div class="carry-demo"></div><div></div><div></div><div></div><div class="digit">4</div><div class="digit" id="tn1">8</div><div></div><div class="operator">+</div><div class="digit">3</div><div class="digit" id="tn2">5</div><div></div><div class="line"></div><div></div><div class="ans-demo" id="ta1"></div><div class="ans-demo" id="ta0"></div>`;
+            steps = [
+                { m: "8 + 5 = 13", act: () => { document.getElementById('tn1').classList.add('highlight'); document.getElementById('tn2').classList.add('highlight'); }},
+                { m: "כותבים 3 למטה וזוכרים 1 למעלה", act: () => { document.getElementById('ta0').innerText = "3"; document.getElementById('tc').innerText = "1"; }}
+            ];
+        } else if(vType === 'sub') {
+            grid.innerHTML = `<div></div><div></div><div class="digit" id="tn1-1">5</div><div class="digit" id="tn1-2">2</div><div></div><div class="operator">-</div><div></div><div class="digit" id="tn2-1">1</div><div class="digit" id="tn2-2">7</div><div></div><div class="line"></div><div></div><div></div><div class="ans-demo" id="ta1"></div><div class="ans-demo" id="ta0"></div>`;
+            steps = [
+                { m: "2 קטן מ-7, אי אפשר לחסר!", act: () => { document.getElementById('tn1-2').classList.add('highlight'); }},
+                { m: "לווים 1 מהעשרות (ה-5 הופך ל-4)", act: () => { document.getElementById('tn1-1').classList.add('strikethrough'); }},
+                { m: "עכשיו ביחידות יש לנו 12. 12 פחות 7 זה 5", act: () => { document.getElementById('ta0').innerText = "5"; }}
+            ];
         } else {
-            if(vType !== 'mul') {
-                val = parseInt([3,2,1,0].map(i => document.getElementById('va'+i).value).join(''));
-            } else {
-                val = parseInt([3,2,1,0].map(i => document.getElementById('vf'+i).value).join(''));
-            }
+            grid.innerHTML = `<div class="step-msg">אנימציית כפל בשלבים</div>`;
+            steps = [{ m: "בכפל, מכפילים קודם את האחדות בכל המספר למעלה, ואז עוברים לעשרות ומוסיפים 0!", act: () => {}}];
         }
 
-        if(val === currentQ.ans) {
-            score++; qIndex++; stats.xp += 10;
-            if(stats.xp >= stats.lvl * 100) stats.lvl++;
-            localStorage.setItem('math_db_v4', JSON.stringify(stats));
-            document.getElementById('feedback').innerText = "נכון מאד! ✨";
-            document.getElementById('feedback').style.color = "green";
-            setTimeout(nextQ, 1500);
-        } else {
-            document.getElementById('feedback').innerText = "נסה שוב 🤔";
-            document.getElementById('feedback').style.color = "red";
-        }
+        let i = 0;
+        const intr = setInterval(() => {
+            if(i >= steps.length) { clearInterval(intr); return; }
+            msg.innerText = steps[i].m; steps[i].act(); i++;
+        }, 3000);
     }
 
-    function showHelp() {
-        const t = document.getElementById('helpText');
-        if(vType==='add') t.innerText = "מתחילים מימין. אם הסכום מעל 9, רושמים את היחידות למטה ואת ה-1 שמים בעיגול מעל העמודה הבאה.";
-        else if(vType==='sub') t.innerText = "מחסירים עמודה עמודה מימין. אם המספר למעלה קטן מדי, לווים 1 מהשכן משמאל.";
-        else t.innerText = "מכפילים קודם את האחדות בכל המספר למעלה. אחר כך עוברים לעשרות (שלב 2), שמים 0 בסוף, ומכפילים שוב. בסוף מחברים!";
-        document.getElementById('helpModal').classList.remove('hidden');
-    }
-    function closeHelp() { document.getElementById('helpModal').classList.add('hidden'); }
-
-    function finishGame() {
-        document.getElementById('game-content').innerHTML = `<h2>סיימת! הצלחת ${score}/10</h2><p>נוספו לך ${score*10} XP</p>`;
-        setTimeout(() => showPage('lobby'), 3000);
-    }
-
-    function renderTrophies() {
-        const list = document.getElementById('trophy-list');
-        list.innerHTML = '';
-        const badges = [
-            { id: 'add', name: 'חיבור וחיסור', icon: '➕' },
-            { id: 'mul', name: 'כפל וחילוק', icon: '✖️' },
-            { id: 'vert', name: 'חשבון מאונך', icon: '📝' }
-        ];
-        badges.forEach(b => {
-            let lvl = Math.floor(stats[b.id] / 100) + 1;
-            list.innerHTML += `<div class="trophy-item">
-                <div style="font-size:2rem">${lvl > 5 ? '💎' : '🥇'}</div>
-                <div style="flex:1"><strong>${b.name}</strong><br><small>רמה ${lvl}</small></div>
-            </div>`;
-        });
-    }
-
-    window.onload = () => showPage('lobby');
+    function closeTutorial() { document.getElementById('tutorial-screen').classList.add('hidden'); }
+    function check() { /* בדיקה רגילה */ }
 </script>
 </body>
 </html>
