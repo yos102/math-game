@@ -46,27 +46,27 @@
             min-height: 100vh;
             margin: 0;
             padding: 10px;
+            text-align: center;
         }
 
         .container {
-            max-width: 500px;
+            max-width: 550px;
             width: 95%;
             background: var(--card-bg);
             padding: 25px;
             border-radius: 25px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            text-align: center;
             position: relative;
         }
 
         .hidden { display: none !important; }
-
         .settings-btn { position: absolute; top: 15px; left: 15px; font-size: 1.5rem; cursor: pointer; z-index: 100; }
 
         .btn {
             padding: 15px; border-radius: 15px; border: none;
             font-size: 1.1rem; font-weight: bold; cursor: pointer;
             width: 100%; margin: 10px 0;
+            transition: 0.2s;
         }
 
         .btn-main { background: var(--primary); color: white; }
@@ -77,11 +77,11 @@
 
         .menu-card {
             background: var(--bg); padding: 20px; border-radius: 20px;
-            margin-bottom: 15px; cursor: pointer; border: 2px solid transparent; transition: 0.2s;
+            margin-bottom: 15px; cursor: pointer; border: 2px solid transparent;
         }
         .menu-card:hover { border-color: var(--primary); }
 
-        .card { font-size: 1.8rem; padding: 25px; background: rgba(74, 144, 226, 0.1); border-radius: 20px; margin: 20px 0; line-height: 1.4; }
+        .card { font-size: 1.6rem; padding: 25px; background: rgba(74, 144, 226, 0.1); border-radius: 20px; margin: 20px 0; line-height: 1.5; white-space: pre-wrap; }
 
         input {
             font-size: 1.8rem; width: 85%; text-align: center; padding: 12px;
@@ -99,8 +99,8 @@
 <body>
 
     <div id="splash">
-        <div style="font-size: 5rem; animation: pulse 1.5s infinite;">🔢</div>
-        <h1 id="splash-welcome" style="font-weight: 800;">ברוכים הבאים!</h1>
+        <div style="font-size: 5rem; animation: pulse 1.5s infinite;">🧮</div>
+        <h1 id="splash-welcome" style="font-weight: 800; color:var(--text)">ברוכים הבאים!</h1>
     </div>
 
     <div class="container">
@@ -114,7 +114,7 @@
                 <button class="btn mode-btn" onclick="setTheme('light')">יום ☀️</button>
                 <button class="btn mode-btn" onclick="setTheme('dark')">לילה 🌙</button>
             </div>
-            <button class="btn btn-main" onclick="saveSettings()">שמירה</button>
+            <button class="btn btn-main" onclick="saveSettings()">שמירה וחזרה</button>
         </div>
 
         <div id="page-lobby" class="hidden">
@@ -127,16 +127,17 @@
                 <div style="font-size: 3rem;">✖️</div>
                 <h3>כפל וחילוק</h3>
             </div>
-            <div class="menu-card" onclick="showPage('setup-story')" style="background: #e9d8fd;">
+            <div class="menu-card" onclick="showPage('setup-story')" style="background: #e9d8fd; color: #553c9a;">
                 <div style="font-size: 3rem;">📖</div>
-                <h3>בעיות מילוליות</h3>
-                <p>סיפורי חשבון מאתגרים</p>
+                <h3>בעיות מילוליות וחשיבה</h3>
+                <p>סיפורים ושאלות אתגר</p>
             </div>
         </div>
 
         <div id="page-setup-add" class="hidden">
             <button onclick="showPage('lobby')" style="background:none; border:none; color:var(--primary); cursor:pointer;">⬅️ חזרה</button>
             <h2>חיבור וחיסור</h2>
+            <p>בחר טווח מספרים:</p>
             <div style="display: flex;">
                 <button class="btn mode-btn active" id="range-10" onclick="setRange(10)">עד 10</button>
                 <button class="btn mode-btn" id="range-100" onclick="setRange(100)">עד 100</button>
@@ -162,12 +163,17 @@
 
         <div id="page-setup-story" class="hidden">
             <button onclick="showPage('lobby')" style="background:none; border:none; color:var(--primary); cursor:pointer;">⬅️ חזרה</button>
-            <h2>הגדרות סיפור</h2>
-            <p>איזה סוג שאלות?</p>
-            <button class="btn mode-btn active" id="story-mode-mix" onclick="setStoryMode('mix')">הכל מהכל 🎲</button>
-            <button class="btn mode-btn" id="story-mode-addsub" onclick="setStoryMode('addsub')">חיבור וחיסור ➕</button>
-            <button class="btn mode-btn" id="story-mode-muldiv" onclick="setStoryMode('muldiv')">כפל וחילוק ✖️</button>
-            <button class="btn btn-alt" onclick="startGame('story-logic')">בואו נתחיל בסיפור!</button>
+            <h2>סיפורי חשבון וחשיבה</h2>
+            <p>רמת קושי (טווח מספרים):</p>
+            <div style="display: flex;">
+                <button class="btn mode-btn active" id="story-range-10" onclick="setRange(10)">עד 10</button>
+                <button class="btn mode-btn" id="story-range-100" onclick="setRange(100)">עד 100</button>
+                <button class="btn mode-btn" id="story-range-1000" onclick="setRange(1000)">עד 1000</button>
+            </div>
+            <p>סוג האתגר:</p>
+            <button class="btn mode-btn active" id="story-mode-logic" onclick="setStoryMode('logic')">שאלות חשיבה (כמו מר חשבוני) 💡</button>
+            <button class="btn mode-btn" id="story-mode-mix" onclick="setStoryMode('mix')">סיפורי חשבון מעורבים 🎲</button>
+            <button class="btn btn-alt" onclick="startGame('story-logic')">בואו נתחיל!</button>
         </div>
 
         <div id="page-game" class="hidden">
@@ -183,10 +189,10 @@
     let childName = localStorage.getItem('childName') || '';
     let theme = localStorage.getItem('theme') || 'light';
     let currentModule = '', currentQ = {};
-    let opMul = 'mul', mulSelected = new Set(), opAdd = 'add', addRange = 10, storyMode = 'mix';
+    let opMul = 'mul', mulSelected = new Set(), opAdd = 'add', addRange = 10, storyMode = 'logic';
 
-    const objects = ["תפוחים", "גולות", "מדבקות", "סוכריות", "צעצועים", "קלפים", "עוגיות"];
-    const friends = ["רוני", "נועם", "עמית", "ליה", "איתי", "מאיה", "יונתן"];
+    const objects = ["חרוזים", "גולות", "מדבקות", "סוכריות", "בולים", "קלפים"];
+    const characters = ["מר חשבוני", "גברת מספר", "פרופסור פלוס", "דוקטור מינוס"];
 
     function setTheme(t) {
         theme = t; localStorage.setItem('theme', t);
@@ -201,7 +207,7 @@
     };
 
     function saveSettings() {
-        childName = document.getElementById('nameInput').value;
+        childName = document.getElementById('nameInput').value.trim();
         localStorage.setItem('childName', childName);
         document.getElementById('lobby-title').innerText = `שלום, ${childName}! 👋`;
         showPage('lobby');
@@ -212,6 +218,7 @@
         document.getElementById('page-' + id).classList.remove('hidden');
     }
 
+    // יצירת גריד מספרים לכפל
     const grid = document.getElementById('mul-num-grid');
     for(let i=1; i<=10; i++) {
         const b = document.createElement('button'); b.className = 'num-btn mode-btn'; b.innerText = i;
@@ -221,41 +228,74 @@
 
     function setOp(o) { opMul = o; document.getElementById('btn-mul').classList.toggle('active', o==='mul'); document.getElementById('btn-div').classList.toggle('active', o==='div'); }
     function setOpAdd(o) { opAdd = o; document.getElementById('btn-add').classList.toggle('active', o==='add'); document.getElementById('btn-sub').classList.toggle('active', o==='sub'); }
-    function setRange(r) { addRange = r; [10, 100, 1000].forEach(v => document.getElementById('range-'+v).classList.toggle('active', v===r)); }
-    function setStoryMode(m) { storyMode = m; ['mix', 'addsub', 'muldiv'].forEach(v => document.getElementById('story-mode-'+v).classList.toggle('active', v===m)); }
+    
+    function setRange(r) { 
+        addRange = r; 
+        document.querySelectorAll('[id^="range-"], [id^="story-range-"]').forEach(btn => {
+            btn.classList.toggle('active', btn.id.endsWith('-' + r));
+        });
+    }
+
+    function setStoryMode(m) { 
+        storyMode = m; 
+        ['logic', 'mix'].forEach(v => document.getElementById('story-mode-'+v).classList.toggle('active', v===m)); 
+    }
 
     function startGame(logic) {
         if(logic === 'mul-logic' && mulSelected.size === 0) return alert("בחרו מספרים");
         currentModule = logic; showPage('game'); next();
     }
 
-    function generateStory() {
-        let types = [];
-        if(storyMode === 'addsub') types = ['add', 'sub'];
-        else if(storyMode === 'muldiv') types = ['mul', 'div'];
-        else types = ['add', 'sub', 'mul', 'div'];
-        
-        const type = types[Math.floor(Math.random()*types.length)];
+    // מנוע שאלות חשיבה (מר חשבוני)
+    function generateLogicQuestion() {
+        const char = characters[Math.floor(Math.random()*characters.length)];
         const obj = objects[Math.floor(Math.random()*objects.length)];
-        const friend = friends[Math.floor(Math.random()*friends.length)];
-        const name = childName || "הילד";
+        
+        // יצירת מספר אקראי לפי הטווח
+        let num = Math.floor(Math.random() * (addRange - 10)) + 10;
+        if (addRange === 10) num = Math.floor(Math.random() * 9) + 1;
 
+        const units = num % 10;
+        const tens = Math.floor((num % 100) / 10);
+        const hundreds = Math.floor(num / 100);
+
+        let text = `ל${char} יש ${obj}.\n`;
+        if (addRange >= 1000 && hundreds > 0) {
+            text += `אם יסדר אותם ב-100 שקיות, ישארו לו ${hundreds * 0 + units + tens*10} בצד.\n`; // פה אפשר לשכלל
+        }
+        
+        // גרסה מפושטת ומאתגרת של מבנה מספר
+        if (addRange >= 100) {
+            text += `אם יסדר בערמות של 100, ישארו ${num % 100} ${obj} בצד.\n`;
+            text += `אם יסדר בערמות של 10, ישארו ${num % 10} ${obj} בצד.`;
+        } else {
+            text += `אם יסדר בערמות של 10, ישארו לו ${num % 10} ${obj} בצד.`;
+        }
+        
+        text += `\n\nכמה ${obj} יש לו בסך הכל?`;
+        return { ans: num, text: text };
+    }
+
+    function generateStory() {
+        if (storyMode === 'logic') return generateLogicQuestion();
+
+        const type = ['add', 'sub', 'mul', 'div'][Math.floor(Math.random()*4)];
+        const obj = objects[Math.floor(Math.random()*objects.length)];
+        const name = childName || "הילד";
         let a, b, ans, text;
+
         if(type === 'add') {
             a = Math.floor(Math.random()*addRange/2)+1; b = Math.floor(Math.random()*addRange/2)+1;
-            ans = a + b;
-            text = `ל${name} היו ${a} ${obj}. ${friend} נתן לו עוד ${b} ${obj}. כמה יש לו עכשיו?`;
+            ans = a+b; text = `ל${name} היו ${a} ${obj}. הוא קיבל עוד ${b}. כמה יש לו?`;
         } else if(type === 'sub') {
             a = Math.floor(Math.random()*addRange/2)+5; b = Math.floor(Math.random()*a);
-            ans = a - b;
-            text = `ל${name} היו ${a} ${obj}. הוא נתן ${b} ${obj} ל${friend}. כמה נשארו לו?`;
+            ans = a-b; text = `היו ${a} ${obj}. ${b} אבדו. כמה נשארו?`;
         } else if(type === 'mul') {
-            a = Math.floor(Math.random()*5)+2; b = Math.floor(Math.random()*5)+2;
-            ans = a * b;
-            text = `ל${name} יש ${a} קופסאות. בכל קופסה יש ${b} ${obj}. כמה ${obj} יש לו בסך הכל?`;
+            a = Math.floor(Math.random()*10)+1; b = Math.floor(Math.random()*5)+1;
+            ans = a*b; text = `יש ${a} שקיות, ובכל אחת ${b} ${obj}. כמה בסך הכל?`;
         } else {
-            b = Math.floor(Math.random()*5)+2; ans = Math.floor(Math.random()*5)+2; a = b * ans;
-            text = `ל${name} יש ${a} ${obj}. הוא רוצה לחלק אותם שווה בשווה בין ${b} חברים. כמה ${obj} יקבל כל חבר?`;
+            b = Math.floor(Math.random()*5)+2; ans = Math.floor(Math.random()*10)+1; a = b*ans;
+            text = `חילקו ${a} ${obj} ל-${b} ילדים. כמה כל אחד קיבל?`;
         }
         return { ans, text };
     }
@@ -280,10 +320,10 @@
         const val = parseInt(document.getElementById('ansInput').value);
         const msg = document.getElementById('msg');
         if(val === currentQ.ans) {
-            msg.innerText = "נכון מאוד! ✨ גאים בך!"; msg.style.color = "var(--success)";
-            setTimeout(() => { msg.innerText = ""; next(); }, 1200);
+            msg.innerText = "נכון מאוד! כל הכבוד! ✨"; msg.style.color = "var(--success)";
+            setTimeout(() => { msg.innerText = ""; next(); }, 1500);
         } else {
-            msg.innerText = "לא בדיוק, כדאי לנסות שוב... 🤔"; msg.style.color = "var(--error)";
+            msg.innerText = "נסו שוב... 🤔"; msg.style.color = "var(--error)";
         }
     }
 </script>
