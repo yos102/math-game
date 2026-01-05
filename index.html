@@ -3,303 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>מרכז המתמטיקה - אקדמיית האלופים</title>
-    
+    <title>אקדמיית המתמטיקה - הגירסה המלאה</title>
     <style>
         :root {
             --primary: #4a90e2; --secondary: #9f7aea; --success: #48bb78;
             --warning: #ed8936; --error: #f56565; --bg: #f7fafc;
-            --card-bg: #ffffff; --text: #1a202c; --input-border: #e2e8f0;
+            --card-bg: #ffffff; --text: #1a202c;
         }
-        [data-theme="dark"] {
-            --bg: #1a202c; --card-bg: #2d3748; --text: #f7fafc; --input-border: #4a5568;
-        }
-
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg); color: var(--text);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            min-height: 100vh; margin: 0; padding: 10px; transition: 0.3s;
-        }
-
-        .container {
-            max-width: 550px; width: 95%; background: var(--card-bg);
-            padding: 25px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            position: relative; text-align: center;
-        }
-
-        .settings-icon { position: absolute; top: 15px; left: 15px; cursor: pointer; font-size: 1.5rem; z-index: 100; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .container { max-width: 600px; width: 95%; background: var(--card-bg); padding: 25px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); position: relative; text-align: center; margin-top: 20px; }
         .hidden { display: none !important; }
-        .btn { padding: 12px; border-radius: 12px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; width: 100%; margin: 5px 0; transition: 0.2s; }
+        
+        /* כפתורים */
+        .btn { padding: 15px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; margin: 8px 0; transition: 0.2s; }
         .btn-main { background: var(--primary); color: white; }
         .btn-alt { background: var(--secondary); color: white; }
-        .mode-btn { background: var(--card-bg); border: 2px solid var(--input-border); color: var(--text); width: auto; flex: 1; margin: 3px; }
-        .mode-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .mode-btn { background: #edf2f7; border: 2px solid transparent; flex: 1; padding: 10px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .mode-btn.active { border-color: var(--primary); background: #ebf8ff; }
 
-        /* התקדמות במשחק */
-        .progress-info { display: flex; justify-content: space-between; font-size: 0.9rem; margin: 30px 0 5px 0; font-weight: bold; color: var(--primary); }
-        .progress-container { width: 100%; height: 12px; background: #edf2f7; border-radius: 6px; margin-bottom: 15px; overflow: hidden; }
-        .progress-bar { height: 100%; background: var(--success); width: 0%; transition: 0.5s; }
+        /* ארון גביעים ו-XP */
+        .stats-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: bold; color: var(--primary); }
+        .xp-bar-container { width: 100%; height: 12px; background: #e2e8f0; border-radius: 6px; overflow: hidden; margin-bottom: 20px; }
+        .xp-bar-fill { height: 100%; background: var(--success); width: 0%; transition: 0.5s; }
+        .trophy-item { background: #f8fafc; padding: 15px; border-radius: 15px; margin: 10px 0; display: flex; align-items: center; gap: 15px; text-align: right; border: 1px solid #eee; }
 
-        .card { font-size: 1.6rem; padding: 20px; background: rgba(74, 144, 226, 0.1); border-radius: 20px; margin: 10px 0; line-height: 1.4; }
-        input { font-size: 1.8rem; width: 70%; text-align: center; padding: 10px; border: 3px solid var(--input-border); border-radius: 12px; background: var(--card-bg); color: var(--text); }
+        /* עיצוב מאונך */
+        .vertical-math { display: grid; grid-template-columns: 50px repeat(4, 55px); gap: 5px; justify-content: center; align-items: center; margin: 20px auto; direction: ltr; }
+        .digit { font-family: 'Courier New', monospace; font-size: 2.8rem; font-weight: bold; color: #2d3748; }
+        .carry-input { width: 30px; height: 30px; border: 2px solid #cbd5e0; border-radius: 50%; text-align: center; font-size: 1rem; background: #fffcf0; }
+        .operator { grid-column: 1; font-size: 2.5rem; color: var(--error); }
+        .line { grid-column: 1 / span 5; height: 4px; background: #333; margin: 5px 0; border-radius: 2px; }
+        .ans-input { width: 45px; height: 55px; border: 3px solid var(--primary); border-radius: 10px; font-size: 2rem; text-align: center; background: #ebf8ff; }
 
-        /* ארון גביעים משודרג */
-        .trophy-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 20px; }
-        .trophy-item { background: rgba(0,0,0,0.03); padding: 15px; border-radius: 15px; text-align: right; display: flex; align-items: center; gap: 15px; }
-        .medal-visual { font-size: 2.5rem; min-width: 50px; text-align: center; }
-        .medal-info { flex-grow: 1; }
-        .medal-name { font-weight: bold; display: block; }
-        .medal-xp-bar { width: 100%; height: 8px; background: #ddd; border-radius: 4px; margin-top: 5px; overflow: hidden; }
-        .medal-xp-fill { height: 100%; background: var(--warning); width: 0%; transition: 0.5s; }
-        .lvl-tag { font-size: 0.7rem; background: var(--primary); color: white; padding: 2px 6px; border-radius: 10px; margin-right: 5px; }
-
-        #scratch-area { margin-top: 15px; border: 2px dashed var(--secondary); border-radius: 15px; background: #fffdf0; padding: 5px; }
-        canvas { touch-action: none; width: 100%; background: transparent; }
+        /* מודאל עזרה */
+        .help-btn { position: absolute; top: 15px; right: 15px; background: #fbd38d; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; font-size: 1.5rem; border: none; z-index: 10; }
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; max-width: 400px; width: 85%; text-align: right; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="settings-icon" onclick="openSettings()">⚙️</div>
+        <button id="helpBtn" class="help-btn hidden" onclick="showHelp()">?</button>
+        
+        <div id="page-lobby">
+            <h1>שלום אלוף! 🏆</h1>
+            <div id="main-xp-info" style="margin-bottom: 20px; font-weight: bold;"></div>
+            <button class="btn btn-main" onclick="showPage('setup-v')">📝 חשבון מאונך</button>
+            <button class="btn btn-alt" onclick="startMode('add')">➕ חיבור וחיסור (רגיל)</button>
+            <button class="btn btn-alt" onclick="startMode('mul')">✖️ כפל וחילוק (רגיל)</button>
+            <button class="btn btn-alt" onclick="startMode('story')">📖 בעיות מילוליות</button>
+            <button class="btn" style="background:#edf2f7" onclick="showPage('trophies')">🏆 ארון הגביעים שלי</button>
+        </div>
 
-        <div id="page-settings" class="hidden">
-            <h2>הגדרות</h2>
-            <input type="text" id="nameInput" placeholder="שם הילד/ה">
-            <div style="margin: 20px 0;">
-                <button class="mode-btn" onclick="setTheme('light')">יום ☀️</button>
-                <button class="mode-btn" onclick="setTheme('dark')">לילה 🌙</button>
+        <div id="page-setup-v" class="hidden">
+            <h2>איזה תרגיל נפתור במאונך?</h2>
+            <div style="display:flex; gap:10px; margin-bottom:20px;">
+                <button class="mode-btn active" id="v-add" onclick="vType='add'; updateVBtns()">חיבור</button>
+                <button class="mode-btn" id="v-sub" onclick="vType='sub'; updateVBtns()">חיסור</button>
+                <button class="mode-btn" id="v-mul" onclick="vType='mul'; updateVBtns()">כפל</button>
             </div>
-            <button class="btn btn-main" onclick="saveSettings()">שמירה</button>
+            <button class="btn btn-main" onclick="startMode('vertical')">מתחילים!</button>
+            <button class="btn" onclick="showPage('lobby')">חזרה</button>
         </div>
 
         <div id="page-trophies" class="hidden">
-            <h2>ההתקדמות של <span class="user-name-display"></span></h2>
-            <div class="trophy-grid">
-                <div class="trophy-item">
-                    <div id="v-add" class="medal-visual">🥉</div>
-                    <div class="medal-info">
-                        <span class="medal-name">חיבור וחיסור <span id="lvl-add" class="lvl-tag">רמה 1</span></span>
-                        <div class="medal-xp-bar"><div id="xp-add" class="medal-xp-fill"></div></div>
-                    </div>
-                </div>
-                <div class="trophy-item">
-                    <div id="v-mul" class="medal-visual">🥉</div>
-                    <div class="medal-info">
-                        <span class="medal-name">כפל וחילוק <span id="lvl-mul" class="lvl-tag">רמה 1</span></span>
-                        <div class="medal-xp-bar"><div id="xp-mul" class="medal-xp-fill"></div></div>
-                    </div>
-                </div>
-                <div class="trophy-item">
-                    <div id="v-story" class="medal-visual">🥉</div>
-                    <div class="medal-info">
-                        <span class="medal-name">בעיות מילוליות <span id="lvl-story" class="lvl-tag">רמה 1</span></span>
-                        <div class="medal-xp-bar"><div id="xp-story" class="medal-xp-fill"></div></div>
-                    </div>
-                </div>
-            </div>
-            <button class="btn btn-main" style="margin-top:20px;" onclick="showPage('lobby')">חזרה למשחק</button>
-        </div>
-
-        <div id="page-lobby">
-            <h1 id="lobby-title">שלום!</h1>
-            <button class="btn btn-main" onclick="showPage('trophies')">🏆 ארון הגביעים והדרגות</button>
-            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
-            <button class="btn btn-alt" onclick="showPage('setup-add')">➕ חיבור וחיסור</button>
-            <button class="btn btn-alt" onclick="showPage('setup-mul')">✖️ כפל וחילוק</button>
-            <button class="btn btn-alt" onclick="showPage('setup-story')">📖 בעיות מילוליות</button>
-        </div>
-
-        <div id="page-setup-add" class="hidden">
-            <h2>חיבור וחיסור</h2>
-            <div style="display:flex; flex-wrap: wrap; gap: 5px;">
-                <button class="btn mode-btn active" id="range-10" onclick="setRange(10)">עד 10</button>
-                <button class="btn mode-btn" id="range-100" onclick="setRange(100)">עד 100</button>
-                <button class="btn mode-btn" id="range-1000" onclick="setRange(1000)">עד 1000</button>
-            </div>
-            <button class="btn btn-main" onclick="startGame('add-logic')">בואו נתחיל!</button>
-            <button class="btn" onclick="showPage('lobby')">חזרה</button>
-        </div>
-
-        <div id="page-setup-mul" class="hidden">
-            <h2>כפל וחילוק</h2>
-            <div id="mul-num-grid" style="display:grid; grid-template-columns: repeat(5,1fr); gap:5px;"></div>
-            <button class="btn btn-main" onclick="startGame('mul-logic')" style="margin-top:10px;">בואו נתחיל!</button>
-            <button class="btn" onclick="showPage('lobby')">חזרה</button>
-        </div>
-
-        <div id="page-setup-story" class="hidden">
-            <h2>בעיות מילוליות</h2>
-            <button class="btn mode-btn active" id="story-m-mix" onclick="setStoryMode('mix')">🎲 רגיל</button>
-            <button class="btn mode-btn" id="story-m-advanced" onclick="setStoryMode('advanced')">💡 אתגר</button>
-            <button class="btn btn-main" onclick="startGame('story-logic')">בואו נתחיל!</button>
-            <button class="btn" onclick="showPage('lobby')">חזרה</button>
+            <h2>ההישגים שלי</h2>
+            <div id="trophy-list"></div>
+            <button class="btn btn-main" onclick="showPage('lobby')">חזרה לתפריט</button>
         </div>
 
         <div id="page-game" class="hidden">
-            <div class="progress-info">
-                <span id="qCounter">שאלה 1 מתוך 10</span>
-                <span id="scoreText">הצלחות: 0</span>
+            <div class="stats-header">
+                <span id="qLabel">שאלה 1/10</span>
+                <span id="gameXP">XP: 0</span>
             </div>
-            <div class="progress-container"><div id="pBar" class="progress-bar"></div></div>
-            <div id="question" class="card"></div>
-            <input type="number" id="ansInput" inputmode="numeric" onkeypress="if(event.key==='Enter') check()">
-            <button class="btn btn-main" onclick="check()">בדיקה</button>
-            <div style="display:flex; gap:5px;">
-                <button id="showMulTableBtn" class="btn hidden" style="flex:1; background:#edf2f7; color:#000;" onclick="toggleMulTable(true)">לוח כפל 🔍</button>
-                <button class="btn" style="flex:1; background:#f7fafc; border:1px solid #ddd; color:gray;" onclick="skipQuestion()">עזרה? 💡</button>
-            </div>
-            <p style="cursor:pointer; color:var(--secondary); margin-top:15px;" onclick="toggleScratchpad()">📝 פתח דף טיוטה</p>
-            <div id="scratch-area" class="hidden">
-                <canvas id="canvas" height="150"></canvas>
-                <div style="display:flex; gap:5px; margin-top:5px;">
-                    <button class="btn" style="background:#ddd; font-size:0.8rem;" onclick="undoCanvas()">↩️ בטל</button>
-                    <button class="btn" style="background:#ddd; font-size:0.8rem;" onclick="clearCanvas()">🗑️ נקה</button>
-                </div>
-            </div>
-            <div id="msg" style="margin-top:10px; font-weight:bold;"></div>
-            <button class="btn" onclick="showPage('lobby')" style="margin-top:20px; color:gray;">יציאה</button>
+            <div class="xp-bar-container"><div id="gamePBar" class="xp-bar-fill"></div></div>
+            
+            <div id="game-content"></div>
+
+            <button class="btn btn-main" style="margin-top:20px;" onclick="check()">בדיקה</button>
+            <div id="feedback" style="margin-top:15px; font-weight:bold; font-size:1.2rem;"></div>
+        </div>
+    </div>
+
+    <div id="helpModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>איך פותרים? 💡</h3>
+            <p id="helpText"></p>
+            <button class="btn btn-main" onclick="closeHelp()">הבנתי!</button>
         </div>
     </div>
 
 <script>
-    let childName = localStorage.getItem('childName') || 'חבר/ה';
-    let theme = localStorage.getItem('theme') || 'light';
-    
-    // מערכת XP חדשה: XP צבור בכל תחום
-    let stats = JSON.parse(localStorage.getItem('math_stats_v2') || '{"add":0, "mul":0, "story":0}');
-    
-    let score = 0, qIndex = 0, currentQ = {}, currentModule = '', addRange = 10, mulSelected = new Set([2,3,4,5]), storyMode = 'mix';
-    let previousPage = 'lobby', undoStack = [];
-
-    const XP_PER_LEVEL = 100; // כל 100 XP עולים רמה (כל תשובה נכונה = 10 XP)
-
-    function setTheme(t) { theme = t; localStorage.setItem('theme', t); document.documentElement.setAttribute('data-theme', t); }
-    function openSettings() { previousPage = (qIndex > 0 && qIndex < 10) ? 'game' : 'lobby'; showPage('settings'); }
-    function saveSettings() { childName = document.getElementById('nameInput').value.trim() || 'חבר/ה'; localStorage.setItem('childName', childName); showPage(previousPage); }
+    let stats = JSON.parse(localStorage.getItem('math_db_v4') || '{"xp":0, "lvl":1, "add":0, "mul":0, "story":0, "vert":0}');
+    let currentMode = '', vType = 'add', qIndex = 0, score = 0, currentQ = {};
 
     function showPage(id) {
-        document.querySelectorAll('.container > div').forEach(d => { if(d.id.startsWith('page')) d.classList.add('hidden'); });
+        document.querySelectorAll('.container > div').forEach(d => d.classList.add('hidden'));
         document.getElementById('page-' + id).classList.remove('hidden');
-        if(id === 'lobby') document.getElementById('lobby-title').innerText = 'שלום ' + childName + '!';
-        if(id === 'trophies') {
-            document.querySelectorAll('.user-name-display').forEach(e => e.innerText = childName);
-            updateTrophyUI();
+        document.getElementById('helpBtn').classList.toggle('hidden', id !== 'game' || currentMode !== 'vertical');
+        if(id === 'trophies') renderTrophies();
+        if(id === 'lobby') updateLobby();
+    }
+
+    function updateLobby() {
+        document.getElementById('main-xp-info').innerText = `רמה ${stats.lvl} | XP כולל: ${stats.xp}`;
+    }
+
+    function updateVBtns() {
+        document.querySelectorAll('#page-setup-v .mode-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('v-' + vType).classList.add('active');
+    }
+
+    function startMode(m) {
+        currentMode = m; qIndex = 0; score = 0;
+        showPage('game');
+        nextQ();
+    }
+
+    function nextQ() {
+        if(qIndex >= 10) { finishGame(); return; }
+        document.getElementById('feedback').innerText = '';
+        document.getElementById('gamePBar').style.width = (qIndex * 10) + '%';
+        document.getElementById('qLabel').innerText = `שאלה ${qIndex + 1}/10`;
+        document.getElementById('gameXP').innerText = `XP: ${stats.xp}`;
+
+        const content = document.getElementById('game-content');
+        content.innerHTML = '';
+
+        if(currentMode === 'vertical') {
+            renderVertical(content);
+        } else {
+            renderSimple(content);
         }
     }
 
-    function getLevelInfo(xp) {
-        const lvl = Math.floor(xp / XP_PER_LEVEL) + 1;
-        const progress = xp % XP_PER_LEVEL;
-        let icon = "🥉";
-        if (lvl >= 5) icon = "💎";
-        else if (lvl >= 4) icon = "🏆";
-        else if (lvl >= 3) icon = "🥇";
-        else if (lvl >= 2) icon = "🥈";
-        return { lvl, progress, icon };
+    function renderSimple(container) {
+        let n1 = r(50)+1, n2 = r(50)+1;
+        if(currentMode === 'add') currentQ = { ans: n1+n2, txt: `${n1} + ${n2}` };
+        else if(currentMode === 'mul') { n1=r(10)+1; n2=r(10)+1; currentQ = { ans: n1*n2, txt: `${n1} × ${n2}` }; }
+        else { currentQ = { ans: 15, txt: "לאמא היו 20 תפוחים, היא נתנה 5 ליוסי. כמה נשארו?" }; }
+
+        container.innerHTML = `<h2 style="font-size:3rem; margin:30px 0;">${currentQ.txt}</h2>
+        <input type="number" id="sAns" style="font-size:2.5rem; width:150px; text-align:center; border:3px solid #4a90e2; border-radius:15px;">`;
+        document.getElementById('sAns').focus();
     }
 
-    function updateTrophyUI() {
-        ['add', 'mul', 'story'].forEach(type => {
-            const info = getLevelInfo(stats[type]);
-            document.getElementById(`v-${type}`).innerText = info.icon;
-            document.getElementById(`lvl-${type}`).innerText = `רמה ${info.lvl}`;
-            document.getElementById(`xp-${type}`).style.width = `${info.progress}%`;
+    function renderVertical(container) {
+        let n1 = r(800)+100, n2 = r(800)+100;
+        if(vType === 'mul') { n1 = r(800)+100; n2 = r(80)+11; }
+        if(vType === 'sub' && n1 < n2) [n1, n2] = [n2, n1];
+        
+        currentQ = { n1, n2, ans: vType==='add' ? n1+n2 : (vType==='sub' ? n1-n2 : n1*n2) };
+        
+        let html = `<div class="vertical-math">`;
+        html += `<div></div><input type="text" class="carry-input"><input type="text" class="carry-input"><input type="text" class="carry-input"><div></div>`;
+        html += `<div></div>${dg(n1)}`;
+        html += `<div class="operator">${vType==='add'?'+':(vType==='sub'?'-':'×')}</div>${dg(n2)}`;
+        html += `<div class="line"></div>`;
+
+        if(vType !== 'mul') {
+            html += `<div></div>` + [3,2,1,0].map(i => `<input type="number" class="ans-input" id="va${i}">`).join('');
+        } else {
+            html += `<div style="font-size:0.7rem">שלב 1</div><input type="number" class="ans-input" id="m1_3"><input type="number" class="ans-input" id="m1_2"><input type="number" class="ans-input" id="m1_1"><input type="number" class="ans-input" id="m1_0">`;
+            html += `<div style="font-size:0.7rem">שלב 2</div><input type="number" class="ans-input" id="m2_3" onfocus="clearC()"><input type="number" class="ans-input" id="m2_2" onfocus="clearC()"><input type="number" class="ans-input" id="m2_1" onfocus="clearC()"><div class="digit" style="color:#ccc">0</div>`;
+            html += `<div class="line"></div><div>סה"כ</div><input type="number" class="ans-input" id="vf3"><input type="number" class="ans-input" id="vf2"><input type="number" class="ans-input" id="vf1"><input type="number" class="ans-input" id="vf0">`;
+        }
+        container.innerHTML = html + `</div>`;
+    }
+
+    function dg(n) { return [...n.toString().padStart(4, ' ')].map(c => `<div class="digit">${c===' '?'':c}</div>`).join(''); }
+    function r(n) { return Math.floor(Math.random() * n); }
+    function clearC() { document.querySelectorAll('.carry-input').forEach(i => i.value = ''); }
+
+    function check() {
+        let val;
+        if(currentMode !== 'vertical') {
+            val = parseInt(document.getElementById('sAns').value);
+        } else {
+            if(vType !== 'mul') {
+                val = parseInt([3,2,1,0].map(i => document.getElementById('va'+i).value).join(''));
+            } else {
+                val = parseInt([3,2,1,0].map(i => document.getElementById('vf'+i).value).join(''));
+            }
+        }
+
+        if(val === currentQ.ans) {
+            score++; qIndex++; stats.xp += 10;
+            if(stats.xp >= stats.lvl * 100) stats.lvl++;
+            localStorage.setItem('math_db_v4', JSON.stringify(stats));
+            document.getElementById('feedback').innerText = "נכון מאד! ✨";
+            document.getElementById('feedback').style.color = "green";
+            setTimeout(nextQ, 1500);
+        } else {
+            document.getElementById('feedback').innerText = "נסה שוב 🤔";
+            document.getElementById('feedback').style.color = "red";
+        }
+    }
+
+    function showHelp() {
+        const t = document.getElementById('helpText');
+        if(vType==='add') t.innerText = "מתחילים מימין. אם הסכום מעל 9, רושמים את היחידות למטה ואת ה-1 שמים בעיגול מעל העמודה הבאה.";
+        else if(vType==='sub') t.innerText = "מחסירים עמודה עמודה מימין. אם המספר למעלה קטן מדי, לווים 1 מהשכן משמאל.";
+        else t.innerText = "מכפילים קודם את האחדות בכל המספר למעלה. אחר כך עוברים לעשרות (שלב 2), שמים 0 בסוף, ומכפילים שוב. בסוף מחברים!";
+        document.getElementById('helpModal').classList.remove('hidden');
+    }
+    function closeHelp() { document.getElementById('helpModal').classList.add('hidden'); }
+
+    function finishGame() {
+        document.getElementById('game-content').innerHTML = `<h2>סיימת! הצלחת ${score}/10</h2><p>נוספו לך ${score*10} XP</p>`;
+        setTimeout(() => showPage('lobby'), 3000);
+    }
+
+    function renderTrophies() {
+        const list = document.getElementById('trophy-list');
+        list.innerHTML = '';
+        const badges = [
+            { id: 'add', name: 'חיבור וחיסור', icon: '➕' },
+            { id: 'mul', name: 'כפל וחילוק', icon: '✖️' },
+            { id: 'vert', name: 'חשבון מאונך', icon: '📝' }
+        ];
+        badges.forEach(b => {
+            let lvl = Math.floor(stats[b.id] / 100) + 1;
+            list.innerHTML += `<div class="trophy-item">
+                <div style="font-size:2rem">${lvl > 5 ? '💎' : '🥇'}</div>
+                <div style="flex:1"><strong>${b.name}</strong><br><small>רמה ${lvl}</small></div>
+            </div>`;
         });
     }
 
-    function startGame(m) { 
-        currentModule = m; score = 0; qIndex = 0; 
-        document.getElementById('ansInput').classList.remove('hidden');
-        updateProgress(); showPage('game'); next(); 
-    }
-
-    function updateProgress() { 
-        document.getElementById('pBar').style.width = (qIndex * 10) + '%';
-        document.getElementById('qCounter').innerText = `שאלה ${qIndex + 1} מתוך 10`;
-        document.getElementById('scoreText').innerText = `הצלחות: ${score}`;
-    }
-
-    function next() {
-        if(qIndex >= 10) { finishGame(); return; }
-        if(currentModule === 'add-logic') {
-            let a = Math.floor(Math.random()*addRange), b = Math.floor(Math.random()*addRange);
-            currentQ = { ans: a+b, text: `${a} + ${b}`, key: 'add' };
-        } else if(currentModule === 'mul-logic') {
-            let arr = Array.from(mulSelected); if(arr.length === 0) arr = [2];
-            let a = arr[Math.floor(Math.random()*arr.length)], b = Math.floor(Math.random()*10)+1;
-            currentQ = { ans: a*b, text: `${a} × ${b}`, key: 'mul' };
-        } else {
-            currentQ = generateStory(); currentQ.key = 'story';
-        }
-        document.getElementById('question').innerText = currentQ.text;
-        document.getElementById('ansInput').value = ''; document.getElementById('msg').innerText = '';
-        clearCanvas();
-    }
-
-    function finishGame() {
-        // הענקת XP: 10 נקודות על כל תשובה נכונה
-        const xpGained = score * 10;
-        const key = currentQ.key;
-        const oldLvl = getLevelInfo(stats[key]).lvl;
-        stats[key] += xpGained;
-        const newLvl = getLevelInfo(stats[key]).lvl;
-        
-        localStorage.setItem('math_stats_v2', JSON.stringify(stats));
-        
-        let finishMsg = `סיימת! צברת ${xpGained} נקודות ניסיון! ✨`;
-        if (newLvl > oldLvl) finishMsg = `עלית לרמה ${newLvl}! 🎊 כל הכבוד!`;
-        
-        document.getElementById('question').innerText = finishMsg;
-        document.getElementById('ansInput').classList.add('hidden');
-    }
-
-    function generateStory() {
-        if(storyMode === 'advanced') {
-            let num = Math.floor(Math.random()*90)+11;
-            return { ans: num, text: `שאלה מאתגרת:\nנסדר ב-10 קופסאות שוות, ישארו ${num%10}.\nכמה פריטים יש בסך הכל?` };
-        }
-        let a = Math.floor(Math.random()*5)+2, b = Math.floor(Math.random()*5)+2;
-        return { ans: a*b, text: `יש ${a} שורות. בכל שורה ${b} פרחים. כמה בסך הכל?` };
-    }
-
-    function check() {
-        const val = parseInt(document.getElementById('ansInput').value);
-        if (isNaN(val)) return;
-        if(val === currentQ.ans) {
-            score++; qIndex++; updateProgress(); 
-            document.getElementById('msg').innerText = "נכון מאוד! ✨";
-            setTimeout(next, 1000);
-        } else {
-            document.getElementById('msg').innerText = "נסה שוב 🤔";
-        }
-    }
-
-    function skipQuestion() {
-        document.getElementById('ansInput').value = currentQ.ans;
-        qIndex++; updateProgress();
-        setTimeout(next, 1500);
-    }
-
-    // קנבס טיוטה (זהה לקוד הקודם)
-    const canvas = document.getElementById('canvas'); const ctx = canvas.getContext('2d');
-    let drawing = false;
-    function saveState() { undoStack.push(canvas.toDataURL()); }
-    function undoCanvas() { if(undoStack.length > 0) { let img = new Image(); img.src = undoStack.pop(); img.onload = () => { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.drawImage(img,0,0); }; } }
-    canvas.addEventListener('mousedown', (e) => { saveState(); startD(e); });
-    canvas.addEventListener('mousemove', draw); canvas.addEventListener('mouseup', () => drawing = false);
-    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); saveState(); startD(e.touches[0]); });
-    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e.touches[0]); });
-    function startD(e) { drawing = true; ctx.beginPath(); ctx.lineWidth = 2; ctx.strokeStyle = '#9f7aea'; ctx.moveTo(e.clientX - canvas.getBoundingClientRect().left, e.clientY - canvas.getBoundingClientRect().top); }
-    function draw(e) { if(!drawing) return; ctx.lineTo(e.clientX - canvas.getBoundingClientRect().left, e.clientY - canvas.getBoundingClientRect().top); ctx.stroke(); }
-    function clearCanvas() { ctx.clearRect(0,0,canvas.width,canvas.height); undoStack = []; }
-    function toggleScratchpad() { document.getElementById('scratch-area').classList.toggle('hidden'); canvas.width = canvas.offsetWidth; }
-
-    function setRange(r) { addRange = r; document.querySelectorAll('[id^="range-"]').forEach(b=>b.classList.remove('active')); document.getElementById('range-'+r).classList.add('active'); }
-    function setStoryMode(m) { storyMode = m; document.getElementById('story-m-mix').classList.toggle('active', m==='mix'); document.getElementById('story-m-advanced').classList.toggle('active', m==='advanced'); }
-    function toggleMulTable(show) { /* לוגיקה ללוח כפל (אם נדרש) */ }
-
-    window.onload = () => { setTheme(theme); document.getElementById('nameInput').value = childName; showPage('lobby'); };
+    window.onload = () => showPage('lobby');
 </script>
 </body>
 </html>
