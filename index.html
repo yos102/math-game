@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>אקדמיית המתמטיקה - גרסת הטיוטה המקצועית</title>
+    <title>אקדמיית המתמטיקה - גרסה 15.0</title>
     <style>
         :root {
             --primary: #4a90e2; --bg: #f7fafc; --card-bg: #ffffff; --text: #1a202c; --accent: #f6e05e;
@@ -16,6 +16,11 @@
         .container { max-width: 600px; width: 92%; background: var(--card-bg); padding: 25px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); position: relative; text-align: center; margin: 15px auto; }
         .hidden { display: none !important; }
         
+        /* מסך שיפוצים */
+        #maintenance-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f7fafc; z-index: 10000; display: flex; align-items: center; justify-content: center; text-align: center; }
+        .m-gear { font-size: 60px; animation: spin 4s linear infinite; cursor: pointer; display: inline-block; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
         /* התקדמות */
         .stats-bar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.05); padding: 10px; border-radius: 15px; margin-bottom: 10px; font-weight: bold; }
         .progress-container { width: 100%; background: #eee; height: 10px; border-radius: 5px; margin-bottom: 20px; overflow: hidden; }
@@ -27,20 +32,31 @@
         .btn-orange { background: var(--mul-color); }
         .btn-gray { background: #edf2f7; color: #4a5568; }
 
-        /* לוח טיוטה משופר */
+        /* טיוטה */
         #sketchpad-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        #sketch-canvas { background: white; border-radius: 15px; cursor: crosshair; touch-action: none; box-shadow: 0 0 25px rgba(255,255,255,0.3); }
+        #sketch-canvas { background: white; border-radius: 15px; touch-action: none; box-shadow: 0 0 25px rgba(255,255,255,0.3); }
         .sketch-tools { margin-top: 15px; display: flex; gap: 10px; width: 95%; max-width: 500px; }
-        .tool-btn { flex: 1; padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; color: white; }
 
         /* גריד מאונך */
         .vertical-math { display: grid; grid-template-columns: 40px repeat(4, 50px); gap: 5px; justify-content: center; align-items: center; margin: 20px auto; direction: ltr; }
         .digit { font-family: 'Courier New', monospace; font-size: 2.2rem; font-weight: bold; }
         .ans-input { width: 45px; height: 55px; border: 3px solid var(--primary); border-radius: 8px; font-size: 1.8rem; text-align: center; background: #ebf8ff; }
         .line { grid-column: 1 / span 5; height: 3px; background: #333; }
+
+        /* מודאל הדרכה */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 4000; display: flex; align-items: center; justify-content: center; }
+        .modal-box { background: white; padding: 25px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; }
     </style>
 </head>
 <body class="kids-mode">
+
+    <div id="maintenance-screen">
+        <div>
+            <div class="m-gear" onclick="checkSecret()">⚙️</div>
+            <h1 style="color:var(--primary)">האתר בשיפוצים</h1>
+            <p>אנחנו בונים עולם של מספרים... נחזור בקרוב!</p>
+        </div>
+    </div>
 
     <div class="container">
         <div class="stats-bar">
@@ -54,7 +70,15 @@
             <button class="btn btn-blue" onclick="showPage('setup-add')">➕ חיבור וחיסור</button>
             <button class="btn btn-orange" onclick="showPage('setup-mul')">✖️ כפל וחילוק</button>
             <button class="btn btn-red" style="background:#9f7aea" onclick="showPage('setup-v')">📝 חשבון מאונך</button>
-            <button class="btn btn-gray" onclick="showPage('settings')">⚙️ הגדרות</button>
+            <button class="btn btn-gray" onclick="lockSite()">⚙️ נעל את האתר</button>
+        </div>
+
+        <div id="page-setup-add" class="hidden">
+            <h2>בחר טווח מספרים:</h2>
+            <button class="btn btn-blue" onclick="maxNum=10; startMode('simple-add')">עד 10</button>
+            <button class="btn btn-blue" onclick="maxNum=100; startMode('simple-add')">עד 100</button>
+            <button class="btn btn-blue" onclick="maxNum=1000; startMode('simple-add')">עד 1000</button>
+            <button class="btn btn-gray" onclick="showPage('lobby')">חזרה</button>
         </div>
 
         <div id="page-setup-v" class="hidden">
@@ -68,12 +92,12 @@
 
         <div id="page-game" class="hidden">
             <div style="display:flex; justify-content: space-between; margin-bottom: 10px;">
-                <button style="background:gold; border-radius:50%; width:45px; height:45px; border:none; cursor:pointer;" onclick="alert('השתמש בטיוטה ✏️ לחישובים!')">💡</button>
+                <button style="background:gold; border-radius:50%; width:45px; height:45px; border:none; cursor:pointer;" onclick="showTutorial()">💡</button>
                 <button style="background:#48bb78; color:white; border-radius:50%; width:45px; height:45px; border:none; cursor:pointer; font-size:1.2rem;" onclick="openSketchpad()">✏️</button>
             </div>
             <div id="game-content"></div>
             <button class="btn btn-blue" onclick="check()">בדיקה ✅</button>
-            <div id="feedback" style="margin-top:10px; font-weight:bold;"></div>
+            <div id="feedback" style="margin-top:10px; font-weight:bold; min-height: 1.5em;"></div>
             <button class="btn btn-gray" onclick="showPage('lobby')">סיום</button>
         </div>
     </div>
@@ -82,21 +106,33 @@
         <h3 style="color:white; margin: 10px;">טיוטה לחישובים 📝</h3>
         <canvas id="sketch-canvas"></canvas>
         <div class="sketch-tools">
-            <button class="tool-btn" style="background:#f6e05e; color:#333" onclick="undoLast()">↩️ בטל קו (Undo)</button>
-            <button class="tool-btn" style="background:#e53e3e" onclick="clearSketch()">🗑️ מחק הכל</button>
-            <button class="tool-btn" style="background:#4a90e2" onclick="closeSketchpad()">חזור לתרגיל ➔</button>
+            <button class="btn btn-orange" style="flex:1" onclick="undoLast()">↩️ Undo</button>
+            <button class="btn btn-red" style="flex:1" onclick="clearSketch()">🗑️ מחק</button>
+            <button class="btn btn-blue" style="flex:1" onclick="closeSketchpad()">סגור</button>
         </div>
     </div>
 
 <script>
-    let stats = JSON.parse(localStorage.getItem('math_pro_v14') || '{"xp":0, "lvl":1}');
-    let currentMode = '', vType = 'add', mulLevel = 'single', currentQ = {};
+    let stats = JSON.parse(localStorage.getItem('math_pro_v15') || '{"xp":0, "lvl":1}');
+    let currentMode = '', vType = 'add', mulLevel = 'single', maxNum = 10, currentQ = {};
     
-    // הגדרות קנבס ו-Undo
+    // --- מנגנון סודי ---
+    let clicks = 0;
+    function checkSecret() {
+        clicks++;
+        if(clicks >= 5) {
+            document.getElementById('maintenance-screen').classList.add('hidden');
+            sessionStorage.setItem('unlocked', 'true');
+        }
+        setTimeout(() => clicks = 0, 2000);
+    }
+    if(sessionStorage.getItem('unlocked')) document.getElementById('maintenance-screen').classList.add('hidden');
+    function lockSite() { sessionStorage.removeItem('unlocked'); location.reload(); }
+
+    // --- טיוטה וציור ---
     const canvas = document.getElementById('sketch-canvas');
     const ctx = canvas.getContext('2d');
-    let drawing = false;
-    let paths = []; // שמירת נתיבי הציור
+    let drawing = false, paths = [];
 
     function openSketchpad() {
         document.getElementById('sketchpad-container').classList.remove('hidden');
@@ -104,69 +140,37 @@
         canvas.height = window.innerHeight * 0.7;
         redrawCanvas();
     }
-
     function closeSketchpad() { document.getElementById('sketchpad-container').classList.add('hidden'); }
-
-    function startDraw(e) {
-        drawing = true;
-        const pos = getPos(e);
-        paths.push([{ x: pos.x, y: pos.y }]);
-    }
-
-    function draw(e) {
-        if (!drawing) return;
-        const pos = getPos(e);
-        const currentPath = paths[paths.length - 1];
-        currentPath.push({ x: pos.x, y: pos.y });
-        redrawCanvas();
-    }
-
-    function endDraw() { drawing = false; }
-
     function getPos(e) {
         const rect = canvas.getBoundingClientRect();
-        const clientX = e.clientX || e.touches[0].clientX;
-        const clientY = e.clientY || e.touches[0].clientY;
-        return { x: clientX - rect.left, y: clientY - rect.top };
+        const cx = e.clientX || e.touches[0].clientX;
+        const cy = e.clientY || e.touches[0].clientY;
+        return { x: cx - rect.left, y: cy - rect.top };
     }
-
+    function startDraw(e) { drawing = true; paths.push([getPos(e)]); }
+    function draw(e) { 
+        if(!drawing) return; 
+        paths[paths.length-1].push(getPos(e));
+        redrawCanvas();
+    }
     function redrawCanvas() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.strokeStyle = '#333';
-        ctx.lineWidth = 3;
-        ctx.lineJoin = 'round';
-        ctx.lineCap = 'round';
-
-        paths.forEach(path => {
-            if (path.length < 2) return;
-            ctx.beginPath();
-            ctx.moveTo(path[0].x, path[0].y);
-            for (let i = 1; i < path.length; i++) {
-                ctx.lineTo(path[i].x, path[i].y);
-            }
-            ctx.stroke();
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.strokeStyle="#333"; ctx.lineWidth=3; ctx.lineCap="round";
+        paths.forEach(p => {
+            ctx.beginPath(); ctx.moveTo(p[0].x, p[0].y);
+            p.forEach(pt => ctx.lineTo(pt.x, pt.y)); ctx.stroke();
         });
     }
+    function undoLast() { paths.pop(); redrawCanvas(); }
+    function clearSketch() { paths = []; redrawCanvas(); }
 
-    function undoLast() {
-        paths.pop();
-        redrawCanvas();
-    }
-
-    function clearSketch() {
-        paths = [];
-        redrawCanvas();
-    }
-
-    // אירועי מגע ועכבר
     canvas.addEventListener('mousedown', startDraw);
     canvas.addEventListener('mousemove', draw);
-    window.addEventListener('mouseup', endDraw);
+    window.addEventListener('mouseup', () => drawing = false);
     canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDraw(e); });
     canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); });
-    canvas.addEventListener('touchend', endDraw);
 
-    // לוגיקת משחק
+    // --- לוגיקת המשחק ---
     function showPage(id) {
         document.querySelectorAll('.container > div').forEach(d => { if(d.id.startsWith('page')) d.classList.add('hidden'); });
         document.getElementById('page-' + id).classList.remove('hidden');
@@ -176,22 +180,34 @@
 
     function nextQ() {
         const content = document.getElementById('game-content');
-        let n1, n2;
-        if(vType === 'mul') {
-            n1 = Math.floor(Math.random()*90)+10; 
-            n2 = (mulLevel === 'single') ? Math.floor(Math.random()*8)+2 : Math.floor(Math.random()*80)+11;
+        document.getElementById('feedback').innerText = '';
+        
+        if(currentMode === 'vertical') {
+            let n1, n2;
+            if(vType === 'mul') {
+                n1 = Math.floor(Math.random()*90)+10;
+                n2 = (mulLevel === 'single') ? Math.floor(Math.random()*8)+2 : Math.floor(Math.random()*80)+11;
+            } else {
+                n1 = Math.floor(Math.random()*800)+100; n2 = Math.floor(Math.random()*800)+100;
+                if(vType==='sub' && n1 < n2) [n1, n2] = [n2, n1];
+            }
+            currentQ = { n1, n2, ans: vType==='add'?n1+n2 : (vType==='sub'?n1-n2 : n1*n2) };
+            content.innerHTML = `<div class="vertical-math"><div></div><input type="text" class="ans-input" style="height:30px; border:1px dashed #ccc;"><input type="text" class="ans-input" style="height:30px; border:1px dashed #ccc;"><div></div><div></div><div></div>${dg(n1)}<div class="operator">${vType==='add'?'+':(vType==='sub'?'-':'×')}</div>${dg(n2)}<div class="line"></div><div></div><input type="number" class="ans-input" id="va3"><input type="number" class="ans-input" id="va2"><input type="number" class="ans-input" id="va1"><input type="number" class="ans-input" id="va0"></div>`;
         } else {
-            n1 = Math.floor(Math.random()*800)+100; n2 = Math.floor(Math.random()*800)+10;
-            if(vType==='sub' && n1 < n2) [n1, n2] = [n2, n1];
+            // שאלות רגילות (חיבור/חיסור)
+            let n1 = Math.floor(Math.random()*maxNum), n2 = Math.floor(Math.random()*maxNum);
+            currentQ = { ans: n1 + n2 };
+            content.innerHTML = `<h2 style="font-size:3rem;">${n1} + ${n2} = ?</h2><input type="number" id="ansIn" class="ans-input" style="width:120px;">`;
         }
-        currentQ = { n1, n2, ans: vType==='add'?n1+n2 : (vType==='sub'?n1-n2 : n1*n2) };
-        content.innerHTML = `<div class="vertical-math"><div></div><input type="text" class="ans-input" style="height:30px; border:1px dashed #ccc;"><input type="text" class="ans-input" style="height:30px; border:1px dashed #ccc;"><div></div><div></div><div></div>${dg(n1)}<div class="operator">${vType==='add'?'+':(vType==='sub'?'-':'×')}</div>${dg(n2)}<div class="line"></div><div></div><input type="number" class="ans-input" id="va3"><input type="number" class="ans-input" id="va2"><input type="number" class="ans-input" id="va1"><input type="number" class="ans-input" id="va0"></div>`;
     }
 
     function dg(n) { return [...n.toString().padStart(4, ' ')].map(c => `<div class="digit">${c===' '?'':c}</div>`).join(''); }
 
     function check() {
-        let val = parseInt([3,2,1,0].map(i => document.getElementById('va'+i).value || '').reverse().join(''));
+        let val = currentMode === 'vertical' ? 
+            parseInt([3,2,1,0].map(i => document.getElementById('va'+i).value || '').reverse().join('')) :
+            parseInt(document.getElementById('ansIn').value);
+
         if(val === currentQ.ans) {
             stats.xp += 20; if(stats.xp % 100 === 0) stats.lvl++;
             updateUI();
@@ -206,13 +222,10 @@
         document.getElementById('xp-display').innerText = stats.xp;
         document.getElementById('lvl-display').innerText = stats.lvl;
         document.getElementById('progress-bar').style.width = (stats.xp % 100) + "%";
-        localStorage.setItem('math_pro_v14', JSON.stringify(stats));
+        localStorage.setItem('math_pro_v15', JSON.stringify(stats));
     }
 
-    function showPage(id) {
-        document.querySelectorAll('.container > div').forEach(d => { if(d.id.startsWith('page')) d.classList.add('hidden'); });
-        document.getElementById('page-' + id).classList.remove('hidden');
-    }
+    function showTutorial() { alert("טיפ: פתור קודם את היחידות, אחר כך עשרות ואז מאות!"); }
 
     updateUI();
 </script>
