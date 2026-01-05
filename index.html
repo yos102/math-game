@@ -11,7 +11,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>מרכז המתמטיקה - הגביעים שלי</title>
+    <title>מרכז המתמטיקה - גרסת המדליות</title>
     
     <style>
         :root {
@@ -36,6 +36,11 @@
             position: relative; text-align: center;
         }
 
+        .settings-icon {
+            position: absolute; top: 15px; left: 15px; cursor: pointer; 
+            font-size: 1.5rem; z-index: 100; padding: 5px;
+        }
+
         .hidden { display: none !important; }
         .btn { padding: 12px; border-radius: 12px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; width: 100%; margin: 5px 0; transition: 0.2s; }
         .btn-main { background: var(--primary); color: white; }
@@ -43,7 +48,12 @@
         .mode-btn { background: var(--card-bg); border: 2px solid var(--input-border); color: var(--text); width: auto; flex: 1; margin: 3px; }
         .mode-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        .progress-info { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px; font-weight: bold; color: var(--primary); }
+        /* תיקון מיקום הניקוד והספירה */
+        .progress-info { 
+            display: flex; justify-content: space-between; font-size: 0.9rem; 
+            margin: 25px 0 5px 0; /* הוספת מרווח מלמעלה שלא יתנגש בגלגל */
+            font-weight: bold; color: var(--primary); 
+        }
         .progress-container { width: 100%; height: 12px; background: #edf2f7; border-radius: 6px; margin-bottom: 15px; overflow: hidden; }
         .progress-bar { height: 100%; background: var(--success); width: 0%; transition: 0.5s; }
 
@@ -51,22 +61,26 @@
         input { font-size: 1.8rem; width: 70%; text-align: center; padding: 10px; border: 3px solid var(--input-border); border-radius: 12px; background: var(--card-bg); color: var(--text); }
 
         #scratch-area { margin-top: 15px; border: 2px dashed var(--secondary); border-radius: 15px; background: #fffdf0; padding: 5px; }
-        canvas { touch-action: none; width: 100%; background: transparent; }
+        canvas { touch-action: none; width: 100%; background: transparent; border-radius: 10px; }
         
-        /* עיצוב מדליות */
         .medal-slot { font-size: 3rem; margin: 10px; filter: grayscale(1); opacity: 0.3; transition: 0.5s; }
         .medal-slot.unlocked { filter: grayscale(0); opacity: 1; transform: scale(1.1); }
         .trophy-cabinet { display: flex; justify-content: center; gap: 15px; background: rgba(0,0,0,0.05); padding: 15px; border-radius: 15px; margin: 15px 0; }
         
-        #mul-table-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 15px; border-radius: 15px; z-index: 3000; box-shadow: 0 0 50px rgba(0,0,0,0.5); max-width: 95%; }
-        table { border-collapse: collapse; width: 100%; color: #000; }
-        td, th { border: 1px solid #ddd; padding: 5px; text-align: center; font-size: 0.8rem; }
+        /* לוח כפל עם hover */
+        #mul-table-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 15px; border-radius: 15px; z-index: 3000; box-shadow: 0 0 50px rgba(0,0,0,0.5); max-width: 95%; overflow: auto; }
+        table { border-collapse: collapse; width: 100%; color: #000; cursor: default; }
+        td, th { border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 0.85rem; transition: 0.1s; }
+        th { background: #f0f4f8; }
+        /* הדגשה במעבר עכבר */
+        tr:hover td { background-color: #e2e8f0 !important; }
+        td:hover { background-color: var(--primary) !important; color: white !important; font-weight: bold; transform: scale(1.2); }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div style="position:absolute; top:15px; left:15px; cursor:pointer; font-size: 1.5rem;" onclick="openSettings()">⚙️</div>
+        <div class="settings-icon" onclick="openSettings()">⚙️</div>
 
         <div id="page-settings" class="hidden">
             <h2>הגדרות</h2>
@@ -82,9 +96,9 @@
             <h1 id="lobby-title">שלום!</h1>
             
             <div class="trophy-cabinet">
-                <div id="m-bronze" class="medal-slot" title="סיימתי משחק">🥉</div>
-                <div id="m-silver" class="medal-slot" title="ציון 8 ומעלה">🥈</div>
-                <div id="m-gold" class="medal-slot" title="ציון 10 מושלם!">🥇</div>
+                <div id="m-bronze" class="medal-slot">🥉</div>
+                <div id="m-silver" class="medal-slot">🥈</div>
+                <div id="m-gold" class="medal-slot">🥇</div>
             </div>
 
             <button class="btn btn-alt" onclick="showPage('setup-add')">➕ חיבור וחיסור</button>
@@ -143,13 +157,14 @@
             </div>
 
             <div id="msg" style="margin-top:10px; font-weight:bold;"></div>
-            <button id="backToLobbyBtn" class="btn" onclick="showPage('lobby')" style="margin-top:20px; color:gray;">חזרה לתפריט</button>
+            <button class="btn" onclick="showPage('lobby')" style="margin-top:20px; color:gray;">חזרה לתפריט</button>
         </div>
     </div>
 
     <div id="mul-table-modal" class="hidden">
         <button onclick="toggleMulTable(false)" style="float:left; background:red; color:white; border-radius:50%; border:none; width:30px; height:30px;">X</button>
-        <div id="table-container" style="margin-top:10px;"></div>
+        <h3 style="color:#000; margin: 0 0 10px 0;">לוח הכפל</h3>
+        <div id="table-container"></div>
     </div>
 
 <script>
@@ -157,17 +172,17 @@
     let theme = localStorage.getItem('theme') || 'light';
     let medals = JSON.parse(localStorage.getItem('medals') || '{"bronze":false, "silver":false, "gold":false}');
     
-    let score = 0, qIndex = 0, currentQ = {}, addRange = 10, mulSelected = new Set([2,3,4,5]), storyMode = 'mix', lastOp = '';
+    let score = 0, qIndex = 0, currentQ = {}, addRange = 10, mulSelected = new Set([2,3,4,5]), storyMode = 'mix';
     let previousPage = 'lobby', undoStack = [];
 
-    // אתחול לוח כפל
+    // יצירת לוח כפל
     let tableHtml = '<table><tr><th>×</th>' + Array.from({length:10}, (_,i)=>`<th>${i+1}</th>`).join('') + '</tr>';
     for(let i=1; i<=10; i++) {
         tableHtml += `<tr><th>${i}</th>` + Array.from({length:10}, (_,j)=>`<td>${i*(j+1)}</td>`).join('') + '</tr>';
     }
     document.getElementById('table-container').innerHTML = tableHtml + '</table>';
 
-    // יצירת גריד כפל
+    // יצירת כפתורי בחירת מספרים
     const grid = document.getElementById('mul-num-grid');
     for(let i=1; i<=10; i++) {
         const b = document.createElement('button'); b.className='num-btn mode-btn' + (mulSelected.has(i)?' active':''); b.innerText=i;
@@ -177,7 +192,7 @@
 
     function setTheme(t) { theme = t; localStorage.setItem('theme', t); document.documentElement.setAttribute('data-theme', t); }
     function openSettings() { previousPage = (qIndex > 0 && qIndex < 10) ? 'game' : 'lobby'; showPage('settings'); }
-    function saveSettings() { childName = document.getElementById('nameInput').value.trim(); localStorage.setItem('childName', childName); updateMedalsUI(); showPage(previousPage); }
+    function saveSettings() { childName = document.getElementById('nameInput').value.trim(); localStorage.setItem('childName', childName); showPage(previousPage); }
 
     function showPage(id) {
         document.querySelectorAll('.container > div').forEach(d => { if(d.id.startsWith('page')) d.classList.add('hidden'); });
@@ -225,17 +240,13 @@
     }
 
     function finishGame() {
-        let medalWon = "";
         medals.bronze = true;
         if(score >= 8) medals.silver = true;
         if(score === 10) medals.gold = true;
         localStorage.setItem('medals', JSON.stringify(medals));
 
-        if(score === 10) medalWon = "🥇 גביע זהב! מושלם!";
-        else if(score >= 8) medalWon = "🥈 גביע כסף! כל הכבוד!";
-        else medalWon = "🥉 גביע ארד! המשך כך!";
-
-        document.getElementById('question').innerText = `סיימת! \n${medalWon} \nהצלחת ${score} מתוך 10.`;
+        let txt = score === 10 ? "🥇 זהב! מושלם!" : (score >= 8 ? "🥈 כסף! מעולה!" : "🥉 ארד! סיימת!");
+        document.getElementById('question').innerText = `סיימת! \n${txt} \nהצלחת ${score} מתוך 10.`;
         document.getElementById('ansInput').classList.add('hidden');
         updateMedalsUI();
     }
@@ -243,10 +254,10 @@
     function generateStory() {
         if(storyMode === 'advanced') {
             let num = Math.floor(Math.random()*90)+11;
-            return { ans: num, text: `שאלה מאתגרת:\nאם נסדר ב-10 קופסאות, ישארו ${num%10} בצד.\nכמה יש בסך הכל?`, type: 'logic' };
+            return { ans: num, text: `שאלה מאתגרת:\nנסדר ב-10 קופסאות שוות, ישארו ${num%10}.\nכמה יש בסך הכל?`, type: 'logic' };
         }
         let a = Math.floor(Math.random()*5)+2, b = Math.floor(Math.random()*5)+2;
-        return { ans: a*b, text: `יש ${a} שורות של פרחים. בכל שורה ${b} פרחים. \nכמה פרחים יש בסך הכל?`, type: 'mul' };
+        return { ans: a*b, text: `יש ${a} שורות פרחים. בכל שורה ${b} פרחים. \nכמה פרחים יש בסך הכל?`, type: 'mul' };
     }
 
     function check() {
@@ -257,7 +268,7 @@
             document.getElementById('msg').innerText = "נכון מאוד! ✨";
             setTimeout(next, 1000);
         } else {
-            document.getElementById('msg').innerText = "נסה שוב 🤔";
+            document.getElementById('msg').innerText = "לא בדיוק... נסה שוב 🤔";
         }
     }
 
@@ -267,7 +278,7 @@
         setTimeout(next, 1500);
     }
 
-    // טיוטה
+    // קנבס טיוטה
     const canvas = document.getElementById('canvas'); const ctx = canvas.getContext('2d');
     let drawing = false;
     function saveState() { undoStack.push(canvas.toDataURL()); if(undoStack.length > 20) undoStack.shift(); }
