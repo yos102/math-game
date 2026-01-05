@@ -15,7 +15,6 @@
     
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3771/3771278.png">
-    <meta name="theme-color" content="#4a90e2">
 
     <style>
         :root {
@@ -24,11 +23,23 @@
             --success: #48bb78;
             --error: #f56565;
             --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --input-border: #e2e8f0;
+        }
+
+        /* מצב כהה */
+        [data-theme="dark"] {
+            --bg: #1a202c;
+            --card-bg: #2d3748;
+            --text: #f7fafc;
+            --input-border: #4a5568;
         }
 
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background-color: var(--bg);
+            color: var(--text);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -36,199 +47,214 @@
             min-height: 100vh;
             margin: 0;
             padding: 10px;
+            transition: background 0.3s, color 0.3s;
         }
 
         .container {
             max-width: 500px;
             width: 95%;
-            background: white;
+            background: var(--card-bg);
             padding: 25px;
             border-radius: 25px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
             text-align: center;
+            position: relative;
         }
 
         .hidden { display: none !important; }
 
-        /* כפתורים ועיצוב כללי */
-        .btn {
-            padding: 15px;
-            border-radius: 15px;
-            border: none;
-            font-size: 1.1rem;
-            font-weight: bold;
+        /* הגדרות וכפתורים */
+        .settings-btn {
+            position: absolute;
+            top: 15px; left: 15px;
+            font-size: 1.5rem;
             cursor: pointer;
-            transition: all 0.2s;
-            margin: 10px 0;
-            width: 100%;
+            z-index: 10;
         }
 
-        .btn:active { transform: scale(0.98); }
+        .btn {
+            padding: 15px; border-radius: 15px; border: none;
+            font-size: 1.1rem; font-weight: bold; cursor: pointer;
+            width: 100%; margin: 10px 0;
+        }
+
         .btn-main { background: var(--primary); color: white; }
-        .btn-alt { background: var(--secondary); color: white; }
         
-        .mode-btn { background: white; border: 2px solid #e2e8f0; margin: 5px; width: auto; flex: 1; }
+        .mode-btn { background: var(--card-bg); border: 2px solid var(--input-border); color: var(--text); width: auto; flex: 1; margin: 5px; }
         .mode-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        /* תפריט ראשי */
         .menu-card {
-            background: #edf2f7;
-            padding: 20px;
-            border-radius: 20px;
-            margin-bottom: 15px;
-            cursor: pointer;
+            background: var(--bg); padding: 20px; border-radius: 20px;
+            margin-bottom: 15px; cursor: pointer; border: 2px solid transparent;
         }
-
-        .num-grid {
-            display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 15px 0;
-        }
-
-        .num-btn {
-            padding: 10px; border: 1px solid #e2e8f0; border-radius: 10px; background: #fff; cursor: pointer;
-        }
-
-        .num-btn.active { background: var(--primary); color: white; }
 
         .card {
-            font-size: 3rem; padding: 30px; background: #ebf8ff; border-radius: 20px; margin: 20px 0; direction: ltr;
+            font-size: 3.5rem; padding: 30px; background: rgba(74, 144, 226, 0.1);
+            border-radius: 20px; margin: 20px 0; direction: ltr;
         }
 
         input {
-            font-size: 2.5rem; width: 180px; text-align: center; padding: 10px; border: 3px solid #e2e8f0; border-radius: 15px; margin-bottom: 20px;
+            font-size: 2rem; width: 80%; text-align: center; padding: 12px;
+            border: 3px solid var(--input-border); border-radius: 15px;
+            background: var(--card-bg); color: var(--text); margin-bottom: 20px;
+        }
+
+        #splash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 2000;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    
-    <div id="page-lobby">
-        <h1 style="color:var(--primary)">מה נלמד היום?</h1>
-        <div class="menu-card" onclick="showPage('setup-mul')">
-            <div style="font-size: 3rem;">✖️</div>
-            <h3>לוח הכפל והחילוק</h3>
-            <p>אימון על כפולות וחילוק פשוט</p>
-        </div>
-        <div class="menu-card" onclick="showPage('setup-add')">
-            <div style="font-size: 3rem;">➕</div>
-            <h3>חיבור וחיסור</h3>
-            <p>תרגול בתחום ה-10, 100 או 1000</p>
-        </div>
+    <div id="splash">
+        <div style="font-size: 5rem; animation: pulse 1.5s infinite;">🔢</div>
+        <h1 id="splash-welcome">טוען...</h1>
     </div>
 
-    <div id="page-setup-mul" class="hidden">
-        <button onclick="showPage('lobby')" style="background:none; border:none; color:var(--primary); cursor:pointer;">⬅️ חזרה</button>
-        <h2>הגדרות כפל וחילוק</h2>
-        <div style="display: flex;">
-            <button class="btn mode-btn active" id="btn-mul" onclick="setOp('mul')">כפל ×</button>
-            <button class="btn mode-btn" id="btn-div" onclick="setOp('div')">חילוק ÷</button>
+    <div class="container">
+        <div class="settings-btn" onclick="showPage('settings')">⚙️</div>
+
+        <div id="page-settings" class="hidden">
+            <h2>הגדרות</h2>
+            <p>שם הילד/ה:</p>
+            <input type="text" id="nameInput" placeholder="הקלידו שם...">
+            
+            <p>מראה אפליקציה:</p>
+            <div style="display: flex; flex-wrap: wrap;">
+                <button class="btn mode-btn" onclick="setTheme('light')">בהיר ☀️</button>
+                <button class="btn mode-btn" onclick="setTheme('dark')">כהה 🌙</button>
+                <button class="btn mode-btn" onclick="setTheme('system')">מערכת 💻</button>
+            </div>
+            
+            <button class="btn btn-main" onclick="saveSettings()">שמירה וחזרה</button>
         </div>
-        <p>בחרו מספרים לתרגול:</p>
-        <div class="num-grid" id="mul-num-grid"></div>
-        <button class="btn btn-main" onclick="startGame('mul-logic')">מתחילים!</button>
-    </div>
 
-    <div id="page-setup-add" class="hidden">
-        <button onclick="showPage('lobby')" style="background:none; border:none; color:var(--primary); cursor:pointer;">⬅️ חזרה</button>
-        <h2>חיבור וחיסור</h2>
-        <p>בחרו טווח מספרים:</p>
-        <button class="btn mode-btn active" id="range-10" onclick="setRange(10)">עד 10</button>
-        <button class="btn mode-btn" id="range-100" onclick="setRange(100)">עד 100</button>
-        <button class="btn mode-btn" id="range-1000" onclick="setRange(1000)">עד 1000</button>
-        
-        <div style="display: flex; margin-top: 15px;">
-            <button class="btn mode-btn active" id="btn-add" onclick="setOpAdd('add')">חיבור +</button>
-            <button class="btn mode-btn" id="btn-sub" onclick="setOpAdd('sub')">חיסור -</button>
+        <div id="page-lobby" class="hidden">
+            <h1 id="lobby-title">שלום!</h1>
+            <div class="menu-card" onclick="showPage('setup-add')">
+                <div style="font-size: 3rem;">➕</div>
+                <h3>חיבור וחיסור</h3>
+            </div>
+            <div class="menu-card" onclick="showPage('setup-mul')">
+                <div style="font-size: 3rem;">✖️</div>
+                <h3>כפל וחילוק</h3>
+            </div>
         </div>
-        <button class="btn btn-alt" onclick="startGame('add-logic')">מתחילים!</button>
-    </div>
 
-    <div id="page-game" class="hidden">
-        <div id="question" class="card"></div>
-        <input type="number" id="ansInput" inputmode="numeric" onkeypress="if(event.key==='Enter') check()">
-        <button class="btn btn-main" onclick="check()">בדיקה</button>
-        <div id="msg" style="margin-top:20px; font-weight:bold; font-size:1.3rem;"></div>
-        <p onclick="showPage('lobby')" style="color:gray; cursor:pointer; margin-top:30px; text-decoration:underline;">יציאה לתפריט</p>
-    </div>
+        <div id="page-setup-add" class="hidden">
+            <button onclick="showPage('lobby')" style="background:none; border:none; color:var(--primary); cursor:pointer;">⬅️ חזרה</button>
+            <h2>חיבור וחיסור</h2>
+            <div style="display: flex;">
+                <button class="btn mode-btn active" id="range-10" onclick="setRange(10)">עד 10</button>
+                <button class="btn mode-btn" id="range-100" onclick="setRange(100)">עד 100</button>
+                <button class="btn mode-btn" id="range-1000" onclick="setRange(1000)">1000</button>
+            </div>
+            <div style="display: flex; margin-top: 10px;">
+                <button class="btn mode-btn active" id="btn-add" onclick="setOpAdd('add')">חיבור +</button>
+                <button class="btn mode-btn" id="btn-sub" onclick="setOpAdd('sub')">חיסור -</button>
+            </div>
+            <button class="btn btn-main" onclick="startGame('add-logic')">בואו נשחק!</button>
+        </div>
 
-</div>
+        <div id="page-setup-mul" class="hidden">
+            <button onclick="showPage('lobby')" style="background:none; border:none; color:var(--primary); cursor:pointer;">⬅️ חזרה</button>
+            <h2>כפל וחילוק</h2>
+            <div style="display: flex;">
+                <button class="btn mode-btn active" id="btn-mul" onclick="setOp('mul')">כפל ×</button>
+                <button class="btn mode-btn" id="btn-div" onclick="setOp('div')">חילוק ÷</button>
+            </div>
+            <div id="mul-num-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin: 15px 0;"></div>
+            <button class="btn btn-main" onclick="startGame('mul-logic')">מתחילים!</button>
+        </div>
+
+        <div id="page-game" class="hidden">
+            <div id="question" class="card"></div>
+            <input type="number" id="ansInput" inputmode="numeric" onkeypress="if(event.key==='Enter') check()">
+            <button class="btn btn-main" onclick="check()">בדיקה</button>
+            <div id="msg" style="margin-top:20px; font-weight:bold; font-size:1.2rem;"></div>
+        </div>
+    </div>
 
 <script>
-    let currentModule = ''; 
-    let opMul = 'mul', mulSelected = new Set();
-    let opAdd = 'add', addRange = 10;
-    let currentQ = {};
+    let childName = localStorage.getItem('childName') || '';
+    let theme = localStorage.getItem('theme') || 'system';
+    let currentModule = '', opMul = 'mul', mulSelected = new Set(), opAdd = 'add', addRange = 10, currentQ = {};
 
-    // יצירת מספרים לכפל
+    // אתחול נושא
+    function setTheme(t) {
+        theme = t;
+        localStorage.setItem('theme', t);
+        if(t === 'system') {
+            const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        } else {
+            document.documentElement.setAttribute('data-theme', t);
+        }
+    }
+    setTheme(theme);
+
+    // מסך פתיחה
+    window.onload = () => {
+        document.getElementById('splash-welcome').innerText = childName ? `שלום, ${childName}!` : 'ברוכים הבאים!';
+        document.getElementById('nameInput').value = childName;
+        setTimeout(() => {
+            document.getElementById('splash').style.display = 'none';
+            showPage(childName ? 'lobby' : 'settings');
+        }, 2500);
+    };
+
+    function saveSettings() {
+        childName = document.getElementById('nameInput').value;
+        localStorage.setItem('childName', childName);
+        document.getElementById('lobby-title').innerText = `שלום, ${childName}!`;
+        showPage('lobby');
+    }
+
+    function showPage(id) {
+        document.querySelectorAll('.container > div').forEach(d => { if(!d.classList.contains('settings-btn')) d.classList.add('hidden'); });
+        document.getElementById('page-' + id).classList.remove('hidden');
+    }
+
+    // לוגיקת מספרים לכפל
     const grid = document.getElementById('mul-num-grid');
     for(let i=1; i<=10; i++) {
-        const b = document.createElement('button');
-        b.className = 'num-btn'; b.innerText = i;
+        const b = document.createElement('button'); b.className = 'num-btn mode-btn'; b.innerText = i;
         b.onclick = () => { b.classList.toggle('active'); mulSelected.has(i) ? mulSelected.delete(i) : mulSelected.add(i); };
         grid.appendChild(b);
     }
 
-    function showPage(id) {
-        document.querySelectorAll('.container > div').forEach(d => d.classList.add('hidden'));
-        document.getElementById('page-' + id).classList.remove('hidden');
-        gtag('event', 'page_view', {'page_id': id});
-    }
-
-    function setOp(o) { 
-        opMul = o; 
-        document.getElementById('btn-mul').classList.toggle('active', o==='mul');
-        document.getElementById('btn-div').classList.toggle('active', o==='div');
-    }
-
-    function setOpAdd(o) {
-        opAdd = o;
-        document.getElementById('btn-add').classList.toggle('active', o==='add');
-        document.getElementById('btn-sub').classList.toggle('active', o==='sub');
-    }
-
-    function setRange(r) {
-        addRange = r;
-        [10, 100, 1000].forEach(v => document.getElementById('range-'+v).classList.toggle('active', v===r));
-    }
+    function setOp(o) { opMul = o; document.getElementById('btn-mul').classList.toggle('active', o==='mul'); document.getElementById('btn-div').classList.toggle('active', o==='div'); }
+    function setOpAdd(o) { opAdd = o; document.getElementById('btn-add').classList.toggle('active', o==='add'); document.getElementById('btn-sub').classList.toggle('active', o==='sub'); }
+    function setRange(r) { addRange = r; [10, 100, 1000].forEach(v => document.getElementById('range-'+v).classList.toggle('active', v===r)); }
 
     function startGame(logic) {
-        if(logic === 'mul-logic' && mulSelected.size === 0) return alert("בחר לפחות מספר אחד");
-        currentModule = logic;
-        showPage('game');
-        next();
+        if(logic === 'mul-logic' && mulSelected.size === 0) return alert("בחרו מספרים");
+        currentModule = logic; showPage('game'); next();
     }
 
     function next() {
         if(currentModule === 'mul-logic') {
             const arr = Array.from(mulSelected);
             const a = arr[Math.floor(Math.random()*arr.length)], b = Math.floor(Math.random()*10)+1;
-            if(opMul === 'mul') {
-                currentQ = { ans: a*b, text: `${a} × ${b}` };
-            } else {
-                currentQ = { ans: b, text: `${a*b} ÷ ${a}` };
-            }
+            currentQ = opMul === 'mul' ? { ans: a*b, text: `${a} × ${b}` } : { ans: b, text: `${a*b} ÷ ${a}` };
         } else {
-            const a = Math.floor(Math.random() * addRange) + 1;
-            const b = Math.floor(Math.random() * addRange) + 1;
-            if(opAdd === 'add') {
-                currentQ = { ans: a + b, text: `${a} + ${b}` };
-            } else {
-                const big = Math.max(a, b), small = Math.min(a, b);
-                currentQ = { ans: big - small, text: `${big} - ${small}` };
-            }
+            const a = Math.floor(Math.random()*addRange)+1, b = Math.floor(Math.random()*addRange)+1;
+            if(opAdd === 'add') currentQ = { ans: a+b, text: `${a} + ${b}` };
+            else { const big = Math.max(a,b), small = Math.min(a,b); currentQ = { ans: big-small, text: `${big} - ${small}` }; }
         }
         document.getElementById('question').innerText = currentQ.text;
-        document.getElementById('ansInput').value = '';
-        document.getElementById('ansInput').focus();
+        document.getElementById('ansInput').value = ''; document.getElementById('ansInput').focus();
     }
 
     function check() {
         const val = parseInt(document.getElementById('ansInput').value);
         const msg = document.getElementById('msg');
         if(val === currentQ.ans) {
-            msg.innerText = "אלופים! ✨"; msg.style.color = "var(--success)";
-            gtag('event', 'correct_answer', {'module': currentModule});
-            setTimeout(() => { msg.innerText = ""; next(); }, 800);
+            msg.innerText = childName ? `כל הכבוד, ${childName}! ✨` : "נכון מאוד! ✨";
+            msg.style.color = "var(--success)";
+            setTimeout(() => { msg.innerText = ""; next(); }, 1200);
         } else {
             msg.innerText = "נסו שוב... 🤔"; msg.style.color = "var(--error)";
         }
