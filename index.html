@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E7L6ME5Q7K"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-E7L6ME5Q7K');
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>אתגר המתמטיקה</title>
@@ -23,45 +31,66 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 10px;
+            justify-content: center;
+            min-height: 100vh;
             margin: 0;
-            text-align: right; /* יישור לימין לטקסט בעברית */
+            padding: 10px;
         }
 
         .container {
             max-width: 500px;
             width: 95%;
             background: white;
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
             text-align: center;
-            margin-top: 20px;
         }
 
-        h1 { color: var(--primary); margin-bottom: 20px; }
+        /* מסך פתיחה */
+        #splash-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        h1 { color: var(--primary); font-size: 2.5rem; margin: 10px 0; }
+
+        #setup, #game-area { display: none; }
 
         .mode-selector {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 10px;
-            margin-bottom: 20px;
+            margin: 20px 0;
         }
 
-        .mode-btn {
-            padding: 12px;
-            border: 2px solid #e2e8f0;
-            background: white;
-            border-radius: 12px;
-            cursor: pointer;
+        .btn {
+            padding: 15px;
+            border-radius: 15px;
+            border: none;
+            font-size: 1.1rem;
             font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
         }
 
-        .mode-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
+        .btn:active { transform: scale(0.95); }
+        .btn-primary { background: var(--primary); color: white; width: 100%; }
+        
+        .mode-btn { background: white; border: 2px solid #e2e8f0; }
+        .mode-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
         .num-grid {
             display: grid;
@@ -75,78 +104,68 @@
             border: 1px solid #e2e8f0;
             border-radius: 10px;
             background: #fff;
-            font-weight: bold;
             cursor: pointer;
         }
 
-        .num-btn.active { background: #cbd5e0; }
-
-        #game-area { display: none; }
+        .num-btn.active { background: #cbd5e0; border-color: #a0aec0; }
 
         .card {
-            font-size: 3rem;
-            padding: 30px;
+            font-size: 3.5rem;
+            padding: 40px;
             background: #ebf8ff;
             border-radius: 20px;
             margin: 20px 0;
-            direction: ltr; /* תרגילים מוצגים משמאל לימין */
+            direction: ltr;
         }
 
         input {
-            font-size: 2rem;
-            width: 140px;
+            font-size: 2.5rem;
+            width: 150px;
             text-align: center;
             padding: 10px;
-            border: 2px solid #e2e8f0;
+            border: 3px solid #e2e8f0;
             border-radius: 15px;
-            margin-bottom: 15px;
-        }
-
-        .main-action {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 15px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            width: 100%;
+            margin-bottom: 20px;
         }
 
         #install-prompt {
-            display: none;
-            margin-top: 20px;
+            margin-top: 25px;
             color: var(--primary);
-            text-decoration: underline;
             cursor: pointer;
+            font-weight: bold;
+            display: none;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="setup">
+    <div id="splash-screen">
+        <div class="logo">🔢</div>
         <h1>אתגר המתמטיקה</h1>
-        <p>מה נתרגל היום?</p>
-        <div class="mode-selector">
-            <button class="mode-btn active" onclick="setMode('mul', this)">כפל ×</button>
-            <button class="mode-btn" onclick="setMode('div', this)">חילוק ÷</button>
-            <button class="mode-btn" onclick="setMode('both', this)">מעורב</button>
-        </div>
-        
-        <p>בחירת מספרים:</p>
-        <div class="num-grid" id="numGrid"></div>
-        
-        <button class="main-action" onclick="startGame()">מתחילים</button>
+        <p>מוכנים להפוך לאלופי החשבון?</p>
+        <button class="btn btn-primary" style="margin-top: 20px;" onclick="showSetup()">שחק עכשיו</button>
         <div id="install-prompt" onclick="doInstall()">📲 התקנה על מסך הבית</div>
+    </div>
+
+    <div id="setup">
+        <h2>מה נתרגל?</h2>
+        <div class="mode-selector">
+            <button class="btn mode-btn active" onclick="setMode('mul', this)">כפל ×</button>
+            <button class="btn mode-btn" onclick="setMode('div', this)">חילוק ÷</button>
+            <button class="btn mode-btn" onclick="setMode('both', this)">מעורב</button>
+        </div>
+        <p>בחרו מספרים:</p>
+        <div class="num-grid" id="numGrid"></div>
+        <button class="btn btn-primary" onclick="startGame()">מתחילים!</button>
     </div>
 
     <div id="game-area">
         <div id="question" class="card"></div>
         <input type="number" id="ansInput" inputmode="numeric" onkeypress="if(event.key==='Enter') check()">
-        <button class="main-action" onclick="check()">בדיקה</button>
-        <div id="msg" style="margin-top:15px; font-weight:bold; font-size:1.2rem;"></div>
-        <button onclick="location.reload()" style="background:none; border:none; color:gray; text-decoration:underline; margin-top:20px; cursor:pointer;">חזרה להגדרות</button>
+        <button class="btn btn-primary" onclick="check()">בדיקה</button>
+        <div id="msg" style="margin-top:20px; font-weight:bold; font-size:1.3rem;"></div>
+        <p onclick="location.reload()" style="color:gray; cursor:pointer; margin-top:30px; text-decoration:underline;">חזרה לתפריט</p>
     </div>
 </div>
 
@@ -157,65 +176,12 @@
     for(let i=1; i<=10; i++) {
         const b = document.createElement('button');
         b.className = 'num-btn'; b.innerText = i;
-        b.onclick = () => { b.classList.toggle('active'); selected.has(i) ? selected.delete(i) : selected.add(i); };
+        b.onclick = () => { 
+            b.classList.toggle('active'); 
+            selected.has(i) ? selected.delete(i) : selected.add(i); 
+        };
         document.getElementById('numGrid').appendChild(b);
     }
 
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault(); deferredPrompt = e;
-        document.getElementById('install-prompt').style.display = 'block';
-    });
-
-    async function doInstall() {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') document.getElementById('install-prompt').style.display = 'none';
-            deferredPrompt = null;
-        }
-    }
-
-    function setMode(m, btn) {
-        mode = m;
-        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-    }
-
-    function startGame() {
-        if(selected.size === 0) return alert("יש לבחור מספרים");
-        document.getElementById('setup').style.display = 'none';
-        document.getElementById('game-area').style.display = 'block';
-        next();
-    }
-
-    function next() {
-        const arr = Array.from(selected);
-        const a = arr[Math.floor(Math.random()*arr.length)], b = Math.floor(Math.random()*10)+1;
-        let m = mode === 'both' ? (Math.random()>0.5?'mul':'div') : mode;
-        
-        if(m === 'mul') {
-            current.ans = a * b;
-            document.getElementById('question').innerText = `${a} × ${b}`;
-        } else {
-            current.ans = b;
-            document.getElementById('question').innerText = `${a*b} ÷ ${a}`;
-        }
-        document.getElementById('ansInput').value = '';
-        document.getElementById('ansInput').focus();
-    }
-
-    function check() {
-        const val = parseInt(document.getElementById('ansInput').value);
-        const msg = document.getElementById('msg');
-        if(val === current.ans) {
-            msg.innerText = "כל הכבוד! ✨"; msg.style.color = "var(--success)";
-            setTimeout(() => { msg.innerText = ""; next(); }, 1000);
-        } else {
-            msg.innerText = "נסו שוב 🤔"; msg.style.color = "var(--error)";
-        }
-    }
-
-    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
-</script>
-</body>
-</html>
+    function showSetup() {
+        document
