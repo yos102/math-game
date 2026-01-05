@@ -3,91 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>אקדמיית המתמטיקה - גרסה 8.0</title>
+    <title>אקדמיית המתמטיקה של ישראל</title>
     <style>
         :root {
             --primary: #4a90e2; --bg: #f7fafc; --card-bg: #ffffff; --text: #1a202c; --accent: #f6e05e;
-            --sub-color: #f56565; --mul-color: #ed8936;
+            --sub-color: #f56565; --mul-color: #ed8936; --story-color: #48bb78;
         }
         body.dark-mode { --bg: #1a202c; --card-bg: #2d3748; --text: #f7fafc; }
         body.kids-mode { --bg: #fff5f7; --primary: #ff6b6b; --text: #4a5568; }
 
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; transition: 0.3s; direction: rtl; overflow-x: hidden; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; direction: rtl; transition: 0.3s; }
         .container { max-width: 600px; width: 92%; background: var(--card-bg); padding: 25px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); position: relative; text-align: center; margin: 20px auto; }
         .hidden { display: none !important; }
         
-        /* תפריטים */
-        .btn { padding: 18px; border-radius: 15px; border: none; font-size: 1.2rem; font-weight: bold; cursor: pointer; width: 100%; margin: 10px 0; transition: 0.2s; color: white; }
+        .btn { padding: 18px; border-radius: 15px; border: none; font-size: 1.2rem; font-weight: bold; cursor: pointer; width: 100%; margin: 10px 0; color: white; transition: 0.2s; }
         .btn-blue { background: var(--primary); }
         .btn-red { background: var(--sub-color); }
         .btn-orange { background: var(--mul-color); }
+        .btn-green { background: var(--story-color); }
         .btn-purple { background: #9f7aea; }
+        .btn-gray { background: #edf2f7; color: #4a5568; }
 
-        /* גריד מאונך */
-        .vertical-math { display: grid; grid-template-columns: 50px repeat(4, 60px); gap: 5px; justify-content: center; align-items: center; margin: 25px auto; direction: ltr; }
-        .digit { font-family: 'Courier New', monospace; font-size: 2.8rem; font-weight: bold; }
-        .carry-demo, .carry-input { width: 35px; height: 35px; border: 2px dashed #ccc; border-radius: 50%; margin: auto; display: flex; align-items: center; justify-content: center; }
-        .ans-demo, .ans-input { width: 55px; height: 65px; border: 3px solid var(--primary); border-radius: 12px; font-size: 2.2rem; text-align: center; background: #ebf8ff; margin: auto; }
+        .settings-btn { position: absolute; top: 15px; left: 15px; font-size: 1.8rem; cursor: pointer; background: none; border: none; }
+
+        .vertical-math { display: grid; grid-template-columns: 40px repeat(4, 55px); gap: 5px; justify-content: center; align-items: center; margin: 25px auto; direction: ltr; }
+        .digit { font-family: 'Courier New', monospace; font-size: 2.5rem; font-weight: bold; }
+        .carry-input, .carry-demo { width: 35px; height: 35px; border: 2px dashed #ccc; border-radius: 50%; margin: auto; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        .ans-input, .ans-demo { width: 50px; height: 60px; border: 3px solid var(--primary); border-radius: 10px; font-size: 2rem; text-align: center; background: #ebf8ff; margin: auto; }
         .line { grid-column: 1 / span 5; height: 4px; background: #333; margin: 5px 0; }
-        .operator { grid-column: 1; font-size: 2.5rem; }
-
-        /* אנימציה */
-        .tutorial-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: flex; align-items: center; justify-content: center; }
-        .tutorial-box { background: white; color: #333; padding: 25px; border-radius: 25px; width: 90%; max-width: 500px; text-align: center; }
-        .step-msg { font-size: 1.3rem; margin-bottom: 15px; font-weight: bold; color: var(--primary); min-height: 3.5em; }
-        .highlight { color: #f6e05e !important; transform: scale(1.2); }
+        .operator { grid-column: 1; font-size: 2.2rem; }
         .strikethrough { text-decoration: line-through; color: red; opacity: 0.6; }
+
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; display: flex; align-items: center; justify-content: center; }
+        .modal-box { background: white; color: #333; padding: 25px; border-radius: 25px; width: 90%; max-width: 450px; text-align: center; }
     </style>
 </head>
 <body class="kids-mode">
 
     <div class="container">
+        <button class="settings-btn" onclick="showPage('settings')">⚙️</button>
+        
         <div id="page-lobby">
-            <h1>מה נלמד היום? 🎓</h1>
-            <button class="btn btn-blue" onclick="startSimple('add')">➕ חיבור וחיסור</button>
-            <button class="btn btn-orange" onclick="startSimple('mul')">✖️ כפל וחילוק</button>
+            <h1 id="welcome-msg">שלום אלוף! 🏆</h1>
+            <button class="btn btn-blue" onclick="startMode('simple-add')">➕ חיבור וחיסור</button>
+            <button class="btn btn-orange" onclick="startMode('simple-mul')">✖️ כפל וחילוק</button>
             <button class="btn btn-purple" onclick="showPage('setup-v')">📝 חשבון מאונך</button>
-            <button class="btn btn-red" onclick="startSimple('story')">📖 בעיות מילוליות</button>
+            <button class="btn btn-green" onclick="startMode('story')">📖 בעיות מילוליות</button>
+        </div>
+
+        <div id="page-settings" class="hidden">
+            <h2>הגדרות ⚙️</h2>
+            <div style="text-align: right; margin-bottom: 20px;">
+                <label>שם הילד/ה:</label>
+                <input type="text" id="kid-name" style="width:100%; padding:12px; margin:8px 0; border-radius:10px; border:2px solid #ddd;">
+                <label>ערכת נושא:</label>
+                <select id="theme-select" style="width:100%; padding:12px; margin:8px 0; border-radius:10px;">
+                    <option value="kids-mode">צבעוני וכיפי</option>
+                    <option value="light-mode">בהיר</option>
+                    <option value="dark-mode">מצב לילה</option>
+                </select>
+            </div>
+            <button class="btn btn-blue" onclick="saveSettings()">שמור וחזור</button>
         </div>
 
         <div id="page-setup-v" class="hidden">
-            <h2>בחר סוג מאונך:</h2>
-            <button class="btn btn-blue" onclick="vType='add'; startMode('vertical')">חיבור מאונך</button>
-            <button class="btn btn-red" onclick="vType='sub'; startMode('vertical')">חיסור מאונך</button>
-            <button class="btn btn-orange" onclick="showPage('setup-mul')">כפל מאונך ➔</button>
-            <button class="btn" style="color:black" onclick="showPage('lobby')">חזרה</button>
-        </div>
-
-        <div id="page-setup-mul" class="hidden">
-            <h2>בחר רמת כפל:</h2>
-            <button class="btn btn-orange" onclick="mulLevel='single'; vType='mul'; startMode('vertical')">כפל בחד-ספרתי (כמו 124x3)</button>
-            <button class="btn btn-orange" onclick="mulLevel='double'; vType='mul'; startMode('vertical')">כפל בדו-ספרתי (כמו 124x23)</button>
-            <button class="btn" style="color:black" onclick="showPage('setup-v')">חזרה</button>
+            <h2>חשבון מאונך</h2>
+            <button class="btn btn-blue" onclick="vType='add'; startMode('vertical')">חיבור מאונך (+)</button>
+            <button class="btn btn-red" onclick="vType='sub'; startMode('vertical')">חיסור מאונך (-)</button>
+            <button class="btn btn-orange" onclick="vType='mul'; startMode('vertical')">כפל מאונך (×)</button>
+            <button class="btn btn-gray" onclick="showPage('lobby')">חזרה</button>
         </div>
 
         <div id="page-game" class="hidden">
-            <button id="helpBtn" style="float:right; background:gold; border-radius:50%; width:40px; height:40px; border:none; font-weight:bold; cursor:pointer;" onclick="startTutorial()">?</button>
-            <div id="game-content"></div>
-            <button class="btn btn-blue" style="margin-top:20px;" onclick="check()">בדיקה</button>
-            <div id="feedback" style="margin-top:10px; font-weight:bold;"></div>
-            <button class="btn" style="color:black" onclick="showPage('lobby')">יציאה</button>
+            <button id="helpBtn" style="float:right; background:gold; border-radius:50%; width:45px; height:45px; border:none; font-weight:bold; cursor:pointer;" onclick="startTutorial()">?</button>
+            <div id="game-content" style="margin-top:40px;"></div>
+            <button class="btn btn-blue" style="margin-top:20px;" onclick="check()">בדיקה ✅</button>
+            <div id="feedback" style="margin-top:10px; font-weight:bold; font-size:1.2rem;"></div>
+            <button class="btn btn-gray" onclick="showPage('lobby')">חזרה לתפריט</button>
         </div>
     </div>
 
-    <div id="tutorial-screen" class="tutorial-overlay hidden">
-        <div class="tutorial-box">
-            <div id="t-msg" class="step-msg"></div>
+    <div id="tutorial-modal" class="modal hidden">
+        <div class="modal-box">
+            <h3 id="t-title">איך פותרים?</h3>
+            <div id="t-msg" style="font-weight:bold; margin-bottom:15px; color:var(--primary); min-height:3em;"></div>
             <div id="t-grid" class="vertical-math"></div>
-            <button class="btn btn-blue" onclick="closeTutorial()">הבנתי!</button>
+            <div style="display:flex; gap:10px;">
+                <button id="t-next" class="btn btn-blue">השלב הבא ➔</button>
+                <button class="btn btn-gray" onclick="closeTutorial()">סגור</button>
+            </div>
         </div>
     </div>
 
 <script>
-    let currentMode = '', vType = 'add', mulLevel = 'single', currentQ = {};
+    let settings = JSON.parse(localStorage.getItem('math_pro_final') || '{"name":"אלוף", "theme":"kids-mode"}');
+    let currentMode = '', vType = 'add', currentQ = {}, tutorialStep = 0;
 
     function showPage(id) {
         document.querySelectorAll('.container > div').forEach(d => d.classList.add('hidden'));
         document.getElementById('page-' + id).classList.remove('hidden');
+        document.getElementById('helpBtn').classList.toggle('hidden', id !== 'game' || currentMode !== 'vertical');
+    }
+
+    function saveSettings() {
+        settings.name = document.getElementById('kid-name').value || "אלוף";
+        settings.theme = document.getElementById('theme-select').value;
+        localStorage.setItem('math_pro_final', JSON.stringify(settings));
+        applySettings();
+        showPage('lobby');
+    }
+
+    function applySettings() {
+        document.body.className = settings.theme;
+        document.getElementById('welcome-msg').innerText = `שלום ${settings.name}! 🏆`;
+        document.getElementById('kid-name').value = settings.name;
+        document.getElementById('theme-select').value = settings.theme;
     }
 
     function startMode(m) {
@@ -98,71 +128,114 @@
         document.getElementById('feedback').innerText = '';
         const content = document.getElementById('game-content');
         if(currentMode === 'vertical') renderVertical(content);
-        else content.innerHTML = "<h2>בקרוב...</h2>";
+        else if(currentMode === 'story') renderStory(content);
+        else renderSimple(content);
+    }
+
+    function renderSimple(container) {
+        let n1, n2, op;
+        if(currentMode === 'simple-add') {
+            n1 = Math.floor(Math.random()*50)+1; n2 = Math.floor(Math.random()*50)+1;
+            op = Math.random() > 0.5 ? '+' : '-';
+            if(op === '-' && n1 < n2) [n1, n2] = [n2, n1];
+            currentQ.ans = op === '+' ? n1 + n2 : n1 - n2;
+        } else {
+            n1 = Math.floor(Math.random()*10)+1; n2 = Math.floor(Math.random()*10)+1;
+            op = Math.random() > 0.5 ? '×' : ':';
+            if(op === ':') { currentQ.ans = n1; n1 = n1 * n2; }
+            else { currentQ.ans = n1 * n2; }
+        }
+        container.innerHTML = `<h2 style="font-size:3.5rem;">${n1} ${op} ${n2}</h2>
+        <input type="number" id="ansIn" class="ans-input" style="width:120px; height:80px; font-size:3rem;">`;
+        document.getElementById('ansIn').focus();
+    }
+
+    function renderStory(container) {
+        const stories = [
+            {t: "לדנה היו 12 מדבקות. היא קיבלה עוד 8. כמה מדבקות יש לה עכשיו?", a: 20},
+            {t: "במגירה היו 15 גרביים. אמא הוציאה 4 זוגות (כלומר 8 גרביים). כמה נשארו?", a: 7},
+            {t: "דני קנה 3 חבילות קלפים. בכל חבילה 10 קלפים. כמה קלפים יש לו?", a: 30}
+        ];
+        let s = stories[Math.floor(Math.random()*stories.length)];
+        currentQ.ans = s.a;
+        container.innerHTML = `<p style="font-size:1.6rem; padding:0 15px;">${s.t}</p>
+        <input type="number" id="ansIn" class="ans-input" style="width:100px;">`;
     }
 
     function renderVertical(container) {
-        let n1 = Math.floor(Math.random()*800)+100;
-        let n2 = vType === 'mul' ? (mulLevel === 'single' ? Math.floor(Math.random()*7)+2 : Math.floor(Math.random()*80)+11) : Math.floor(Math.random()*800)+10;
-        if(vType === 'sub' && n1 < n2) [n1, n2] = [n2, n1];
-        
+        let n1 = Math.floor(Math.random()*800)+100, n2 = Math.floor(Math.random()*800)+100;
+        if(vType==='sub' && n1 < n2) [n1, n2] = [n2, n1];
+        if(vType==='mul') { n1 = Math.floor(Math.random()*100)+10; n2 = Math.floor(Math.random()*8)+2; }
         currentQ = { n1, n2, ans: vType==='add' ? n1+n2 : (vType==='sub' ? n1-n2 : n1*n2) };
-
         let html = `<div class="vertical-math">`;
         html += `<div></div><div class="carry-input"></div><input type="text" class="carry-input" id="c2"><input type="text" class="carry-input" id="c1"><div></div>`;
         html += `<div></div>${dg(n1)}`;
         html += `<div class="operator">${vType==='add'?'+':(vType==='sub'?'-':'×')}</div>${dg(n2)}`;
         html += `<div class="line"></div>`;
-        
-        if(vType === 'mul' && mulLevel === 'double') {
-            html += `<div></div><input type="number" class="ans-input"><input type="number" class="ans-input"><input type="number" class="ans-input"><input type="number" class="ans-input">`;
-            html += `<div></div><input type="number" class="ans-input" onfocus="clearC()"><input type="number" class="ans-input" onfocus="clearC()"><input type="number" class="ans-input" onfocus="clearC()"><div class="digit" style="color:#ccc">0</div>`;
-            html += `<div class="line"></div>`;
-        }
         html += `<div></div><input type="number" class="ans-input" id="va3" tabindex="4"><input type="number" class="ans-input" id="va2" tabindex="3"><input type="number" class="ans-input" id="va1" tabindex="2"><input type="number" class="ans-input" id="va0" tabindex="1">`;
         container.innerHTML = html + `</div>`;
+        document.getElementById('va0').focus();
     }
 
     function dg(n) { return [...n.toString().padStart(4, ' ')].map(c => `<div class="digit">${c===' '?'':c}</div>`).join(''); }
-    function clearC() { document.querySelectorAll('.carry-input').forEach(i => i.value = ''); }
 
-    // --- מערכת האנימציה ---
     function startTutorial() {
-        const screen = document.getElementById('tutorial-screen');
-        const msg = document.getElementById('t-msg');
-        const grid = document.getElementById('t-grid');
-        screen.classList.remove('hidden');
-        grid.innerHTML = '';
+        tutorialStep = 0;
+        document.getElementById('tutorial-modal').classList.remove('hidden');
+        runStep();
+    }
 
+    function runStep() {
+        const grid = document.getElementById('t-grid');
+        const msg = document.getElementById('t-msg');
+        const nextBtn = document.getElementById('t-next');
         let steps = [];
 
         if(vType === 'add') {
-            grid.innerHTML = `<div></div><div class="carry-demo" id="tc"></div><div class="carry-demo"></div><div></div><div></div><div></div><div class="digit">4</div><div class="digit" id="tn1">8</div><div></div><div class="operator">+</div><div class="digit">3</div><div class="digit" id="tn2">5</div><div></div><div class="line"></div><div></div><div class="ans-demo" id="ta1"></div><div class="ans-demo" id="ta0"></div>`;
             steps = [
-                { m: "8 + 5 = 13", act: () => { document.getElementById('tn1').classList.add('highlight'); document.getElementById('tn2').classList.add('highlight'); }},
-                { m: "כותבים 3 למטה וזוכרים 1 למעלה", act: () => { document.getElementById('ta0').innerText = "3"; document.getElementById('tc').innerText = "1"; }}
+                {m: "בוא נפתור: 48 + 35. מתחילים מהיחידות (מימין).", g: `<div></div><div class="carry-demo"></div><div class="carry-demo"></div><div></div><div></div><div></div><div class="digit">4</div><div class="digit">8</div><div></div><div class="operator">+</div><div class="digit">3</div><div class="digit">5</div><div></div><div class="line"></div><div></div><div class="ans-demo"></div><div class="ans-demo"></div>`},
+                {m: "8 ועוד 5 זה 13. כותבים 3 למטה וזוכרים 1 למעלה.", g: `<div></div><div class="carry-demo">1</div><div class="carry-demo"></div><div></div><div></div><div></div><div class="digit">4</div><div class="digit">8</div><div></div><div class="operator">+</div><div class="digit">3</div><div class="digit">5</div><div></div><div class="line"></div><div></div><div class="ans-demo"></div><div class="ans-demo">3</div>`},
+                {m: "עכשיו עשרות: 1 שזכרנו + 4 + 3 זה 8.", g: `<div></div><div class="carry-demo">1</div><div class="carry-demo"></div><div></div><div></div><div></div><div class="digit">4</div><div class="digit">8</div><div></div><div class="operator">+</div><div class="digit">3</div><div class="digit">5</div><div></div><div class="line"></div><div></div><div class="ans-demo">8</div><div class="ans-demo">3</div>`},
+                {m: "התוצאה היא 83! עכשיו תורך לנסות."}
             ];
         } else if(vType === 'sub') {
-            grid.innerHTML = `<div></div><div></div><div class="digit" id="tn1-1">5</div><div class="digit" id="tn1-2">2</div><div></div><div class="operator">-</div><div></div><div class="digit" id="tn2-1">1</div><div class="digit" id="tn2-2">7</div><div></div><div class="line"></div><div></div><div></div><div class="ans-demo" id="ta1"></div><div class="ans-demo" id="ta0"></div>`;
             steps = [
-                { m: "2 קטן מ-7, אי אפשר לחסר!", act: () => { document.getElementById('tn1-2').classList.add('highlight'); }},
-                { m: "לווים 1 מהעשרות (ה-5 הופך ל-4)", act: () => { document.getElementById('tn1-1').classList.add('strikethrough'); }},
-                { m: "עכשיו ביחידות יש לנו 12. 12 פחות 7 זה 5", act: () => { document.getElementById('ta0').innerText = "5"; }}
+                {m: "בוא נפתור: 52 - 17. 2 קטן מ-7, אז אי אפשר!", g: `<div></div><div class="carry-demo"></div><div class="carry-demo"></div><div></div><div></div><div></div><div class="digit">5</div><div class="digit">2</div><div></div><div class="operator">-</div><div class="digit">1</div><div class="digit">7</div><div></div><div class="line"></div><div></div><div class="ans-demo"></div><div class="ans-demo"></div>`},
+                {m: "לווים 1 מהעשרות. ה-5 הופך ל-4, וה-2 הופך ל-12.", g: `<div></div><div class="carry-demo"></div><div class="carry-demo"></div><div></div><div></div><div></div><div class="digit strikethrough">5</div><div class="digit">12</div><div></div><div class="operator">-</div><div class="digit">1</div><div class="digit">7</div><div></div><div class="line"></div><div></div><div class="ans-demo"></div><div class="ans-demo"></div>`},
+                {m: "12 פחות 7 זה 5. נכתוב 5 ביחידות.", g: `<div></div><div class="carry-demo"></div><div class="carry-demo"></div><div></div><div></div><div></div><div class="digit strikethrough">5</div><div class="digit">12</div><div></div><div class="operator">-</div><div class="digit">1</div><div class="digit">7</div><div></div><div class="line"></div><div></div><div class="ans-demo"></div><div class="ans-demo">5</div>`},
+                {m: "4 פחות 1 זה 3. התוצאה היא 35.", g: `<div></div><div class="carry-demo"></div><div class="carry-demo"></div><div></div><div></div><div></div><div class="digit strikethrough">5</div><div class="digit">12</div><div></div><div class="operator">-</div><div class="digit">1</div><div class="digit">7</div><div></div><div class="line"></div><div></div><div class="ans-demo">3</div><div class="ans-demo">5</div>`}
             ];
         } else {
-            grid.innerHTML = `<div class="step-msg">אנימציית כפל בשלבים</div>`;
-            steps = [{ m: "בכפל, מכפילים קודם את האחדות בכל המספר למעלה, ואז עוברים לעשרות ומוסיפים 0!", act: () => {}}];
+            steps = [{m: "בכפל מאונך, מכפילים את הספרה למטה בכל אחת מהספרות למעלה לפי הסדר!", g: ``}];
         }
 
-        let i = 0;
-        const intr = setInterval(() => {
-            if(i >= steps.length) { clearInterval(intr); return; }
-            msg.innerText = steps[i].m; steps[i].act(); i++;
-        }, 3000);
+        if(tutorialStep < steps.length) {
+            msg.innerText = steps[tutorialStep].m;
+            if(steps[tutorialStep].g) grid.innerHTML = steps[tutorialStep].g;
+            nextBtn.onclick = () => { tutorialStep++; runStep(); };
+        } else { closeTutorial(); }
     }
 
-    function closeTutorial() { document.getElementById('tutorial-screen').classList.add('hidden'); }
-    function check() { /* בדיקה רגילה */ }
+    function closeTutorial() { document.getElementById('tutorial-modal').classList.add('hidden'); }
+
+    function check() {
+        let val;
+        if(currentMode === 'vertical') {
+            val = parseInt([3,2,1,0].map(i => document.getElementById('va'+i).value || '').reverse().join(''));
+        } else {
+            val = parseInt(document.getElementById('ansIn').value);
+        }
+        if(val === currentQ.ans) {
+            document.getElementById('feedback').innerText = "בול! נכון מאוד 🎯";
+            document.getElementById('feedback').style.color = "green";
+            setTimeout(nextQ, 2000);
+        } else {
+            document.getElementById('feedback').innerText = "משהו לא מסתדר... נסה שוב 💪";
+            document.getElementById('feedback').style.color = "red";
+        }
+    }
+
+    window.onload = applySettings;
 </script>
 </body>
 </html>
