@@ -47,7 +47,7 @@
             text-align: center;
         }
 
-        /* מסך פתיחה */
+        /* מסך פתיחה חדש */
         #splash-screen {
             display: flex;
             flex-direction: column;
@@ -69,13 +69,6 @@
 
         #setup, #game-area { display: none; }
 
-        .mode-selector {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin: 20px 0;
-        }
-
         .btn {
             padding: 15px;
             border-radius: 15px;
@@ -89,7 +82,7 @@
         .btn:active { transform: scale(0.95); }
         .btn-primary { background: var(--primary); color: white; width: 100%; }
         
-        .mode-btn { background: white; border: 2px solid #e2e8f0; }
+        .mode-btn { background: white; border: 2px solid #e2e8f0; margin: 5px; }
         .mode-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
         .num-grid {
@@ -150,7 +143,7 @@
 
     <div id="setup">
         <h2>מה נתרגל?</h2>
-        <div class="mode-selector">
+        <div style="display: flex; justify-content: center; margin-bottom: 20px;">
             <button class="btn mode-btn active" onclick="setMode('mul', this)">כפל ×</button>
             <button class="btn mode-btn" onclick="setMode('div', this)">חילוק ÷</button>
             <button class="btn mode-btn" onclick="setMode('both', this)">מעורב</button>
@@ -184,4 +177,66 @@
     }
 
     function showSetup() {
-        document
+        document.getElementById('splash-screen').style.display = 'none';
+        document.getElementById('setup').style.display = 'block';
+        gtag('event', 'start_game_click'); // דיווח לגוגל
+    }
+
+    function setMode(m, btn) {
+        mode = m;
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    function startGame() {
+        if(selected.size === 0) return alert("בבקשה בחר לפחות מספר אחד");
+        document.getElementById('setup').style.display = 'none';
+        document.getElementById('game-area').style.display = 'block';
+        next();
+    }
+
+    function next() {
+        const arr = Array.from(selected);
+        const a = arr[Math.floor(Math.random()*arr.length)], b = Math.floor(Math.random()*10)+1;
+        let m = mode === 'both' ? (Math.random()>0.5?'mul':'div') : mode;
+        
+        if(m === 'mul') {
+            current.ans = a * b;
+            document.getElementById('question').innerText = `${a} × ${b}`;
+        } else {
+            current.ans = b;
+            document.getElementById('question').innerText = `${a*b} ÷ ${a}`;
+        }
+        document.getElementById('ansInput').value = '';
+        document.getElementById('ansInput').focus();
+    }
+
+    function check() {
+        const val = parseInt(document.getElementById('ansInput').value);
+        const msg = document.getElementById('msg');
+        if(val === current.ans) {
+            msg.innerText = "מצוין! ✨"; msg.style.color = "var(--success)";
+            gtag('event', 'correct_answer', {'mode': mode});
+            setTimeout(() => { msg.innerText = ""; next(); }, 1000);
+        } else {
+            msg.innerText = "נסו שוב... 🤔"; msg.style.color = "var(--error)";
+            gtag('event', 'wrong_answer');
+        }
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault(); deferredPrompt = e;
+        document.getElementById('install-prompt').style.display = 'block';
+    });
+
+    async function doInstall() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt = null;
+        }
+    }
+
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
+</script>
+</body>
+</html>
