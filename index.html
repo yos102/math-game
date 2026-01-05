@@ -24,7 +24,7 @@
             --error: #f56565;
             --bg: #f7fafc;
             --card-bg: #ffffff;
-            --text: #1a202c; /* צבע טקסט כהה יותר */
+            --text: #1a202c;
             --input-border: #e2e8f0;
         }
 
@@ -61,7 +61,7 @@
 
         .hidden { display: none !important; }
 
-        .settings-btn { position: absolute; top: 15px; left: 15px; font-size: 1.5rem; cursor: pointer; }
+        .settings-btn { position: absolute; top: 15px; left: 15px; font-size: 1.5rem; cursor: pointer; z-index: 100; }
 
         .btn {
             padding: 15px; border-radius: 15px; border: none;
@@ -70,20 +70,21 @@
         }
 
         .btn-main { background: var(--primary); color: white; }
-        .btn-install { background: #2d3748; color: white; margin-top: 20px; display: none; }
+        .btn-alt { background: var(--secondary); color: white; }
         
         .mode-btn { background: var(--card-bg); border: 2px solid var(--input-border); color: var(--text); width: auto; flex: 1; margin: 5px; }
         .mode-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
         .menu-card {
             background: var(--bg); padding: 20px; border-radius: 20px;
-            margin-bottom: 15px; cursor: pointer; border: 2px solid transparent;
+            margin-bottom: 15px; cursor: pointer; border: 2px solid transparent; transition: 0.2s;
         }
+        .menu-card:hover { border-color: var(--primary); }
 
-        .card { font-size: 3.5rem; padding: 30px; background: rgba(74, 144, 226, 0.1); border-radius: 20px; margin: 20px 0; direction: ltr; }
+        .card { font-size: 1.8rem; padding: 25px; background: rgba(74, 144, 226, 0.1); border-radius: 20px; margin: 20px 0; line-height: 1.4; }
 
         input {
-            font-size: 1.5rem; width: 85%; text-align: center; padding: 12px;
+            font-size: 1.8rem; width: 85%; text-align: center; padding: 12px;
             border: 3px solid var(--input-border); border-radius: 15px;
             background: var(--card-bg); color: var(--text); margin-bottom: 20px;
         }
@@ -93,15 +94,13 @@
             background: var(--bg); display: flex; flex-direction: column;
             align-items: center; justify-content: center; z-index: 2000;
         }
-        
-        .iphone-hint { font-size: 0.8rem; color: gray; margin-top: 5px; }
     </style>
 </head>
 <body>
 
     <div id="splash">
         <div style="font-size: 5rem; animation: pulse 1.5s infinite;">🔢</div>
-        <h1 id="splash-welcome" style="color: var(--text); font-weight: 800;">ברוכים הבאים!</h1>
+        <h1 id="splash-welcome" style="font-weight: 800;">ברוכים הבאים!</h1>
     </div>
 
     <div class="container">
@@ -109,20 +108,13 @@
 
         <div id="page-settings" class="hidden">
             <h2>הגדרות</h2>
-            <p>איך קוראים לך?</p>
-            <input type="text" id="nameInput" placeholder="הקלידו שם כאן...">
-            
-            <p>צבעי האפליקציה:</p>
+            <input type="text" id="nameInput" placeholder="איך קוראים לך?">
+            <p>מראה האפליקציה:</p>
             <div style="display: flex;">
-                <button class="btn mode-btn" id="theme-light" onclick="setTheme('light')">יום ☀️</button>
-                <button class="btn mode-btn" id="theme-dark" onclick="setTheme('dark')">לילה 🌙</button>
-                <button class="btn mode-btn" id="theme-system" onclick="setTheme('system')">אוטומטי 💻</button>
+                <button class="btn mode-btn" onclick="setTheme('light')">יום ☀️</button>
+                <button class="btn mode-btn" onclick="setTheme('dark')">לילה 🌙</button>
             </div>
-
-            <button id="installBtn" class="btn btn-install" onclick="installPWA()">📲 התקן את המשחק בטלפון</button>
-            <p class="iphone-hint">באייפון: לחצו על כפתור השיתוף ⎋ ואז "הוספה למסך הבית"</p>
-            
-            <button class="btn btn-main" style="margin-top: 30px;" onclick="saveSettings()">שמירה והמשך</button>
+            <button class="btn btn-main" onclick="saveSettings()">שמירה</button>
         </div>
 
         <div id="page-lobby" class="hidden">
@@ -130,12 +122,15 @@
             <div class="menu-card" onclick="showPage('setup-add')">
                 <div style="font-size: 3rem;">➕</div>
                 <h3>חיבור וחיסור</h3>
-                <p>תרגול עד 10, 100 או 1000</p>
             </div>
             <div class="menu-card" onclick="showPage('setup-mul')">
                 <div style="font-size: 3rem;">✖️</div>
                 <h3>כפל וחילוק</h3>
-                <p>לוח הכפל והחילוק</p>
+            </div>
+            <div class="menu-card" onclick="showPage('setup-story')" style="background: #e9d8fd;">
+                <div style="font-size: 3rem;">📖</div>
+                <h3>בעיות מילוליות</h3>
+                <p>סיפורי חשבון מאתגרים</p>
             </div>
         </div>
 
@@ -151,7 +146,7 @@
                 <button class="btn mode-btn active" id="btn-add" onclick="setOpAdd('add')">חיבור +</button>
                 <button class="btn mode-btn" id="btn-sub" onclick="setOpAdd('sub')">חיסור -</button>
             </div>
-            <button class="btn btn-main" onclick="startGame('add-logic')">בואו נשחק!</button>
+            <button class="btn btn-main" onclick="startGame('add-logic')">מתחילים!</button>
         </div>
 
         <div id="page-setup-mul" class="hidden">
@@ -165,6 +160,16 @@
             <button class="btn btn-main" onclick="startGame('mul-logic')">מתחילים!</button>
         </div>
 
+        <div id="page-setup-story" class="hidden">
+            <button onclick="showPage('lobby')" style="background:none; border:none; color:var(--primary); cursor:pointer;">⬅️ חזרה</button>
+            <h2>הגדרות סיפור</h2>
+            <p>איזה סוג שאלות?</p>
+            <button class="btn mode-btn active" id="story-mode-mix" onclick="setStoryMode('mix')">הכל מהכל 🎲</button>
+            <button class="btn mode-btn" id="story-mode-addsub" onclick="setStoryMode('addsub')">חיבור וחיסור ➕</button>
+            <button class="btn mode-btn" id="story-mode-muldiv" onclick="setStoryMode('muldiv')">כפל וחילוק ✖️</button>
+            <button class="btn btn-alt" onclick="startGame('story-logic')">בואו נתחיל בסיפור!</button>
+        </div>
+
         <div id="page-game" class="hidden">
             <div id="question" class="card"></div>
             <input type="number" id="ansInput" inputmode="numeric" onkeypress="if(event.key==='Enter') check()">
@@ -176,38 +181,27 @@
 
 <script>
     let childName = localStorage.getItem('childName') || '';
-    let theme = localStorage.getItem('theme') || 'system';
-    let deferredPrompt;
-    let currentModule = '', opMul = 'mul', mulSelected = new Set(), opAdd = 'add', addRange = 10, currentQ = {};
+    let theme = localStorage.getItem('theme') || 'light';
+    let currentModule = '', currentQ = {};
+    let opMul = 'mul', mulSelected = new Set(), opAdd = 'add', addRange = 10, storyMode = 'mix';
+
+    const objects = ["תפוחים", "גולות", "מדבקות", "סוכריות", "צעצועים", "קלפים", "עוגיות"];
+    const friends = ["רוני", "נועם", "עמית", "ליה", "איתי", "מאיה", "יונתן"];
 
     function setTheme(t) {
-        theme = t;
-        localStorage.setItem('theme', t);
-        ['light', 'dark', 'system'].forEach(v => document.getElementById('theme-'+v).classList.toggle('active', v===t));
-        if(t === 'system') {
-            const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-        } else {
-            document.documentElement.setAttribute('data-theme', t);
-        }
+        theme = t; localStorage.setItem('theme', t);
+        document.documentElement.setAttribute('data-theme', t);
     }
     setTheme(theme);
 
     window.onload = () => {
         if(childName) document.getElementById('splash-welcome').innerText = `שלום, ${childName}!`;
         document.getElementById('nameInput').value = childName;
-        setTimeout(() => {
-            document.getElementById('splash').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('splash').style.display = 'none';
-                showPage(childName ? 'lobby' : 'settings');
-            }, 500);
-        }, 2500);
+        setTimeout(() => { document.getElementById('splash').style.display = 'none'; showPage(childName ? 'lobby' : 'settings'); }, 2500);
     };
 
     function saveSettings() {
-        childName = document.getElementById('nameInput').value.trim();
-        if(!childName) return alert("בבקשה כתבו שם");
+        childName = document.getElementById('nameInput').value;
         localStorage.setItem('childName', childName);
         document.getElementById('lobby-title').innerText = `שלום, ${childName}! 👋`;
         showPage('lobby');
@@ -228,10 +222,42 @@
     function setOp(o) { opMul = o; document.getElementById('btn-mul').classList.toggle('active', o==='mul'); document.getElementById('btn-div').classList.toggle('active', o==='div'); }
     function setOpAdd(o) { opAdd = o; document.getElementById('btn-add').classList.toggle('active', o==='add'); document.getElementById('btn-sub').classList.toggle('active', o==='sub'); }
     function setRange(r) { addRange = r; [10, 100, 1000].forEach(v => document.getElementById('range-'+v).classList.toggle('active', v===r)); }
+    function setStoryMode(m) { storyMode = m; ['mix', 'addsub', 'muldiv'].forEach(v => document.getElementById('story-mode-'+v).classList.toggle('active', v===m)); }
 
     function startGame(logic) {
-        if(logic === 'mul-logic' && mulSelected.size === 0) return alert("בחרו מספרים לתרגול");
+        if(logic === 'mul-logic' && mulSelected.size === 0) return alert("בחרו מספרים");
         currentModule = logic; showPage('game'); next();
+    }
+
+    function generateStory() {
+        let types = [];
+        if(storyMode === 'addsub') types = ['add', 'sub'];
+        else if(storyMode === 'muldiv') types = ['mul', 'div'];
+        else types = ['add', 'sub', 'mul', 'div'];
+        
+        const type = types[Math.floor(Math.random()*types.length)];
+        const obj = objects[Math.floor(Math.random()*objects.length)];
+        const friend = friends[Math.floor(Math.random()*friends.length)];
+        const name = childName || "הילד";
+
+        let a, b, ans, text;
+        if(type === 'add') {
+            a = Math.floor(Math.random()*addRange/2)+1; b = Math.floor(Math.random()*addRange/2)+1;
+            ans = a + b;
+            text = `ל${name} היו ${a} ${obj}. ${friend} נתן לו עוד ${b} ${obj}. כמה יש לו עכשיו?`;
+        } else if(type === 'sub') {
+            a = Math.floor(Math.random()*addRange/2)+5; b = Math.floor(Math.random()*a);
+            ans = a - b;
+            text = `ל${name} היו ${a} ${obj}. הוא נתן ${b} ${obj} ל${friend}. כמה נשארו לו?`;
+        } else if(type === 'mul') {
+            a = Math.floor(Math.random()*5)+2; b = Math.floor(Math.random()*5)+2;
+            ans = a * b;
+            text = `ל${name} יש ${a} קופסאות. בכל קופסה יש ${b} ${obj}. כמה ${obj} יש לו בסך הכל?`;
+        } else {
+            b = Math.floor(Math.random()*5)+2; ans = Math.floor(Math.random()*5)+2; a = b * ans;
+            text = `ל${name} יש ${a} ${obj}. הוא רוצה לחלק אותם שווה בשווה בין ${b} חברים. כמה ${obj} יקבל כל חבר?`;
+        }
+        return { ans, text };
     }
 
     function next() {
@@ -239,10 +265,12 @@
             const arr = Array.from(mulSelected);
             const a = arr[Math.floor(Math.random()*arr.length)], b = Math.floor(Math.random()*10)+1;
             currentQ = opMul === 'mul' ? { ans: a*b, text: `${a} × ${b}` } : { ans: b, text: `${a*b} ÷ ${a}` };
-        } else {
+        } else if(currentModule === 'add-logic') {
             const a = Math.floor(Math.random()*addRange)+1, b = Math.floor(Math.random()*addRange)+1;
             if(opAdd === 'add') currentQ = { ans: a+b, text: `${a} + ${b}` };
             else { const big = Math.max(a,b), small = Math.min(a,b); currentQ = { ans: big-small, text: `${big} - ${small}` }; }
+        } else {
+            currentQ = generateStory();
         }
         document.getElementById('question').innerText = currentQ.text;
         document.getElementById('ansInput').value = ''; document.getElementById('ansInput').focus();
@@ -252,29 +280,10 @@
         const val = parseInt(document.getElementById('ansInput').value);
         const msg = document.getElementById('msg');
         if(val === currentQ.ans) {
-            msg.innerText = `נכון מאוד, ${childName}! ✨`;
-            msg.style.color = "var(--success)";
-            gtag('event', 'answer_correct');
+            msg.innerText = "נכון מאוד! ✨ גאים בך!"; msg.style.color = "var(--success)";
             setTimeout(() => { msg.innerText = ""; next(); }, 1200);
         } else {
-            msg.innerText = "נסו שוב... 🤔"; msg.style.color = "var(--error)";
-        }
-    }
-
-    // לוגיקת התקנה PWA
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        document.getElementById('installBtn').style.display = 'block';
-    });
-
-    function installPWA() {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choice) => {
-                if (choice.outcome === 'accepted') document.getElementById('installBtn').style.display = 'none';
-                deferredPrompt = null;
-            });
+            msg.innerText = "לא בדיוק, כדאי לנסות שוב... 🤔"; msg.style.color = "var(--error)";
         }
     }
 </script>
