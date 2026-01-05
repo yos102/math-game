@@ -11,42 +11,26 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>מרכז המתמטיקה</title>
+    <title>Math Center 2026</title>
     
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3771/3771278.png">
 
     <style>
         :root {
-            --primary: #4a90e2;
-            --secondary: #9f7aea;
-            --success: #48bb78;
-            --warning: #ed8936;
-            --error: #f56565;
-            --bg: #f7fafc;
-            --card-bg: #ffffff;
-            --text: #1a202c;
-            --input-border: #e2e8f0;
+            --primary: #4a90e2; --secondary: #9f7aea; --success: #48bb78;
+            --warning: #ed8936; --error: #f56565; --bg: #f7fafc;
+            --card-bg: #ffffff; --text: #1a202c; --input-border: #e2e8f0;
         }
-
         [data-theme="dark"] {
-            --bg: #1a202c;
-            --card-bg: #2d3748;
-            --text: #f7fafc;
-            --input-border: #4a5568;
+            --bg: #1a202c; --card-bg: #2d3748; --text: #f7fafc; --input-border: #4a5568;
         }
 
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0; padding: 10px;
-            transition: background 0.3s;
+            background-color: var(--bg); color: var(--text);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 100vh; margin: 0; padding: 10px; transition: 0.3s;
         }
 
         .container {
@@ -56,274 +40,229 @@
         }
 
         .hidden { display: none !important; }
-
-        .btn {
-            padding: 15px; border-radius: 15px; border: none;
-            font-size: 1.1rem; font-weight: bold; cursor: pointer;
-            width: 100%; margin: 8px 0; transition: 0.2s;
-        }
-
+        .btn { padding: 12px; border-radius: 12px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; width: 100%; margin: 5px 0; transition: 0.2s; }
         .btn-main { background: var(--primary); color: white; }
         .btn-alt { background: var(--secondary); color: white; }
-        
-        .mode-btn { background: var(--card-bg); border: 2px solid var(--input-border); color: var(--text); width: auto; flex: 1; margin: 5px; }
+        .mode-btn { background: var(--card-bg); border: 2px solid var(--input-border); color: var(--text); width: auto; flex: 1; margin: 3px; }
         .mode-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        .menu-card {
-            background: var(--bg); padding: 15px; border-radius: 20px;
-            margin-bottom: 12px; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s;
-        }
-        .menu-card:hover { transform: scale(1.02); }
+        .progress-container { width: 100%; height: 12px; background: #edf2f7; border-radius: 6px; margin: 15px 0; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--success); width: 0%; transition: 0.5s; }
 
-        .card { font-size: 1.7rem; padding: 25px; background: rgba(74, 144, 226, 0.1); border-radius: 20px; margin: 15px 0; line-height: 1.4; white-space: pre-wrap; transition: all 0.3s; }
+        .card { font-size: 1.6rem; padding: 20px; background: rgba(74, 144, 226, 0.1); border-radius: 20px; margin: 10px 0; line-height: 1.4; white-space: pre-wrap; transition: 0.3s; }
+        input { font-size: 1.8rem; width: 70%; text-align: center; padding: 10px; border: 3px solid var(--input-border); border-radius: 12px; background: var(--card-bg); color: var(--text); }
 
-        input {
-            font-size: 2rem; width: 80%; text-align: center; padding: 12px;
-            border: 3px solid var(--input-border); border-radius: 15px;
-            background: var(--card-bg); color: var(--text);
-        }
+        #scratch-area { position: relative; margin-top: 15px; border: 2px dashed var(--secondary); border-radius: 15px; background: #fffdf0; }
+        canvas { touch-action: none; cursor: crosshair; width: 100%; }
 
-        #mul-table-modal {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: white; padding: 15px; border-radius: 15px; z-index: 3000;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5); max-width: 95%; max-height: 90vh; overflow: auto;
-        }
-
-        table { border-collapse: collapse; margin: auto; color: #000; width: 100%; }
-        td, th { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        th { background: #f2f2f2; }
-
-        #splash {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg); display: flex; flex-direction: column;
-            align-items: center; justify-content: center; z-index: 2000;
-        }
-
-        .feedback-hint { font-size: 1.1rem; margin-top: 10px; font-weight: bold; }
+        #mul-table-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 15px; border-radius: 15px; z-index: 3000; box-shadow: 0 0 50px rgba(0,0,0,0.5); max-width: 95%; overflow: auto; }
+        table { border-collapse: collapse; width: 100%; color: #000; }
+        td, th { border: 1px solid #ddd; padding: 5px; text-align: center; font-size: 0.9rem; }
     </style>
 </head>
 <body>
-
-    <div id="splash">
-        <div style="font-size: 5rem; animation: pulse 1.5s infinite;">🧮</div>
-        <h1 id="splash-welcome" style="font-weight: 800; color:var(--text)">מרכז המתמטיקה</h1>
-    </div>
 
     <div class="container">
         <div style="position:absolute; top:15px; left:15px; cursor:pointer; font-size: 1.5rem;" onclick="showPage('settings')">⚙️</div>
 
         <div id="page-settings" class="hidden">
-            <h2>הגדרות</h2>
-            <input type="text" id="nameInput" placeholder="איך קוראים לך?">
-            <button class="btn btn-main" onclick="saveSettings()" style="margin-top:20px">שמירה</button>
+            <h2 data-i18n="settings">הגדרות</h2>
+            <input type="text" id="nameInput" placeholder="שם הילד/ה">
+            <div style="margin: 20px 0;">
+                <p data-i18n="theme">ערכת נושא:</p>
+                <button class="mode-btn" onclick="setTheme('light')">☀️</button>
+                <button class="mode-btn" onclick="setTheme('dark')">🌙</button>
+            </div>
+            <div style="margin: 20px 0;">
+                <p data-i18n="lang">שפה:</p>
+                <button class="mode-btn" id="lang-he" onclick="setLang('he')">עברית</button>
+                <button class="mode-btn" id="lang-en" onclick="setLang('en')">English</button>
+            </div>
+            <button class="btn btn-main" onclick="saveSettings()" data-i18n="save">שמירה וחזרה</button>
         </div>
 
-        <div id="page-lobby" class="hidden">
+        <div id="page-lobby">
             <h1 id="lobby-title">שלום!</h1>
-            <div class="menu-card" onclick="showPage('setup-add')"><h3>➕ חיבור וחיסור</h3></div>
-            <div class="menu-card" onclick="showPage('setup-mul')"><h3>✖️ כפל וחילוק</h3></div>
-            <div class="menu-card" onclick="showPage('setup-story')" style="background: #e9d8fd;"><h3>📖 בעיות מילוליות</h3></div>
+            <button class="btn btn-alt" onclick="showPage('setup-add')">➕ <span data-i18n="addsub">חיבור וחיסור</span></button>
+            <button class="btn btn-alt" onclick="showPage('setup-mul')">✖️ <span data-i18n="muldiv">כפל וחילוק</span></button>
+            <button class="btn btn-main" onclick="showPage('setup-story')">📖 <span data-i18n="stories">בעיות מילוליות</span></button>
         </div>
 
         <div id="page-setup-add" class="hidden">
-            <button onclick="showPage('lobby')">⬅️ חזרה</button>
-            <h2>חיבור וחיסור</h2>
-            <div style="display:flex;">
-                <button class="btn mode-btn active" id="range-10" onclick="setRange(10)">עד 10</button>
-                <button class="btn mode-btn" id="range-100" onclick="setRange(100)">עד 100</button>
-                <button class="btn mode-btn" id="range-1000" onclick="setRange(1000)">עד 1000</button>
+            <h2 data-i18n="addsub">חיבור וחיסור</h2>
+            <div style="display:flex; margin-bottom:10px;">
+                <button class="btn mode-btn active" id="range-10" onclick="setRange(10)">10</button>
+                <button class="btn mode-btn" id="range-100" onclick="setRange(100)">100</button>
+                <button class="btn mode-btn" id="range-1000" onclick="setRange(1000)">1000</button>
             </div>
-            <div style="display:flex; margin-top:10px;">
-                <button class="btn mode-btn active" id="btn-add" onclick="setOpAdd('add')">חיבור +</button>
-                <button class="btn mode-btn" id="btn-sub" onclick="setOpAdd('sub')">חיסור -</button>
-            </div>
-            <button class="btn btn-main" onclick="startGame('add-logic')">מתחילים</button>
+            <button class="btn btn-main" onclick="startGame('add-logic')">START</button>
+            <button class="btn" onclick="showPage('lobby')">⬅️</button>
         </div>
 
         <div id="page-setup-mul" class="hidden">
-            <button onclick="showPage('lobby')">⬅️ חזרה</button>
-            <h2>כפל וחילוק</h2>
-            <div style="display:flex;">
-                <button class="btn mode-btn active" id="btn-mul" onclick="setOp('mul')">כפל ×</button>
-                <button class="btn mode-btn" id="btn-div" onclick="setOp('div')">חילוק ÷</button>
-            </div>
-            <p>בחר מספרים לתרגול:</p>
-            <div id="mul-num-grid" style="display:grid; grid-template-columns: repeat(5,1fr); gap:5px; margin:10px 0;"></div>
-            <button class="btn btn-main" onclick="startGame('mul-logic')">מתחילים</button>
+            <h2 data-i18n="muldiv">כפל וחילוק</h2>
+            <div id="mul-num-grid" style="display:grid; grid-template-columns: repeat(5,1fr); gap:5px;"></div>
+            <button class="btn btn-main" onclick="startGame('mul-logic')" style="margin-top:10px;">START</button>
+            <button class="btn" onclick="showPage('lobby')">⬅️</button>
         </div>
 
         <div id="page-setup-story" class="hidden">
-            <button onclick="showPage('lobby')">⬅️ חזרה</button>
-            <h2>סיפורי חשבון</h2>
-            <div style="display:flex; flex-direction:column;">
-                <button class="btn mode-btn active" id="story-m-mix" onclick="setStoryMode('mix')">הכל מעורב 🎲</button>
-                <button class="btn mode-btn" id="story-m-addsub" onclick="setStoryMode('addsub')">חיבור וחיסור ➕</button>
-                <button class="btn mode-btn" id="story-m-muldiv" onclick="setStoryMode('muldiv')">כפל וחילוק ✖️</button>
-                <button class="btn mode-btn" id="story-m-advanced" onclick="setStoryMode('advanced')">שאלות מתקדמות 💡</button>
-            </div>
-            <p>טווח מספרים:</p>
-            <div style="display:flex;">
-                <button class="btn mode-btn active" id="s-range-10" onclick="setRange(10)">עד 10</button>
-                <button class="btn mode-btn" id="s-range-100" onclick="setRange(100)">עד 100</button>
-                <button class="btn mode-btn" id="s-range-1000" onclick="setRange(1000)">עד 1000</button>
-            </div>
-            <button class="btn btn-alt" onclick="startGame('story-logic')">בואו נתחיל</button>
+            <h2 data-i18n="stories">בעיות מילוליות</h2>
+            <button class="btn mode-btn active" id="story-m-mix" onclick="setStoryMode('mix')">🎲 <span data-i18n="mix">מעורב</span></button>
+            <button class="btn mode-btn" id="story-m-advanced" onclick="setStoryMode('advanced')">💡 <span data-i18n="advanced">מתקדם</span></button>
+            <button class="btn btn-main" onclick="startGame('story-logic')">START</button>
+            <button class="btn" onclick="showPage('lobby')">⬅️</button>
         </div>
 
         <div id="page-game" class="hidden">
+            <div class="progress-container"><div id="pBar" class="progress-bar"></div></div>
             <div id="question" class="card"></div>
-            <input type="number" id="ansInput" inputmode="numeric" onkeypress="if(event.key==='Enter') check()">
-            <button class="btn btn-main" onclick="check()">בדיקה</button>
-            <button id="showMulTableBtn" class="btn hidden" style="background:#edf2f7; color:#2d3748;" onclick="toggleMulTable(true)">הצץ בלוח הכפל 🔍</button>
-            <div id="msg" class="feedback-hint"></div>
-            <p onclick="showPage('lobby')" style="color:gray; cursor:pointer; margin-top:20px; text-decoration:underline;">חזרה לתפריט</p>
+            <input type="number" id="ansInput" inputmode="numeric">
+            <button class="btn btn-main" onclick="check()" data-i18n="check">בדיקה</button>
+            
+            <div style="display:flex; gap:5px;">
+                <button id="showMulTableBtn" class="btn hidden" style="flex:1; background:#edf2f7; color:#000;" onclick="toggleMulTable(true)">🔍</button>
+                <button class="btn" style="flex:1; background:#f7fafc; border:1px solid #ddd; color:gray;" onclick="skipQuestion()" data-i18n="skip">דלג/פתרון</button>
+            </div>
+
+            <p style="cursor:pointer; color:var(--secondary); margin-top:10px;" onclick="toggleScratchpad()">📝 <span data-i18n="scratch">טיוטה</span></p>
+            <div id="scratch-area" class="hidden">
+                <canvas id="canvas"></canvas>
+                <button class="btn" onclick="clearCanvas()" style="background:rgba(255,0,0,0.1); color:red; font-size:0.8rem;">נקה טיוטה</button>
+            </div>
+
+            <div id="msg" class="feedback-hint" style="margin-top:10px; font-weight:bold;"></div>
+            <button class="btn" onclick="showPage('lobby')" style="margin-top:20px; color:gray;" data-i18n="back">חזרה לתפריט</button>
         </div>
     </div>
 
     <div id="mul-table-modal" class="hidden">
-        <button onclick="toggleMulTable(false)" style="float:left; cursor:pointer; border:none; background:red; color:white; border-radius:50%; width:30px; height:30px; font-weight:bold;">X</button>
-        <h3 style="color:#000">לוח הכפל</h3>
-        <div id="table-container"></div>
+        <button onclick="toggleMulTable(false)" style="float:left; background:red; color:white; border-radius:50%; border:none; width:30px; height:30px;">X</button>
+        <div id="table-container" style="margin-top:10px;"></div>
     </div>
 
 <script>
-    let childName = localStorage.getItem('childName') || '';
-    let currentModule = '', currentQ = {}, opMul = 'mul', mulSelected = new Set(), opAdd = 'add', addRange = 10, storyMode = 'mix';
-    let lastOpType = '';
+    const i18n = {
+        he: { settings: "הגדרות", theme: "מראה", lang: "שפה", save: "שמירה", addsub: "חיבור וחיסור", muldiv: "כפל וחילוק", stories: "בעיות מילוליות", advanced: "שאלות מתקדמות", mix: "מעורב", check: "בדיקה", back: "חזרה", scratch: "טיוטה לחישוב", skip: "דלג / פתרון", hint_mul: "שמת לב לסימן? נראה שחיברת..." },
+        en: { settings: "Settings", theme: "Theme", lang: "Language", save: "Save", addsub: "Add & Sub", muldiv: "Mul & Div", stories: "Word Problems", advanced: "Advanced", mix: "Mixed", check: "Check", back: "Back", scratch: "Scratchpad", skip: "Skip / Solve", hint_mul: "Check the sign! Looks like you added..." }
+    };
 
-    // יצירת לוח כפל
+    let childName = localStorage.getItem('childName') || '';
+    let lang = localStorage.getItem('lang') || 'he';
+    let theme = localStorage.getItem('theme') || 'light';
+    let score = 0, currentQ = {}, addRange = 10, mulSelected = new Set([2,3,4,5]), storyMode = 'mix', lastOp = '';
+
+    // אתחול לוח כפל
     let tableHtml = '<table><tr><th>×</th>' + Array.from({length:10}, (_,i)=>`<th>${i+1}</th>`).join('') + '</tr>';
     for(let i=1; i<=10; i++) {
         tableHtml += `<tr><th>${i}</th>` + Array.from({length:10}, (_,j)=>`<td>${i*(j+1)}</td>`).join('') + '</tr>';
     }
     document.getElementById('table-container').innerHTML = tableHtml + '</table>';
 
-    function toggleMulTable(show) { document.getElementById('mul-table-modal').classList.toggle('hidden', !show); }
-
-    window.onload = () => {
-        if(childName) document.getElementById('splash-welcome').innerText = `שלום, ${childName}!`;
-        document.getElementById('nameInput').value = childName;
-        setTimeout(() => { document.getElementById('splash').style.display='none'; showPage(childName?'lobby':'settings'); }, 2000);
-    };
-
-    function showPage(id) {
-        document.querySelectorAll('.container > div').forEach(d => { if(d.id.startsWith('page')) d.classList.add('hidden'); });
-        document.getElementById('page-' + id).classList.remove('hidden');
-    }
-
-    function saveSettings() {
-        childName = document.getElementById('nameInput').value.trim();
-        localStorage.setItem('childName', childName);
-        document.getElementById('lobby-title').innerText = `שלום, ${childName}!`;
-        showPage('lobby');
-    }
-
+    // בחירת מספרים לכפל
     const grid = document.getElementById('mul-num-grid');
     for(let i=1; i<=10; i++) {
-        const b = document.createElement('button'); b.className='num-btn mode-btn'; b.innerText=i;
+        const b = document.createElement('button'); b.className='num-btn mode-btn' + (mulSelected.has(i)?' active':''); b.innerText=i;
         b.onclick=()=>{ b.classList.toggle('active'); mulSelected.has(i)?mulSelected.delete(i):mulSelected.add(i); };
         grid.appendChild(b);
     }
 
-    function setOp(o) { opMul=o; document.getElementById('btn-mul').classList.toggle('active',o==='mul'); document.getElementById('btn-div').classList.toggle('active',o==='div'); }
-    function setOpAdd(o) { opAdd=o; document.getElementById('btn-add').classList.toggle('active',o==='add'); document.getElementById('btn-sub').classList.toggle('active',o==='sub'); }
-    function setRange(r) { 
-        addRange=r; 
-        document.querySelectorAll('[id$="-'+r+'"]').forEach(b=>b.classList.add('active')); 
-        document.querySelectorAll('[id^="range-"],[id^="s-range-"]').forEach(b=>{if(!b.id.endsWith(r)) b.classList.remove('active')}); 
+    function setLang(l) {
+        lang = l; localStorage.setItem('lang', l);
+        document.documentElement.lang = l; document.documentElement.dir = l==='he'?'rtl':'ltr';
+        updateUI();
     }
-    function setStoryMode(m) { storyMode=m; ['mix','addsub','muldiv','advanced'].forEach(v=>document.getElementById('story-m-'+v).classList.toggle('active',v===m)); }
-
-    function startGame(logic) {
-        if(logic === 'mul-logic' && mulSelected.size === 0) return alert("אנא בחר לפחות מספר אחד לתרגול");
-        currentModule = logic;
-        showPage('game');
-        next();
+    function setTheme(t) { theme = t; localStorage.setItem('theme', t); document.documentElement.setAttribute('data-theme', t); }
+    function updateUI() { document.querySelectorAll('[data-i18n]').forEach(el => el.innerText = i18n[lang][el.getAttribute('data-i18n')]); }
+    function saveSettings() { childName = document.getElementById('nameInput').value; localStorage.setItem('childName', childName); showPage('lobby'); }
+    function showPage(id) {
+        document.querySelectorAll('.container > div').forEach(d => { if(d.id.startsWith('page')) d.classList.add('hidden'); });
+        document.getElementById('page-' + id).classList.remove('hidden');
+        if(id === 'lobby') document.getElementById('lobby-title').innerText = (lang==='he'?'שלום ':'Hello ') + childName;
     }
 
-    function generateAdvanced() {
-        let num = Math.floor(Math.random() * (addRange - 11)) + 11;
-        const u = num % 10;
-        let txt = `שאלה למתקדמים:\n`;
-        if(addRange === 1000) txt += `אם נסדר את הפריטים ב-100 קופסאות, ישארו ${num % 100} פריטים בצד.\n`;
-        txt += `אם נסדר אותם ב-10 קופסאות, ישארו ${u} פריטים בצד.\nכמה פריטים יש בסך הכל?`;
-        return { ans: num, text: txt, type: 'logic' };
+    function startGame(m) { currentModule = m; score = 0; updateProgress(); showPage('game'); next(); }
+    function updateProgress() { document.getElementById('pBar').style.width = Math.min(score * 10, 100) + '%'; }
+
+    function next() {
+        let isMulOrDiv = false;
+        if(currentModule === 'add-logic') {
+            let a = Math.floor(Math.random()*addRange), b = Math.floor(Math.random()*addRange);
+            currentQ = { ans: a+b, text: `${a} + ${b}`, type: 'add' };
+        } else if(currentModule === 'mul-logic') {
+            let arr = Array.from(mulSelected); if(arr.length===0) arr=[2];
+            let a = arr[Math.floor(Math.random()*arr.length)], b = Math.floor(Math.random()*10)+1;
+            currentQ = { ans: a*b, text: `${a} × ${b}`, type: 'mul' }; isMulOrDiv = true;
+        } else {
+            currentQ = generateStory(); isMulOrDiv = (currentQ.type==='mul'||currentQ.type==='div');
+        }
+
+        // אפקט שינוי פעולה
+        if(lastOp && lastOp !== currentQ.type) {
+            document.getElementById('question').style.background = "rgba(159, 122, 234, 0.3)";
+            setTimeout(()=> document.getElementById('question').style.background = "rgba(74, 144, 226, 0.1)", 500);
+        }
+        lastOp = currentQ.type;
+
+        document.getElementById('question').innerText = currentQ.text;
+        document.getElementById('ansInput').value = ''; document.getElementById('msg').innerText = '';
+        document.getElementById('showMulTableBtn').classList.toggle('hidden', !isMulOrDiv);
+        clearCanvas();
     }
 
     function generateStory() {
-        if(storyMode === 'advanced') return generateAdvanced();
-        let type = storyMode === 'mix' ? ['add','sub','mul','div'][Math.floor(Math.random()*4)] : 
-                   (storyMode === 'addsub' ? ['add','sub'][Math.floor(Math.random()*2)] : ['mul','div'][Math.floor(Math.random()*2)]);
-        
-        let a, b, ans, txt;
-        const name = childName || "הילד";
-        if(type === 'add') { a=Math.floor(Math.random()*addRange/2)+1; b=Math.floor(Math.random()*addRange/2)+1; ans=a+b; txt=`ל${name} היו ${a} מדבקות. הוא קיבל עוד ${b}. כמה יש לו עכשיו?`; }
-        else if(type === 'sub') { a=Math.floor(Math.random()*addRange/2)+10; b=Math.floor(Math.random()*a); ans=a-b; txt=`על העץ היו ${a} ציפורים. ${b} מהן עפו. כמה נשארו?`; }
-        else if(type === 'mul') { a=Math.floor(Math.random()*9)+2; b=Math.floor(Math.random()*9)+2; ans=a*b; txt=`יש ${a} שקיות, ובכל אחת ${b} סוכריות. כמה סוכריות יש בסך הכל?`; }
-        else { b=Math.floor(Math.random()*8)+2; ans=Math.floor(Math.random()*9)+1; a=b*ans; txt=`חילקו ${a} גולות שווה בשווה בין ${b} ילדים. כמה גולות קיבל כל ילד?`; }
-        return { ans, text: txt, type: type };
-    }
-
-    function next() {
-        toggleMulTable(false);
-        let isMulOrDiv = false;
-        
-        if(currentModule === 'mul-logic') {
-            const arr = Array.from(mulSelected);
-            const a = arr[Math.floor(Math.random()*arr.length)], b = Math.floor(Math.random()*10)+1;
-            currentQ = opMul==='mul' ? { ans:a*b, text:`${a} × ${b}`, type:'mul' } : { ans:b, text:`${a*b} ÷ ${a}`, type:'div' };
-        } else if(currentModule === 'add-logic') {
-            const a = Math.floor(Math.random()*addRange)+1, b = Math.floor(Math.random()*addRange)+1;
-            if(opAdd==='add') currentQ = { ans:a+b, text:`${a} + ${b}`, type:'add' };
-            else { const big=Math.max(a,b), small=Math.min(a,b); currentQ={ ans:big-small, text:`${big} - ${small}`, type:'sub' }; }
-        } else {
-            currentQ = generateStory();
+        if(storyMode === 'advanced') {
+            let num = Math.floor(Math.random()*90)+11;
+            return { ans: num, text: (lang==='he' ? `שאלה מתקדמת:\nנסדר ב-10 קופסאות ונשאר ${num%10}.\nכמה יש בסך הכל?` : `Advanced:\nIn 10 boxes, ${num%10} remain.\nTotal count?`), type: 'logic' };
         }
-
-        isMulOrDiv = (currentQ.type === 'mul' || currentQ.type === 'div');
-        
-        // חיווי ויזואלי על שינוי סוג תרגיל (שבירת אוטומט)
-        if (lastOpType && lastOpType !== currentQ.type) {
-            const card = document.getElementById('question');
-            card.style.background = "rgba(159, 122, 234, 0.2)";
-            setTimeout(() => card.style.background = "rgba(74, 144, 226, 0.1)", 600);
-        }
-        lastOpType = currentQ.type;
-
-        document.getElementById('question').innerText = currentQ.text;
-        document.getElementById('ansInput').value = '';
-        document.getElementById('showMulTableBtn').classList.toggle('hidden', !isMulOrDiv);
-        document.getElementById('msg').innerText = "";
-        document.getElementById('ansInput').focus();
+        let a = Math.floor(Math.random()*10)+2, b = Math.floor(Math.random()*10)+2;
+        return { ans: a*b, text: (lang==='he' ? `יש ${a} קבוצות, בכל אחת ${b}. כמה בסך הכל?` : `There are ${a} groups of ${b}. How many in total?`), type: 'mul' };
     }
 
     function check() {
         const val = parseInt(document.getElementById('ansInput').value);
         const msg = document.getElementById('msg');
-        if (isNaN(val)) return;
-
         if(val === currentQ.ans) {
-            msg.innerText = "נכון מאוד! ✨ כל הכבוד!"; msg.style.color = "var(--success)";
-            setTimeout(() => { next(); }, 1200);
+            score++; updateProgress(); msg.innerText = "✨ מעולה!"; msg.style.color = "var(--success)";
+            setTimeout(next, 1200);
         } else {
-            // זיהוי טעויות אוטומטיות (חיבור במקום כפל)
+            // זיהוי טעות אוטומט
             let nums = currentQ.text.match(/\d+/g);
-            if (nums && nums.length >= 2) {
-                let n1 = parseInt(nums[0]), n2 = parseInt(nums[1]);
-                if (currentQ.type === 'mul' && val === (n1 + n2)) {
-                    msg.innerText = "רגע, שמת לב לסימן? 🤔 נראה שחיברת במקום לכפול...";
-                    msg.style.color = "var(--warning)";
-                    return;
-                }
-                if (currentQ.type === 'add' && val === (n1 * n2)) {
-                    msg.innerText = "שים לב... כפלת במקום לחבר! ➕";
-                    msg.style.color = "var(--warning)";
-                    return;
-                }
+            if(nums && nums.length>=2 && currentQ.type==='mul' && val == (parseInt(nums[0])+parseInt(nums[1]))) {
+                msg.innerText = i18n[lang].hint_mul; msg.style.color = "orange";
+            } else {
+                msg.innerText = "נסה שוב 🤔"; msg.style.color = "var(--error)";
             }
-            msg.innerText = "לא בדיוק... כדאי לקרוא שוב בעיון 🤔"; msg.style.color = "var(--error)";
         }
     }
+
+    function skipQuestion() {
+        document.getElementById('ansInput').value = currentQ.ans;
+        document.getElementById('msg').innerText = "הנה הפתרון. בוא ננסה אחד אחר!";
+        score = Math.max(0, score - 0.5); updateProgress();
+        setTimeout(next, 2000);
+    }
+
+    // קנבס טיוטה
+    const canvas = document.getElementById('canvas'); const ctx = canvas.getContext('2d');
+    let drawing = false;
+    function initCanvas() { canvas.width = canvas.offsetWidth; canvas.height = 150; }
+    canvas.addEventListener('mousedown', startD); canvas.addEventListener('mousemove', draw); canvas.addEventListener('mouseup', stopD);
+    canvas.addEventListener('touchstart', (e)=>{ e.preventDefault(); startD(e.touches[0]); });
+    canvas.addEventListener('touchmove', (e)=>{ e.preventDefault(); draw(e.touches[0]); });
+    canvas.addEventListener('touchend', stopD);
+
+    function startD(e) { drawing = true; ctx.beginPath(); ctx.moveTo(e.clientX - canvas.getBoundingClientRect().left, e.clientY - canvas.getBoundingClientRect().top); }
+    function draw(e) { if(!drawing) return; ctx.lineTo(e.clientX - canvas.getBoundingClientRect().left, e.clientY - canvas.getBoundingClientRect().top); ctx.stroke(); }
+    function stopD() { drawing = false; }
+    function clearCanvas() { ctx.clearRect(0,0,canvas.width,canvas.height); }
+    function toggleScratchpad() { document.getElementById('scratch-area').classList.toggle('hidden'); initCanvas(); }
+
+    function setRange(r) { addRange = r; document.querySelectorAll('[id^="range-"]').forEach(b=>b.classList.remove('active')); document.getElementById('range-'+r).classList.add('active'); }
+    function setStoryMode(m) { storyMode = m; document.getElementById('story-m-mix').classList.toggle('active', m==='mix'); document.getElementById('story-m-advanced').classList.toggle('active', m==='advanced'); }
+    function toggleMulTable(show) { document.getElementById('mul-table-modal').classList.toggle('hidden', !show); }
+
+    window.onload = () => { setLang(lang); setTheme(theme); showPage('lobby'); };
 </script>
 </body>
 </html>
