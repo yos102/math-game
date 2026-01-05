@@ -1,17 +1,9 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E7L6ME5Q7K"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-E7L6ME5Q7K');
-    </script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>מרכז המתמטיקה - גרסת המדליות</title>
+    <title>מרכז המתמטיקה - אקדמיית האלופים</title>
     
     <style>
         :root {
@@ -36,11 +28,7 @@
             position: relative; text-align: center;
         }
 
-        .settings-icon {
-            position: absolute; top: 15px; left: 15px; cursor: pointer; 
-            font-size: 1.5rem; z-index: 100; padding: 5px;
-        }
-
+        .settings-icon { position: absolute; top: 15px; left: 15px; cursor: pointer; font-size: 1.5rem; z-index: 100; }
         .hidden { display: none !important; }
         .btn { padding: 12px; border-radius: 12px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; width: 100%; margin: 5px 0; transition: 0.2s; }
         .btn-main { background: var(--primary); color: white; }
@@ -48,33 +36,26 @@
         .mode-btn { background: var(--card-bg); border: 2px solid var(--input-border); color: var(--text); width: auto; flex: 1; margin: 3px; }
         .mode-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        /* תיקון מיקום הניקוד והספירה */
-        .progress-info { 
-            display: flex; justify-content: space-between; font-size: 0.9rem; 
-            margin: 25px 0 5px 0; /* הוספת מרווח מלמעלה שלא יתנגש בגלגל */
-            font-weight: bold; color: var(--primary); 
-        }
+        /* התקדמות במשחק */
+        .progress-info { display: flex; justify-content: space-between; font-size: 0.9rem; margin: 30px 0 5px 0; font-weight: bold; color: var(--primary); }
         .progress-container { width: 100%; height: 12px; background: #edf2f7; border-radius: 6px; margin-bottom: 15px; overflow: hidden; }
         .progress-bar { height: 100%; background: var(--success); width: 0%; transition: 0.5s; }
 
-        .card { font-size: 1.6rem; padding: 20px; background: rgba(74, 144, 226, 0.1); border-radius: 20px; margin: 10px 0; line-height: 1.4; white-space: pre-wrap; }
+        .card { font-size: 1.6rem; padding: 20px; background: rgba(74, 144, 226, 0.1); border-radius: 20px; margin: 10px 0; line-height: 1.4; }
         input { font-size: 1.8rem; width: 70%; text-align: center; padding: 10px; border: 3px solid var(--input-border); border-radius: 12px; background: var(--card-bg); color: var(--text); }
 
+        /* ארון גביעים משודרג */
+        .trophy-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 20px; }
+        .trophy-item { background: rgba(0,0,0,0.03); padding: 15px; border-radius: 15px; text-align: right; display: flex; align-items: center; gap: 15px; }
+        .medal-visual { font-size: 2.5rem; min-width: 50px; text-align: center; }
+        .medal-info { flex-grow: 1; }
+        .medal-name { font-weight: bold; display: block; }
+        .medal-xp-bar { width: 100%; height: 8px; background: #ddd; border-radius: 4px; margin-top: 5px; overflow: hidden; }
+        .medal-xp-fill { height: 100%; background: var(--warning); width: 0%; transition: 0.5s; }
+        .lvl-tag { font-size: 0.7rem; background: var(--primary); color: white; padding: 2px 6px; border-radius: 10px; margin-right: 5px; }
+
         #scratch-area { margin-top: 15px; border: 2px dashed var(--secondary); border-radius: 15px; background: #fffdf0; padding: 5px; }
-        canvas { touch-action: none; width: 100%; background: transparent; border-radius: 10px; }
-        
-        .medal-slot { font-size: 3rem; margin: 10px; filter: grayscale(1); opacity: 0.3; transition: 0.5s; }
-        .medal-slot.unlocked { filter: grayscale(0); opacity: 1; transform: scale(1.1); }
-        .trophy-cabinet { display: flex; justify-content: center; gap: 15px; background: rgba(0,0,0,0.05); padding: 15px; border-radius: 15px; margin: 15px 0; }
-        
-        /* לוח כפל עם hover */
-        #mul-table-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 15px; border-radius: 15px; z-index: 3000; box-shadow: 0 0 50px rgba(0,0,0,0.5); max-width: 95%; overflow: auto; }
-        table { border-collapse: collapse; width: 100%; color: #000; cursor: default; }
-        td, th { border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 0.85rem; transition: 0.1s; }
-        th { background: #f0f4f8; }
-        /* הדגשה במעבר עכבר */
-        tr:hover td { background-color: #e2e8f0 !important; }
-        td:hover { background-color: var(--primary) !important; color: white !important; font-weight: bold; transform: scale(1.2); }
+        canvas { touch-action: none; width: 100%; background: transparent; }
     </style>
 </head>
 <body>
@@ -89,46 +70,70 @@
                 <button class="mode-btn" onclick="setTheme('light')">יום ☀️</button>
                 <button class="mode-btn" onclick="setTheme('dark')">לילה 🌙</button>
             </div>
-            <button class="btn btn-main" onclick="saveSettings()">שמירה וחזרה</button>
+            <button class="btn btn-main" onclick="saveSettings()">שמירה</button>
+        </div>
+
+        <div id="page-trophies" class="hidden">
+            <h2>ההתקדמות של <span class="user-name-display"></span></h2>
+            <div class="trophy-grid">
+                <div class="trophy-item">
+                    <div id="v-add" class="medal-visual">🥉</div>
+                    <div class="medal-info">
+                        <span class="medal-name">חיבור וחיסור <span id="lvl-add" class="lvl-tag">רמה 1</span></span>
+                        <div class="medal-xp-bar"><div id="xp-add" class="medal-xp-fill"></div></div>
+                    </div>
+                </div>
+                <div class="trophy-item">
+                    <div id="v-mul" class="medal-visual">🥉</div>
+                    <div class="medal-info">
+                        <span class="medal-name">כפל וחילוק <span id="lvl-mul" class="lvl-tag">רמה 1</span></span>
+                        <div class="medal-xp-bar"><div id="xp-mul" class="medal-xp-fill"></div></div>
+                    </div>
+                </div>
+                <div class="trophy-item">
+                    <div id="v-story" class="medal-visual">🥉</div>
+                    <div class="medal-info">
+                        <span class="medal-name">בעיות מילוליות <span id="lvl-story" class="lvl-tag">רמה 1</span></span>
+                        <div class="medal-xp-bar"><div id="xp-story" class="medal-xp-fill"></div></div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-main" style="margin-top:20px;" onclick="showPage('lobby')">חזרה למשחק</button>
         </div>
 
         <div id="page-lobby">
             <h1 id="lobby-title">שלום!</h1>
-            
-            <div class="trophy-cabinet">
-                <div id="m-bronze" class="medal-slot">🥉</div>
-                <div id="m-silver" class="medal-slot">🥈</div>
-                <div id="m-gold" class="medal-slot">🥇</div>
-            </div>
-
+            <button class="btn btn-main" onclick="showPage('trophies')">🏆 ארון הגביעים והדרגות</button>
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
             <button class="btn btn-alt" onclick="showPage('setup-add')">➕ חיבור וחיסור</button>
             <button class="btn btn-alt" onclick="showPage('setup-mul')">✖️ כפל וחילוק</button>
-            <button class="btn btn-main" onclick="showPage('setup-story')">📖 בעיות מילוליות</button>
+            <button class="btn btn-alt" onclick="showPage('setup-story')">📖 בעיות מילוליות</button>
         </div>
 
         <div id="page-setup-add" class="hidden">
             <h2>חיבור וחיסור</h2>
-            <div style="display:flex; margin-bottom:10px;">
+            <div style="display:flex; flex-wrap: wrap; gap: 5px;">
                 <button class="btn mode-btn active" id="range-10" onclick="setRange(10)">עד 10</button>
                 <button class="btn mode-btn" id="range-100" onclick="setRange(100)">עד 100</button>
+                <button class="btn mode-btn" id="range-1000" onclick="setRange(1000)">עד 1000</button>
             </div>
             <button class="btn btn-main" onclick="startGame('add-logic')">בואו נתחיל!</button>
-            <button class="btn" onclick="showPage('lobby')">⬅️ חזרה</button>
+            <button class="btn" onclick="showPage('lobby')">חזרה</button>
         </div>
 
         <div id="page-setup-mul" class="hidden">
             <h2>כפל וחילוק</h2>
             <div id="mul-num-grid" style="display:grid; grid-template-columns: repeat(5,1fr); gap:5px;"></div>
             <button class="btn btn-main" onclick="startGame('mul-logic')" style="margin-top:10px;">בואו נתחיל!</button>
-            <button class="btn" onclick="showPage('lobby')">⬅️ חזרה</button>
+            <button class="btn" onclick="showPage('lobby')">חזרה</button>
         </div>
 
         <div id="page-setup-story" class="hidden">
-            <h2>סיפורי חשבון</h2>
-            <button class="btn mode-btn active" id="story-m-mix" onclick="setStoryMode('mix')">🎲 הכל מהכל</button>
+            <h2>בעיות מילוליות</h2>
+            <button class="btn mode-btn active" id="story-m-mix" onclick="setStoryMode('mix')">🎲 רגיל</button>
             <button class="btn mode-btn" id="story-m-advanced" onclick="setStoryMode('advanced')">💡 אתגר</button>
             <button class="btn btn-main" onclick="startGame('story-logic')">בואו נתחיל!</button>
-            <button class="btn" onclick="showPage('lobby')">⬅️ חזרה</button>
+            <button class="btn" onclick="showPage('lobby')">חזרה</button>
         </div>
 
         <div id="page-game" class="hidden">
@@ -137,17 +142,14 @@
                 <span id="scoreText">הצלחות: 0</span>
             </div>
             <div class="progress-container"><div id="pBar" class="progress-bar"></div></div>
-            
             <div id="question" class="card"></div>
             <input type="number" id="ansInput" inputmode="numeric" onkeypress="if(event.key==='Enter') check()">
             <button class="btn btn-main" onclick="check()">בדיקה</button>
-            
             <div style="display:flex; gap:5px;">
                 <button id="showMulTableBtn" class="btn hidden" style="flex:1; background:#edf2f7; color:#000;" onclick="toggleMulTable(true)">לוח כפל 🔍</button>
                 <button class="btn" style="flex:1; background:#f7fafc; border:1px solid #ddd; color:gray;" onclick="skipQuestion()">עזרה? 💡</button>
             </div>
-
-            <p style="cursor:pointer; color:var(--secondary); margin-top:10px;" onclick="toggleScratchpad()">📝 פתח דף טיוטה</p>
+            <p style="cursor:pointer; color:var(--secondary); margin-top:15px;" onclick="toggleScratchpad()">📝 פתח דף טיוטה</p>
             <div id="scratch-area" class="hidden">
                 <canvas id="canvas" height="150"></canvas>
                 <div style="display:flex; gap:5px; margin-top:5px;">
@@ -155,58 +157,55 @@
                     <button class="btn" style="background:#ddd; font-size:0.8rem;" onclick="clearCanvas()">🗑️ נקה</button>
                 </div>
             </div>
-
             <div id="msg" style="margin-top:10px; font-weight:bold;"></div>
-            <button class="btn" onclick="showPage('lobby')" style="margin-top:20px; color:gray;">חזרה לתפריט</button>
+            <button class="btn" onclick="showPage('lobby')" style="margin-top:20px; color:gray;">יציאה</button>
         </div>
     </div>
 
-    <div id="mul-table-modal" class="hidden">
-        <button onclick="toggleMulTable(false)" style="float:left; background:red; color:white; border-radius:50%; border:none; width:30px; height:30px;">X</button>
-        <h3 style="color:#000; margin: 0 0 10px 0;">לוח הכפל</h3>
-        <div id="table-container"></div>
-    </div>
-
 <script>
-    let childName = localStorage.getItem('childName') || '';
+    let childName = localStorage.getItem('childName') || 'חבר/ה';
     let theme = localStorage.getItem('theme') || 'light';
-    let medals = JSON.parse(localStorage.getItem('medals') || '{"bronze":false, "silver":false, "gold":false}');
     
-    let score = 0, qIndex = 0, currentQ = {}, addRange = 10, mulSelected = new Set([2,3,4,5]), storyMode = 'mix';
+    // מערכת XP חדשה: XP צבור בכל תחום
+    let stats = JSON.parse(localStorage.getItem('math_stats_v2') || '{"add":0, "mul":0, "story":0}');
+    
+    let score = 0, qIndex = 0, currentQ = {}, currentModule = '', addRange = 10, mulSelected = new Set([2,3,4,5]), storyMode = 'mix';
     let previousPage = 'lobby', undoStack = [];
 
-    // יצירת לוח כפל
-    let tableHtml = '<table><tr><th>×</th>' + Array.from({length:10}, (_,i)=>`<th>${i+1}</th>`).join('') + '</tr>';
-    for(let i=1; i<=10; i++) {
-        tableHtml += `<tr><th>${i}</th>` + Array.from({length:10}, (_,j)=>`<td>${i*(j+1)}</td>`).join('') + '</tr>';
-    }
-    document.getElementById('table-container').innerHTML = tableHtml + '</table>';
-
-    // יצירת כפתורי בחירת מספרים
-    const grid = document.getElementById('mul-num-grid');
-    for(let i=1; i<=10; i++) {
-        const b = document.createElement('button'); b.className='num-btn mode-btn' + (mulSelected.has(i)?' active':''); b.innerText=i;
-        b.onclick=()=>{ b.classList.toggle('active'); mulSelected.has(i)?mulSelected.delete(i):mulSelected.add(i); };
-        grid.appendChild(b);
-    }
+    const XP_PER_LEVEL = 100; // כל 100 XP עולים רמה (כל תשובה נכונה = 10 XP)
 
     function setTheme(t) { theme = t; localStorage.setItem('theme', t); document.documentElement.setAttribute('data-theme', t); }
     function openSettings() { previousPage = (qIndex > 0 && qIndex < 10) ? 'game' : 'lobby'; showPage('settings'); }
-    function saveSettings() { childName = document.getElementById('nameInput').value.trim(); localStorage.setItem('childName', childName); showPage(previousPage); }
+    function saveSettings() { childName = document.getElementById('nameInput').value.trim() || 'חבר/ה'; localStorage.setItem('childName', childName); showPage(previousPage); }
 
     function showPage(id) {
         document.querySelectorAll('.container > div').forEach(d => { if(d.id.startsWith('page')) d.classList.add('hidden'); });
         document.getElementById('page-' + id).classList.remove('hidden');
-        if(id === 'lobby') {
-            document.getElementById('lobby-title').innerText = 'שלום ' + childName + '!';
-            updateMedalsUI();
+        if(id === 'lobby') document.getElementById('lobby-title').innerText = 'שלום ' + childName + '!';
+        if(id === 'trophies') {
+            document.querySelectorAll('.user-name-display').forEach(e => e.innerText = childName);
+            updateTrophyUI();
         }
     }
 
-    function updateMedalsUI() {
-        if(medals.bronze) document.getElementById('m-bronze').classList.add('unlocked');
-        if(medals.silver) document.getElementById('m-silver').classList.add('unlocked');
-        if(medals.gold) document.getElementById('m-gold').classList.add('unlocked');
+    function getLevelInfo(xp) {
+        const lvl = Math.floor(xp / XP_PER_LEVEL) + 1;
+        const progress = xp % XP_PER_LEVEL;
+        let icon = "🥉";
+        if (lvl >= 5) icon = "💎";
+        else if (lvl >= 4) icon = "🏆";
+        else if (lvl >= 3) icon = "🥇";
+        else if (lvl >= 2) icon = "🥈";
+        return { lvl, progress, icon };
+    }
+
+    function updateTrophyUI() {
+        ['add', 'mul', 'story'].forEach(type => {
+            const info = getLevelInfo(stats[type]);
+            document.getElementById(`v-${type}`).innerText = info.icon;
+            document.getElementById(`lvl-${type}`).innerText = `רמה ${info.lvl}`;
+            document.getElementById(`xp-${type}`).style.width = `${info.progress}%`;
+        });
     }
 
     function startGame(m) { 
@@ -223,41 +222,45 @@
 
     function next() {
         if(qIndex >= 10) { finishGame(); return; }
-        let isMulOrDiv = false;
         if(currentModule === 'add-logic') {
             let a = Math.floor(Math.random()*addRange), b = Math.floor(Math.random()*addRange);
-            currentQ = { ans: a+b, text: `${a} + ${b}`, type: 'add' };
+            currentQ = { ans: a+b, text: `${a} + ${b}`, key: 'add' };
         } else if(currentModule === 'mul-logic') {
             let arr = Array.from(mulSelected); if(arr.length === 0) arr = [2];
             let a = arr[Math.floor(Math.random()*arr.length)], b = Math.floor(Math.random()*10)+1;
-            currentQ = { ans: a*b, text: `${a} × ${b}`, type: 'mul' }; isMulOrDiv = true;
-        } else { currentQ = generateStory(); isMulOrDiv = (currentQ.type==='mul'); }
-
+            currentQ = { ans: a*b, text: `${a} × ${b}`, key: 'mul' };
+        } else {
+            currentQ = generateStory(); currentQ.key = 'story';
+        }
         document.getElementById('question').innerText = currentQ.text;
         document.getElementById('ansInput').value = ''; document.getElementById('msg').innerText = '';
-        document.getElementById('showMulTableBtn').classList.toggle('hidden', !isMulOrDiv);
         clearCanvas();
     }
 
     function finishGame() {
-        medals.bronze = true;
-        if(score >= 8) medals.silver = true;
-        if(score === 10) medals.gold = true;
-        localStorage.setItem('medals', JSON.stringify(medals));
-
-        let txt = score === 10 ? "🥇 זהב! מושלם!" : (score >= 8 ? "🥈 כסף! מעולה!" : "🥉 ארד! סיימת!");
-        document.getElementById('question').innerText = `סיימת! \n${txt} \nהצלחת ${score} מתוך 10.`;
+        // הענקת XP: 10 נקודות על כל תשובה נכונה
+        const xpGained = score * 10;
+        const key = currentQ.key;
+        const oldLvl = getLevelInfo(stats[key]).lvl;
+        stats[key] += xpGained;
+        const newLvl = getLevelInfo(stats[key]).lvl;
+        
+        localStorage.setItem('math_stats_v2', JSON.stringify(stats));
+        
+        let finishMsg = `סיימת! צברת ${xpGained} נקודות ניסיון! ✨`;
+        if (newLvl > oldLvl) finishMsg = `עלית לרמה ${newLvl}! 🎊 כל הכבוד!`;
+        
+        document.getElementById('question').innerText = finishMsg;
         document.getElementById('ansInput').classList.add('hidden');
-        updateMedalsUI();
     }
 
     function generateStory() {
         if(storyMode === 'advanced') {
             let num = Math.floor(Math.random()*90)+11;
-            return { ans: num, text: `שאלה מאתגרת:\nנסדר ב-10 קופסאות שוות, ישארו ${num%10}.\nכמה יש בסך הכל?`, type: 'logic' };
+            return { ans: num, text: `שאלה מאתגרת:\nנסדר ב-10 קופסאות שוות, ישארו ${num%10}.\nכמה פריטים יש בסך הכל?` };
         }
         let a = Math.floor(Math.random()*5)+2, b = Math.floor(Math.random()*5)+2;
-        return { ans: a*b, text: `יש ${a} שורות פרחים. בכל שורה ${b} פרחים. \nכמה פרחים יש בסך הכל?`, type: 'mul' };
+        return { ans: a*b, text: `יש ${a} שורות. בכל שורה ${b} פרחים. כמה בסך הכל?` };
     }
 
     function check() {
@@ -268,7 +271,7 @@
             document.getElementById('msg').innerText = "נכון מאוד! ✨";
             setTimeout(next, 1000);
         } else {
-            document.getElementById('msg').innerText = "לא בדיוק... נסה שוב 🤔";
+            document.getElementById('msg').innerText = "נסה שוב 🤔";
         }
     }
 
@@ -278,10 +281,10 @@
         setTimeout(next, 1500);
     }
 
-    // קנבס טיוטה
+    // קנבס טיוטה (זהה לקוד הקודם)
     const canvas = document.getElementById('canvas'); const ctx = canvas.getContext('2d');
     let drawing = false;
-    function saveState() { undoStack.push(canvas.toDataURL()); if(undoStack.length > 20) undoStack.shift(); }
+    function saveState() { undoStack.push(canvas.toDataURL()); }
     function undoCanvas() { if(undoStack.length > 0) { let img = new Image(); img.src = undoStack.pop(); img.onload = () => { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.drawImage(img,0,0); }; } }
     canvas.addEventListener('mousedown', (e) => { saveState(); startD(e); });
     canvas.addEventListener('mousemove', draw); canvas.addEventListener('mouseup', () => drawing = false);
@@ -294,7 +297,7 @@
 
     function setRange(r) { addRange = r; document.querySelectorAll('[id^="range-"]').forEach(b=>b.classList.remove('active')); document.getElementById('range-'+r).classList.add('active'); }
     function setStoryMode(m) { storyMode = m; document.getElementById('story-m-mix').classList.toggle('active', m==='mix'); document.getElementById('story-m-advanced').classList.toggle('active', m==='advanced'); }
-    function toggleMulTable(show) { document.getElementById('mul-table-modal').classList.toggle('hidden', !show); }
+    function toggleMulTable(show) { /* לוגיקה ללוח כפל (אם נדרש) */ }
 
     window.onload = () => { setTheme(theme); document.getElementById('nameInput').value = childName; showPage('lobby'); };
 </script>
