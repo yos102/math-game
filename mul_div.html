@@ -57,14 +57,15 @@
 
         .hidden { display: none !important; }
 
-        .exit-btn {
+        /* כפתור דלת ליציאה למסך הבית */
+        .exit-door {
             position: absolute;
             top: 20px;
             left: 20px;
             width: 45px;
             height: 45px;
-            background: #f7fafc;
-            border: 2px solid #e2e8f0;
+            background: #fff5f5;
+            border: 2px solid #feb2b2;
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -72,9 +73,10 @@
             font-size: 1.5rem;
             cursor: pointer;
             z-index: 20;
+            text-decoration: none;
             transition: 0.2s;
         }
-        .exit-btn:hover { background: #fff5f5; border-color: #feb2b2; }
+        .exit-door:hover { transform: scale(1.05); background: #fee2e2; }
 
         #table-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 4000; padding: 10px; align-items: center; justify-content: center; }
         .table-card { background: white; padding: 15px; border-radius: 20px; width: 95%; max-width: 550px; position: relative; max-height: 90vh; overflow-y: auto; }
@@ -86,10 +88,6 @@
         .multiplication-table th { background: #edf2f7; color: #ed8936; font-weight: bold; position: sticky; top: 0; z-index: 2; }
         .multiplication-table td.header-col { background: #edf2f7; color: #ed8936; font-weight: bold; position: sticky; left: 0; z-index: 1; }
 
-        @media (hover: hover) {
-            .multiplication-table tr:hover td { background: #f7fafc; }
-            .multiplication-table td:hover { background: #ed8936 !important; color: white; transform: scale(1.1); font-weight: bold; z-index: 5; }
-        }
         .touch-highlight { background: #ed8936 !important; color: white !important; font-weight: bold; transform: scale(1.1); }
 
         .draft-btn-container { position: absolute; top: 20px; right: 20px; width: 45px; height: 45px; border-radius: 12px; background: #ed8936; color: white; border: none; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; }
@@ -102,7 +100,8 @@
 <body>
     <div class="container">
         <button class="draft-btn-container hidden" id="draft-trigger" onclick="toggleDraft()">📝</button>
-        <div id="exit-trigger" class="exit-btn hidden" onclick="location.reload()" title="חזרה לתפריט">🚪</div>
+        
+        <a href="./" id="exit-door" class="exit-door hidden" title="יציאה למסך הבית">🚪</a>
 
         <div id="setup">
             <h2 style="color: #2d3748;">כפל וחילוק 🚀</h2>
@@ -135,6 +134,8 @@
             </div>
 
             <p id="feedback" style="font-size: 1.6rem; min-height: 2.5rem; margin: 15px 0; font-weight: bold;"></p>
+            
+            <button class="btn" style="background: transparent; color: #a0aec0; font-size: 0.9rem; width: auto; text-decoration: underline;" onclick="location.reload()">⚙️ שינוי הגדרות כפולות</button>
         </div>
     </div>
 
@@ -225,7 +226,6 @@
             const modal = document.getElementById('table-modal');
             const isOpening = modal.style.display !== 'flex';
             modal.style.display = isOpening ? 'flex' : 'none';
-            // הוסר הקוד שהיה מסמן את התא עם התשובה הנכונה
             if (isOpening) {
                 document.querySelectorAll('.multiplication-table td').forEach(td => td.classList.remove('highlight'));
             }
@@ -241,7 +241,7 @@
             document.getElementById('setup').classList.add('hidden');
             document.getElementById('game').classList.remove('hidden');
             document.getElementById('draft-trigger').classList.remove('hidden');
-            document.getElementById('exit-trigger').classList.remove('hidden');
+            document.getElementById('exit-door').classList.remove('hidden');
             next();
         }
 
@@ -277,6 +277,7 @@
             document.getElementById('feedback').innerHTML = `<span style='color:#718096'>התשובה היא ${currentAns}</span>`;
         }
 
+        // לוגיקת קנבס טיוטה
         const canvas = document.getElementById('draft-canvas');
         const ctx = canvas.getContext('2d');
         let painting = false;
