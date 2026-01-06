@@ -2,13 +2,43 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>חיבור וחיסור</title>
-    <link rel="stylesheet" href="style.css"> <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #ebf8ff; text-align: center; }
-        .container { max-width: 500px; margin: 20px auto; background: white; padding: 25px; border-radius: 20px; }
-        .math-row { font-size: 3rem; margin: 20px; direction: ltr; }
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #ebf8ff; text-align: center; margin: 0; padding: 0; }
+        .container { max-width: 500px; margin: 20px auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        
+        /* תיקון יישור התרגיל לשמאל לימין */
+        .math-row { 
+            font-size: 3rem; 
+            margin: 20px; 
+            direction: ltr; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 10px;
+        }
+        
         .ans-input { width: 120px; font-size: 2rem; text-align: center; border: 3px solid #4a90e2; border-radius: 10px; }
-        .btn { padding: 15px; border-radius: 10px; border: none; cursor: pointer; width: 100%; margin: 5px 0; font-weight: bold; }
+        .btn { padding: 15px; border-radius: 10px; border: none; cursor: pointer; width: 100%; margin: 5px 0; font-weight: bold; font-size: 1.1rem; }
+        .hidden { display: none !important; }
+
+        /* סטייל ללוח הטיוטה */
+        #draft-modal { 
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); 
+            z-index: 3000; padding: 15px; flex-direction: column; align-items: center; justify-content: center; 
+        }
+        .draft-card { 
+            background: white; width: 100%; max-width: 600px; height: 85vh; 
+            border-radius: 20px; position: relative; display: flex; flex-direction: column; overflow: hidden; 
+        }
+        .draft-header { padding: 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; }
+        #draft-canvas { flex-grow: 1; cursor: crosshair; touch-action: none; background: #fff; }
+        .draft-btn-open { 
+            position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; 
+            border-radius: 50%; background: #ed8936; color: white; border: none; 
+            font-size: 24px; cursor: pointer; z-index: 2000; box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
+        }
     </style>
 </head>
 <body>
@@ -24,44 +54,117 @@
 
         <div id="game" class="hidden">
             <div id="quest" class="math-row"></div>
-            <input type="number" id="ans" class="ans-input"><br><br>
+            <input type="number" id="ans" class="ans-input" inputmode="numeric"><br><br>
             <button class="btn" style="background:#48bb78; color:white;" onclick="check()">בדיקה ✅</button>
-            <p id="feedback"></p>
-            <button class="btn" onclick="location.reload()">חזור לבחירת טווח</button>
+            <p id="feedback" style="font-size: 1.5rem; min-height: 2rem;"></p>
+            <button class="btn" style="background: #cbd5e0;" onclick="location.reload()">חזור לבחירת טווח</button>
+        </div>
+    </div>
+
+    <button class="draft-btn-open" onclick="toggleDraft()">📝</button>
+
+    <div id="draft-modal">
+        <div class="draft-card">
+            <div class="draft-header">
+                <b>לוח טיוטה</b>
+                <div>
+                    <button onclick="clearDraft()" style="background:#f56565; color:white; border:none; padding:8px 12px; border-radius:8px; cursor:pointer;">מחק</button>
+                    <button onclick="toggleDraft()" style="background:#4a90e2; color:white; border:none; padding:8px 12px; border-radius:8px; cursor:pointer;">סגור</button>
+                </div>
+            </div>
+            <canvas id="draft-canvas"></canvas>
         </div>
     </div>
 
     <script>
         let max, currentAns;
+
+        // לוגיקת משחק
         function start(m) {
             max = m;
             document.getElementById('setup').classList.add('hidden');
             document.getElementById('game').classList.remove('hidden');
             next();
         }
+
         function next() {
             let n1 = Math.floor(Math.random() * max), n2 = Math.floor(Math.random() * max);
             currentAns = n1 + n2;
-            document.getElementById('quest').innerText = `? = ${n2} + ${n1}`;
+            // יישור משמאל לימין: מספר + מספר = ?
+            document.getElementById('quest').innerHTML = `<span>${n1}</span> <span>+</span> <span>${n2}</span> <span>=</span>`;
             document.getElementById('ans').value = '';
+            document.getElementById('feedback').innerHTML = '';
             document.getElementById('ans').focus();
         }
+
         function check() {
             let val = parseInt(document.getElementById('ans').value);
             if(val === currentAns) {
                 document.getElementById('feedback').innerHTML = "נכון! ✨";
                 saveXP(20);
                 setTimeout(next, 1000);
-            } else { document.getElementById('feedback').innerHTML = "נסה שוב"; }
+            } else { 
+                document.getElementById('feedback').innerHTML = "נסה שוב ❌"; 
+            }
         }
+
         function saveXP(v) {
-            let stats = JSON.parse(localStorage.getItem('math_pro_v17') || '{"xp":0, "lvl":1}');
+            let stats = JSON.parse(localStorage.getItem('math_pro_v0.17') || '{"xp":0, "lvl":1}');
             stats.xp += v;
-            if(stats.xp % 100 === 0) stats.lvl++;
-            localStorage.setItem('math_pro_v17', JSON.stringify(stats));
+            if(stats.xp >= 100) { stats.xp = 0; stats.lvl++; }
+            localStorage.setItem('math_pro_v0.17', JSON.stringify(stats));
         }
+
+        // לוגיקת לוח טיוטה
+        const canvas = document.getElementById('draft-canvas');
+        const ctx = canvas.getContext('2d');
+        let painting = false;
+
+        function setupCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            ctx.lineCap = 'round';
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = '#2d3748';
+        }
+
+        function toggleDraft() {
+            const modal = document.getElementById('draft-modal');
+            const isOpen = modal.style.display === 'flex';
+            modal.style.display = isOpen ? 'none' : 'flex';
+            if (!isOpen) setTimeout(setupCanvas, 10);
+        }
+
+        function clearDraft() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function startPos(e) { painting = true; draw(e); }
+        function endPos() { painting = false; ctx.beginPath(); }
+        function draw(e) {
+            if (!painting) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+            const y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+        canvas.addEventListener('mousedown', startPos);
+        canvas.addEventListener('mouseup', endPos);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startPos(e); }, {passive:false});
+        canvas.addEventListener('touchend', endPos);
+        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); }, {passive:false});
+
+        // סגירת מודאל עם Esc
+        window.addEventListener('keydown', (e) => {
+            if(e.key === 'Escape') {
+                document.getElementById('draft-modal').style.display = 'none';
+            }
+        });
     </script>
-    <style>.hidden { display: none; }</style>
-    <script src="draft.js"></script>
 </body>
 </html>
