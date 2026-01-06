@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>הגביעים שלי</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #fffaf0; text-align: center; }
+        .trophy-card { display: inline-block; width: 120px; padding: 20px; margin: 10px; background: white; border-radius: 15px; box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
+        .locked { opacity: 0.3; filter: grayscale(1); }
+    </style>
+</head>
+<body>
+    <h1>ארון הגביעים 🏆</h1>
+    <div id="trophies">
+        <div class="trophy-card" id="t1"><div>🥉</div><p>מתחיל</p></div>
+        <div class="trophy-card locked" id="t2"><div>🥈</div><p>מתקדם</p></div>
+        <div class="trophy-card locked" id="t3"><div>🥇</div><p>אלוף</p></div>
+    </div>
+    <br><br>
+    <a href="index.html">חזור לבית</a>
+    
+    <script>
+        const stats = JSON.parse(localStorage.getItem('math_pro_v17') || '{"xp":0, "lvl":1}');
+        if(stats.lvl >= 5) document.getElementById('t2').classList.remove('locked');
+        if(stats.lvl >= 10) document.getElementById('t3').classList.remove('locked');
+    </script>
+</body>
+</html>
