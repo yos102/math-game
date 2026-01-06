@@ -27,7 +27,7 @@
             border-radius: 30px; 
             box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
             text-align: center; 
-            position: relative;
+            position: relative; /* מאפשר לגרסה ולגלגל השיניים להיצמד אליו */
         }
 
         .settings-link { 
@@ -61,16 +61,15 @@
         .btn-green { background: #48bb78; }
         .btn-gold { background: #ecc94b; color: #744210; }
 
-        /* עיצוב מספר גרסה משופר */
+        /* עיצוב מספר גרסה בתוך המסגרת הלבנה */
         .version-tag {
-            position: fixed;
+            position: absolute; /* נצמד למכולה הלבנה */
             bottom: 10px;
-            left: 10px;
-            font-size: 0.75rem;
+            left: 15px;
+            font-size: 0.7rem;
             color: var(--text);
-            opacity: 0.6; /* הגברתי מעט נראות */
+            opacity: 0.3; /* עדין מאוד שלא יפריע לעין */
             font-family: monospace;
-            z-index: 9999;
         }
 
         .hidden { display: none !important; }
@@ -84,6 +83,7 @@
 
     <div class="container">
         <a href="./settings.html" class="settings-link">⚙️</a>
+        
         <h1 style="margin: 0 0 10px 0;">🎓 האקדמיה</h1>
         <p>שלום, <span id="u-n">אלוף</span>!</p>
         
@@ -92,9 +92,9 @@
         <a href="./vertical.html" class="btn btn-red">📝 חשבון מאונך</a>
         <a href="./stories.html" class="btn btn-green">📖 בעיות מילוליות</a>
         <a href="./trophies.html" class="btn btn-gold">🏆 הגביעים שלי</a>
-    </div>
 
-    <div class="version-tag">Beta v0.17</div>
+        <div class="version-tag">Beta v0.17</div>
+    </div>
 
     <script>
         function unlock() {
@@ -104,7 +104,6 @@
         }
         if(sessionStorage.getItem('unl') === '1') document.getElementById('lock').classList.add('hidden');
 
-        // שימוש במפתח הגרסה שציינת
         const s = JSON.parse(localStorage.getItem('math_pro_v0.17') || '{"name":"אלוף","theme":"light"}');
         document.getElementById('u-n').innerText = s.name;
         document.documentElement.setAttribute('data-theme', s.theme);
