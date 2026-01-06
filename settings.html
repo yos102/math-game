@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>הגדרות</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #edf2f7; text-align: center; padding-top: 50px; }
+        .container { max-width: 400px; margin: auto; background: white; padding: 30px; border-radius: 20px; }
+        input { padding: 10px; width: 80%; font-size: 1rem; margin-bottom: 20px; }
+        .btn { padding: 10px 20px; background: #4a90e2; color: white; border: none; border-radius: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>הגדרות פרופיל</h2>
+        <input type="text" id="name-in" placeholder="שם הילד/ה">
+        <br>
+        <button class="btn" onclick="save()">שמור שינויים</button>
+        <br><br>
+        <button class="btn" style="background:#f56565;" onclick="reset()">איפוס כל הנתונים</button>
+        <br><br>
+        <a href="index.html">חזור לדף הבית</a>
+    </div>
+    <script>
+        let stats = JSON.parse(localStorage.getItem('math_pro_v17') || '{"xp":0, "lvl":1, "name":"אלוף"}');
+        document.getElementById('name-in').value = stats.name;
+
+        function save() {
+            stats.name = document.getElementById('name-in').value;
+            localStorage.setItem('math_pro_v17', JSON.stringify(stats));
+            alert("נשמר!");
+        }
+        function reset() {
+            if(confirm("בטוח? הכל יימחק!")) { localStorage.clear(); location.href = 'index.html'; }
+        }
+    </script>
+</body>
+</html>
