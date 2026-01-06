@@ -27,7 +27,7 @@
             border-radius: 30px; 
             box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
             text-align: center; 
-            position: relative; /* מאפשר לגרסה ולגלגל השיניים להיצמד אליו */
+            position: relative;
         }
 
         .settings-link { 
@@ -61,14 +61,13 @@
         .btn-green { background: #48bb78; }
         .btn-gold { background: #ecc94b; color: #744210; }
 
-        /* עיצוב מספר גרסה בתוך המסגרת הלבנה */
         .version-tag {
-            position: absolute; /* נצמד למכולה הלבנה */
+            position: absolute; 
             bottom: 10px;
             left: 15px;
             font-size: 0.7rem;
             color: var(--text);
-            opacity: 0.3; /* עדין מאוד שלא יפריע לעין */
+            opacity: 0.3; 
             font-family: monospace;
         }
 
@@ -93,7 +92,7 @@
         <a href="./stories.html" class="btn btn-green">📖 בעיות מילוליות</a>
         <a href="./trophies.html" class="btn btn-gold">🏆 הגביעים שלי</a>
 
-        <div class="version-tag">Beta v0.17</div>
+        <div class="version-tag">Beta v0.18</div>
     </div>
 
     <script>
@@ -104,10 +103,10 @@
         }
         if(sessionStorage.getItem('unl') === '1') document.getElementById('lock').classList.add('hidden');
 
+        // עדכון מפתח ה-localStorage ל-v0.18 בהתאם לגרסה
         const s = JSON.parse(localStorage.getItem('math_pro_v0.18') || '{"name":"אלוף","theme":"light"}');
         document.getElementById('u-n').innerText = s.name;
         document.documentElement.setAttribute('data-theme', s.theme);
     </script>
 </body>
 </html>
-
