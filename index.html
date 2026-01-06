@@ -27,10 +27,9 @@
             border-radius: 30px; 
             box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
             text-align: center; 
-            position: relative; /* חשוב ליישור גלגל השיניים */
+            position: relative;
         }
 
-        /* גלגל שיניים */
         .settings-link { 
             position: absolute; 
             top: 20px; 
@@ -62,15 +61,16 @@
         .btn-green { background: #48bb78; }
         .btn-gold { background: #ecc94b; color: #744210; }
 
-        /* עיצוב מספר הגרסה */
+        /* עיצוב מספר גרסה משופר */
         .version-tag {
             position: fixed;
             bottom: 10px;
             left: 10px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text);
-            opacity: 0.4;
-            pointer-events: none; /* שלא יפריע ללחיצות */
+            opacity: 0.6; /* הגברתי מעט נראות */
+            font-family: monospace;
+            z-index: 9999;
         }
 
         .hidden { display: none !important; }
@@ -94,7 +94,7 @@
         <a href="./trophies.html" class="btn btn-gold">🏆 הגביעים שלי</a>
     </div>
 
-    <div class="version-tag">v1.0.2</div>
+    <div class="version-tag">Beta v0.17</div>
 
     <script>
         function unlock() {
@@ -104,10 +104,10 @@
         }
         if(sessionStorage.getItem('unl') === '1') document.getElementById('lock').classList.add('hidden');
 
+        // שימוש במפתח הגרסה שציינת
         const s = JSON.parse(localStorage.getItem('math_pro_v0.17') || '{"name":"אלוף","theme":"light"}');
         document.getElementById('u-n').innerText = s.name;
         document.documentElement.setAttribute('data-theme', s.theme);
     </script>
 </body>
 </html>
-
