@@ -53,6 +53,16 @@
             text-decoration: none; 
             box-sizing: border-box; 
             transition: 0.2s;
+            cursor: pointer;
+        }
+
+        /* עיצוב לכפתור לא פעיל */
+        .btn.disabled {
+            background: #cbd5e0 !important;
+            color: #718096 !important;
+            cursor: not-allowed;
+            pointer-events: none;
+            opacity: 0.7;
         }
 
         .btn-blue { background: #4299e1; }
@@ -69,17 +79,14 @@
             color: var(--text);
             opacity: 0.3; 
             font-family: monospace;
+            cursor: pointer;
+            padding: 5px;
         }
 
         .hidden { display: none !important; }
-        #lock { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
-    <div id="lock">
-        <div onclick="unlock()">⚙️<h1>בשיפוצים...</h1></div>
-    </div>
-
     <div class="container">
         <a href="./settings.html" class="settings-link">⚙️</a>
         
@@ -88,25 +95,50 @@
         
         <a href="./add_sub.html" class="btn btn-blue">➕ חיבור וחיסור</a>
         <a href="./mul_div.html" class="btn btn-orange">✖️ כפל וחילוק</a>
-        <a href="./vertical.html" class="btn btn-red">📝 חשבון מאונך</a>
-        <a href="./stories.html" class="btn btn-green">📖 בעיות מילוליות</a>
-        <a href="./trophies.html" class="btn btn-gold">🏆 הגביעים שלי</a>
+        
+        <a href="./vertical.html" id="btn-vertical" class="btn btn-red disabled">📝 חשבון מאונך (בקרוב)</a>
+        <a href="./stories.html" id="btn-stories" class="btn btn-green disabled">📖 בעיות מילוליות (בקרוב)</a>
+        <a href="./trophies.html" id="btn-trophies" class="btn btn-gold disabled">🏆 הגביעים שלי (בקרוב)</a>
 
-        <div class="version-tag">Beta v0.18</div>
+        <div class="version-tag" id="v-tag" onclick="devUnlock()">Beta v0.18</div>
     </div>
 
     <script>
-        function unlock() {
-            let c = (parseInt(sessionStorage.getItem('clks')) || 0) + 1;
-            sessionStorage.setItem('clks', c);
-            if(c >= 5) { document.getElementById('lock').classList.add('hidden'); sessionStorage.setItem('unl', '1'); }
-        }
-        if(sessionStorage.getItem('unl') === '1') document.getElementById('lock').classList.add('hidden');
-
-        // עדכון מפתח ה-localStorage ל-v0.18 בהתאם לגרסה
+        // טעינת הגדרות משתמש
         const s = JSON.parse(localStorage.getItem('math_pro_v0.18') || '{"name":"אלוף","theme":"light"}');
         document.getElementById('u-n').innerText = s.name;
         document.documentElement.setAttribute('data-theme', s.theme);
+
+        // פונקציית פתיחה למפתחים (5 לחיצות על הגרסה)
+        let clickCount = 0;
+        function devUnlock() {
+            clickCount++;
+            if (clickCount >= 5) {
+                // הסרת מצב "Disabled" והחזרת הטקסט המקורי
+                const lockableButtons = [
+                    { id: 'btn-vertical', text: '📝 חשבון מאונך' },
+                    { id: 'btn-stories', text: '📖 בעיות מילוליות' },
+                    { id: 'btn-trophies', text: '🏆 הגביעים שלי' }
+                ];
+
+                lockableButtons.forEach(btnInfo => {
+                    const el = document.getElementById(btnInfo.id);
+                    el.classList.remove('disabled');
+                    el.innerText = btnInfo.text;
+                    el.style.pointerEvents = 'auto';
+                });
+
+                document.getElementById('v-tag').innerText = "Developer Mode 🛠️";
+                alert("מצב מפתח הופעל! הכפתורים זמינים.");
+                sessionStorage.setItem('dev_mode', '1');
+            }
+        }
+
+        // בדיקה אם מצב מפתח כבר הופעל בסשן הנוכחי
+        if (sessionStorage.getItem('dev_mode') === '1') {
+            clickCount = 5;
+            devUnlock();
+        }
     </script>
 </body>
 </html>
