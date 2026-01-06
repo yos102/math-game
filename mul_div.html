@@ -57,6 +57,26 @@
 
         .hidden { display: none !important; }
 
+        /* כפתור יציאה */
+        .exit-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 45px;
+            height: 45px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 20;
+            transition: 0.2s;
+        }
+        .exit-btn:hover { background: #fff5f5; border-color: #feb2b2; }
+
         /* לוח כפל מלא - מודאל */
         #table-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 4000; padding: 10px; align-items: center; justify-content: center; }
         .table-card { background: white; padding: 15px; border-radius: 20px; width: 95%; max-width: 550px; position: relative; max-height: 90vh; overflow-y: auto; }
@@ -69,13 +89,11 @@
         .multiplication-table th { background: #edf2f7; color: #ed8936; font-weight: bold; position: sticky; top: 0; z-index: 2; }
         .multiplication-table td.header-col { background: #edf2f7; color: #ed8936; font-weight: bold; position: sticky; left: 0; z-index: 1; }
 
-        /* אפקט ריחוף עכבר */
+        /* אפקט ריחוף/מגע */
         @media (hover: hover) {
             .multiplication-table tr:hover td { background: #f7fafc; }
             .multiplication-table td:hover { background: #ed8936 !important; color: white; transform: scale(1.1); font-weight: bold; z-index: 5; }
         }
-
-        /* מחלקת הדגשה למגע */
         .touch-highlight { background: #ed8936 !important; color: white !important; font-weight: bold; transform: scale(1.1); }
         .multiplication-table td.highlight { background: #fff3e0; border: 2px solid #ed8936; font-weight: bold; color: #c05621; }
 
@@ -90,6 +108,7 @@
 <body>
     <div class="container">
         <button class="draft-btn-container hidden" id="draft-trigger" onclick="toggleDraft()">📝</button>
+        <div id="exit-trigger" class="exit-btn hidden" onclick="location.reload()" title="חזרה לתפריט">🚪</div>
 
         <div id="setup">
             <h2 style="color: #2d3748;">כפל וחילוק 🚀</h2>
@@ -100,12 +119,12 @@
                 <button class="btn-op" onclick="setOp('both', this)">🔄 שניהם</button>
             </div>
 
-            <p style="font-weight: bold; color: #4a5568;">בחר כפולות לתרגול (אפשר כמה):</p>
+            <p style="font-weight: bold; color: #4a5568;">בחר כפולות לתרגול:</p>
             <div id="targets" class="grid-targets"></div>
 
             <button class="btn" style="background:#ed8936; color:white; box-shadow: 0 4px 0 #c05621; margin-top:20px;" onclick="start()">התחל ללמוד! ✨</button>
             <br><br>
-            <a href="./" style="color:#718096; text-decoration:none; font-weight:bold;">🔙 חזרה לתפריט</a>
+            <a href="./" style="color:#718096; text-decoration:none; font-weight:bold;">🔙 חזרה לתפריט ראשי</a>
         </div>
 
         <div id="game" class="hidden">
@@ -122,15 +141,13 @@
             </div>
 
             <p id="feedback" style="font-size: 1.6rem; min-height: 2.5rem; margin: 15px 0; font-weight: bold;"></p>
-            
-            <button class="btn" style="background: transparent; color: #a0aec0; font-size: 0.9rem; width: auto; text-decoration: underline;" onclick="location.reload()">שינוי הגדרות</button>
         </div>
     </div>
 
     <div id="table-modal">
         <div class="table-card">
             <h3 style="margin: 0 0 5px 0; color: #2d3748;">לוח הכפל</h3>
-            <p style="font-size: 0.8rem; color: #718096; margin-bottom: 10px;">(גרור את האצבע על המספרים להדגשה)</p>
+            <p style="font-size: 0.8rem; color: #718096; margin-bottom: 10px;">(גרור את האצבע על המספרים)</p>
             <div class="table-wrapper" id="table-scroll-area">
                 <table id="full-multiplication-table" class="multiplication-table"></table>
             </div>
@@ -161,7 +178,6 @@
             let html = '<thead><tr><th>×</th>';
             for (let i = 1; i <= 10; i++) html += `<th>${i}</th>`;
             html += '</tr></thead><tbody>';
-
             for (let i = 1; i <= 10; i++) {
                 html += `<tr><td class="header-col">${i}</td>`;
                 for (let j = 1; j <= 10; j++) {
@@ -171,33 +187,23 @@
             }
             html += '</tbody>';
             table.innerHTML = html;
-            
-            // הוספת לוגיקת המגע
             addTouchListeners();
         }
 
         function addTouchListeners() {
             const container = document.getElementById('table-scroll-area');
-            
             const handleTouch = (e) => {
                 const touch = e.touches[0];
                 const target = document.elementFromPoint(touch.clientX, touch.clientY);
-                
-                // הסרת הדגשה קודמת
                 document.querySelectorAll('.cell').forEach(c => c.classList.remove('touch-highlight'));
-                
                 if (target && target.classList.contains('cell')) {
                     target.classList.add('touch-highlight');
                 }
             };
-
             container.addEventListener('touchmove', handleTouch, {passive: true});
             container.addEventListener('touchstart', handleTouch, {passive: true});
             container.addEventListener('touchend', () => {
-                // אופציונלי: הסרת ההדגשה כשעוזבים. אם רוצים שתשאר, אפשר למחוק שורה זו.
-                setTimeout(() => {
-                    document.querySelectorAll('.cell').forEach(c => c.classList.remove('touch-highlight'));
-                }, 1000);
+                setTimeout(() => document.querySelectorAll('.cell').forEach(c => c.classList.remove('touch-highlight')), 800);
             });
         }
 
@@ -225,7 +231,6 @@
             const modal = document.getElementById('table-modal');
             const isOpening = modal.style.display !== 'flex';
             modal.style.display = isOpening ? 'flex' : 'none';
-            
             if (isOpening) {
                 document.querySelectorAll('.multiplication-table td').forEach(td => td.classList.remove('highlight'));
                 const cell = document.getElementById(`cell-${currentTable}-${currentN2}`) || document.getElementById(`cell-${currentN2}-${currentTable}`);
@@ -243,6 +248,7 @@
             document.getElementById('setup').classList.add('hidden');
             document.getElementById('game').classList.remove('hidden');
             document.getElementById('draft-trigger').classList.remove('hidden');
+            document.getElementById('exit-trigger').classList.remove('hidden');
             next();
         }
 
@@ -250,7 +256,6 @@
             currentTable = selectedTables[Math.floor(Math.random() * selectedTables.length)];
             currentN2 = Math.floor(Math.random() * 10) + 1;
             const currentOp = (op === 'both') ? (Math.random() > 0.5 ? 'mul' : 'div') : op;
-            
             if(currentOp === 'mul') {
                 currentAns = currentTable * currentN2;
                 document.getElementById('quest').innerHTML = `<span>${currentN2}</span> <span>×</span> <span>${currentTable}</span> <span>=</span>`;
@@ -259,7 +264,6 @@
                 const product = currentTable * currentN2;
                 document.getElementById('quest').innerHTML = `<span>${product}</span> <span>÷</span> <span>${currentTable}</span> <span>=</span>`;
             }
-            
             document.getElementById('ans').value = '';
             document.getElementById('feedback').innerHTML = '';
             document.getElementById('ans').focus();
