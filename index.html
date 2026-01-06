@@ -2,19 +2,48 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>אקדמיית המתמטיקה - דף בית</title>
     <style>
-        :root { --primary: #4a90e2; --bg: #fff5f7; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); text-align: center; margin: 0; }
-        .container { max-width: 500px; margin: 20px auto; background: white; padding: 30px; border-radius: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); position: relative; }
-        .btn { padding: 15px; border-radius: 15px; border: none; font-size: 1.2rem; font-weight: bold; cursor: pointer; width: 100%; margin: 10px 0; color: white; transition: 0.2s; text-decoration: none; display: block; }
-        .btn-blue { background: var(--primary); }
+        :root { --primary: #4a90e2; --bg: #fff5f7; --text: #1a202c; --card: white; }
+        [data-theme="dark"] { --bg: #1a202c; --text: #f7fafc; --card: #2d3748; }
+        [data-theme="kids"] { --bg: #feebc8; --primary: #ed64a6; }
+
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: var(--bg); 
+            color: var(--text);
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+        }
+        .container { 
+            width: 90%; 
+            max-width: 450px; 
+            background: var(--card); 
+            padding: 30px; 
+            border-radius: 30px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
+            text-align: center;
+            position: relative;
+        }
+        .settings-icon { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; text-decoration: none; cursor: pointer; }
+        .btn { 
+            padding: 18px; border-radius: 15px; border: none; font-size: 1.2rem; font-weight: bold; 
+            cursor: pointer; width: 100%; margin: 10px 0; color: white; display: block; text-decoration: none;
+            transition: transform 0.2s;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-blue { background: #4299e1; }
         .btn-orange { background: #ed8936; }
         .btn-red { background: #f56565; }
         .btn-green { background: #48bb78; }
-        .settings-icon { position: absolute; top: 15px; left: 15px; font-size: 1.5rem; cursor: pointer; text-decoration: none; }
-        #maintenance { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f7fafc; z-index: 100; display: flex; align-items: center; justify-content: center; }
-        .gear { font-size: 60px; animation: spin 4s linear infinite; cursor: pointer; }
+        .btn-gold { background: #ecc94b; color: #744210; }
+
+        #maintenance { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .gear { font-size: 80px; animation: spin 4s linear infinite; cursor: pointer; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .hidden { display: none !important; }
     </style>
@@ -26,14 +55,14 @@
 
     <div class="container">
         <a href="settings.html" class="settings-icon">⚙️</a>
-        <h1>אקדמיית המתמטיקה 🎓</h1>
-        <div style="margin-bottom: 20px;">שלום, <span id="user-name">אלוף</span>! (רמה <span id="user-lvl">1</span>)</div>
+        <h1 style="margin-top: 10px;">🎓 אקדמיית המתמטיקה</h1>
+        <p>שלום, <span id="user-name">אלוף</span>! (רמה <span id="user-lvl">1</span>)</p>
         
         <a href="add_sub.html" class="btn btn-blue">➕ חיבור וחיסור</a>
         <a href="mul_div.html" class="btn btn-orange">✖️ כפל וחילוק</a>
         <a href="vertical.html" class="btn btn-red">📝 חשבון מאונך</a>
         <a href="stories.html" class="btn btn-green">📖 בעיות מילוליות</a>
-        <a href="trophies.html" class="btn" style="background: gold; color: black;">🏆 הגביעים שלי</a>
+        <a href="trophies.html" class="btn btn-gold">🏆 הגביעים שלי</a>
     </div>
 
     <script>
@@ -44,9 +73,11 @@
         }
         if(sessionStorage.getItem('site_unlocked')) document.getElementById('maintenance').classList.add('hidden');
 
-        const stats = JSON.parse(localStorage.getItem('math_pro_v17') || '{"xp":0, "lvl":1, "name":"אלוף"}');
+        // טעינת נתונים ועיצוב
+        const stats = JSON.parse(localStorage.getItem('math_pro_v17') || '{"xp":0, "lvl":1, "name":"אלוף", "theme":"light"}');
         document.getElementById('user-name').innerText = stats.name;
         document.getElementById('user-lvl').innerText = stats.lvl;
+        document.documentElement.setAttribute('data-theme', stats.theme);
     </script>
 </body>
 </html>
