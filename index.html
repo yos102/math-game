@@ -17,14 +17,16 @@
             width: 90%; max-width: 420px; background: var(--card); padding: 40px 25px; 
             border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center; position: relative; 
         }
+        /* גלגל שיניים מיושר לפינה */
         .settings-link { 
-            position: absolute; top: 20px; left: 20px; text-decoration: none; font-size: 1.5rem; 
-            color: var(--text); opacity: 0.6; transition: 0.2s; 
+            position: absolute; top: 20px; right: 20px; text-decoration: none; font-size: 1.5rem; 
+            color: var(--text); opacity: 0.6; transition: 0.2s; cursor: pointer;
         }
         .settings-link:hover { opacity: 1; transform: rotate(45deg); }
+
         .btn { 
-            padding: 16px; border-radius: 15px; border: none; font-size: 1.2rem; font-weight: bold; 
-            cursor: pointer; width: 100%; margin: 10px 0; color: white; display: block; text-decoration: none; transition: 0.2s;
+            padding: 18px; border-radius: 15px; border: none; font-size: 1.2rem; font-weight: bold; 
+            cursor: pointer; width: 100%; margin: 12px 0; color: white; display: block; text-decoration: none; transition: 0.2s;
         }
         .btn:active { transform: scale(0.98); }
         .btn-blue { background: #4299e1; }
@@ -33,6 +35,7 @@
         .btn-green { background: #48bb78; }
         .btn-gold { background: #ecc94b; color: #744210; }
         
+        /* מסך נעילה */
         #lock { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .spin { font-size: 70px; animation: rotate 4s linear infinite; cursor: pointer; }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -46,8 +49,8 @@
 
     <div class="container">
         <a href="settings.html" class="settings-link">⚙️</a>
-        <h1>🎓 האקדמיה</h1>
-        <p>שלום, <span id="user-n">אלוף</span>! (רמה <span id="user-l">1</span>)</p>
+        <h1 style="margin-bottom: 5px;">🎓 האקדמיה</h1>
+        <p style="margin-bottom: 25px;">שלום, <span id="u-n">אלוף</span>! (רמה <span id="u-l">1</span>)</p>
         
         <a href="add_sub.html" class="btn btn-blue">➕ חיבור וחיסור</a>
         <a href="mul_div.html" class="btn btn-orange">✖️ כפל וחילוק</a>
@@ -65,8 +68,8 @@
         if(sessionStorage.getItem('unl') === '1') document.getElementById('lock').classList.add('hidden');
 
         const data = JSON.parse(localStorage.getItem('math_pro_v17') || '{"name":"אלוף","lvl":1,"theme":"light"}');
-        document.getElementById('user-n').innerText = data.name;
-        document.getElementById('user-l').innerText = data.lvl;
+        document.getElementById('u-n').innerText = data.name;
+        document.getElementById('u-l').innerText = data.lvl;
         document.documentElement.setAttribute('data-theme', data.theme);
     </script>
 </body>
