@@ -57,7 +57,6 @@
 
         .hidden { display: none !important; }
 
-        /* כפתור דלת ליציאה למסך הבית */
         .exit-door {
             position: absolute;
             top: 20px;
@@ -76,7 +75,6 @@
             text-decoration: none;
             transition: 0.2s;
         }
-        .exit-door:hover { transform: scale(1.05); background: #fee2e2; }
 
         #table-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 4000; padding: 10px; align-items: center; justify-content: center; }
         .table-card { background: white; padding: 15px; border-radius: 20px; width: 95%; max-width: 550px; position: relative; max-height: 90vh; overflow-y: auto; }
@@ -88,7 +86,9 @@
         .multiplication-table th { background: #edf2f7; color: #ed8936; font-weight: bold; position: sticky; top: 0; z-index: 2; }
         .multiplication-table td.header-col { background: #edf2f7; color: #ed8936; font-weight: bold; position: sticky; left: 0; z-index: 1; }
 
-        .touch-highlight { background: #ed8936 !important; color: white !important; font-weight: bold; transform: scale(1.1); }
+        /* אפקט הריחוף בלוח הכפל */
+        .multiplication-table td:not(.header-col):hover { background: #ed8936 !important; color: white; transform: scale(1.15); font-weight: bold; z-index: 5; cursor: pointer; }
+        .touch-highlight { background: #ed8936 !important; color: white !important; font-weight: bold; transform: scale(1.15); z-index: 5; }
 
         .draft-btn-container { position: absolute; top: 20px; right: 20px; width: 45px; height: 45px; border-radius: 12px; background: #ed8936; color: white; border: none; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; }
         #draft-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; padding: 15px; flex-direction: column; align-items: center; justify-content: center; }
@@ -100,21 +100,17 @@
 <body>
     <div class="container">
         <button class="draft-btn-container hidden" id="draft-trigger" onclick="toggleDraft()">📝</button>
-        
         <a href="./" id="exit-door" class="exit-door hidden" title="יציאה למסך הבית">🚪</a>
 
         <div id="setup">
             <h2 style="color: #2d3748;">כפל וחילוק 🚀</h2>
-            
             <div class="grid-ops">
                 <button class="btn-op selected" onclick="setOp('mul', this)">✖️ כפל</button>
                 <button class="btn-op" onclick="setOp('div', this)">➗ חילוק</button>
                 <button class="btn-op" onclick="setOp('both', this)">🔄 שניהם</button>
             </div>
-
             <p style="font-weight: bold; color: #4a5568;">בחר כפולות לתרגול:</p>
             <div id="targets" class="grid-targets"></div>
-
             <button class="btn" style="background:#ed8936; color:white; box-shadow: 0 4px 0 #c05621; margin-top:20px;" onclick="start()">התחל ללמוד! ✨</button>
             <br><br>
             <a href="./" style="color:#718096; text-decoration:none; font-weight:bold;">🔙 חזרה לתפריט ראשי</a>
@@ -122,19 +118,14 @@
 
         <div id="game" class="hidden">
             <button class="btn-helper" style="background: #fff3e0; color: #ed8936; border-color: #ed8936; margin-bottom: 15px;" onclick="toggleTableModal()">📊 הצג לוח כפל מלא</button>
-            
             <div id="quest" class="math-row"></div>
             <input type="number" id="ans" class="ans-input" inputmode="numeric" placeholder="?"><br>
-            
             <button class="btn btn-check" onclick="check()">בדיקה ✅</button>
-            
             <div class="helper-group">
                 <button class="btn btn-helper" onclick="revealSolution()">💡 פתרון</button>
                 <button class="btn btn-helper" onclick="next()">⏭️ דלג</button>
             </div>
-
             <p id="feedback" style="font-size: 1.6rem; min-height: 2.5rem; margin: 15px 0; font-weight: bold;"></p>
-            
             <button class="btn" style="background: transparent; color: #a0aec0; font-size: 0.9rem; width: auto; text-decoration: underline;" onclick="location.reload()">⚙️ שינוי הגדרות כפולות</button>
         </div>
     </div>
@@ -191,14 +182,14 @@
                 const touch = e.touches[0];
                 const target = document.elementFromPoint(touch.clientX, touch.clientY);
                 document.querySelectorAll('.cell').forEach(c => c.classList.remove('touch-highlight'));
-                if (target && target.classList.contains('cell')) {
+                if (target && target.classList.contains('cell') && !target.classList.contains('header-col')) {
                     target.classList.add('touch-highlight');
                 }
             };
             container.addEventListener('touchmove', handleTouch, {passive: true});
             container.addEventListener('touchstart', handleTouch, {passive: true});
             container.addEventListener('touchend', () => {
-                setTimeout(() => document.querySelectorAll('.cell').forEach(c => c.classList.remove('touch-highlight')), 800);
+                setTimeout(() => document.querySelectorAll('.cell').forEach(c => c.classList.remove('touch-highlight')), 500);
             });
         }
 
@@ -224,11 +215,7 @@
 
         function toggleTableModal() {
             const modal = document.getElementById('table-modal');
-            const isOpening = modal.style.display !== 'flex';
-            modal.style.display = isOpening ? 'flex' : 'none';
-            if (isOpening) {
-                document.querySelectorAll('.multiplication-table td').forEach(td => td.classList.remove('highlight'));
-            }
+            modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
         }
 
         function setOp(o, b) {
@@ -277,7 +264,7 @@
             document.getElementById('feedback').innerHTML = `<span style='color:#718096'>התשובה היא ${currentAns}</span>`;
         }
 
-        // לוגיקת קנבס טיוטה
+        // טיוטה
         const canvas = document.getElementById('draft-canvas');
         const ctx = canvas.getContext('2d');
         let painting = false;
@@ -311,7 +298,6 @@
         }
 
         function clearDraft() { ctx.clearRect(0, 0, canvas.width, canvas.height); saveState(); }
-        
         function startPos(e) { painting = true; draw(e); }
         function endPos() { if (painting) saveState(); painting = false; ctx.beginPath(); }
         function draw(e) {
