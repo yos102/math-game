@@ -12,89 +12,80 @@
         body { 
             font-family: 'Segoe UI', sans-serif; 
             background: var(--bg); 
-            color: var(--text); 
             margin: 0; 
-            display: flex; /* מיישר למרכז המסך */
+            display: flex; 
             justify-content: center; 
             align-items: center; 
             min-height: 100vh; 
-            transition: 0.3s; 
         }
 
         .container { 
-            width: 90%; 
-            max-width: 420px; 
+            width: 85%; 
+            max-width: 400px; 
             background: var(--card); 
-            padding: 45px 25px 30px 25px; /* פדינג מוגדל למעלה בשביל הגלגל */
+            padding: 40px 20px; 
             border-radius: 30px; 
             box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
             text-align: center; 
-            position: relative; /* מאפשר לגלגל השיניים להתיישר לפיו */
+            position: relative; /* חשוב ליישור גלגל השיניים */
         }
 
-        /* גלגל שיניים - תיקון יישור לפינה */
+        /* גלגל שיניים - עכשיו הוא מיושר ולא דוחף שום דבר */
         .settings-link { 
             position: absolute; 
-            top: 15px; 
-            left: 15px; /* יישור לצד שמאל (ביחס לדף RTL) */
+            top: 20px; 
+            left: 20px; 
+            font-size: 1.5rem; 
             text-decoration: none; 
-            font-size: 1.6rem; 
             color: var(--text); 
-            opacity: 0.5; 
-            transition: 0.2s; 
-            cursor: pointer;
-            z-index: 10;
+            opacity: 0.5;
         }
-        .settings-link:hover { opacity: 1; transform: rotate(45deg); }
 
         .btn { 
-            padding: 16px; 
+            display: block;
+            width: 100%; /* רוחב מלא בתוך המכולה */
+            padding: 18px 0; 
+            margin: 12px 0; 
             border-radius: 15px; 
             border: none; 
             font-size: 1.2rem; 
             font-weight: bold; 
-            cursor: pointer; 
-            width: 100%; 
-            margin: 10px 0; 
             color: white; 
-            display: block; 
             text-decoration: none; 
+            box-sizing: border-box; /* מבטיח שה-Padding לא יהרוס את היישור */
             transition: 0.2s;
-            box-sizing: border-box; /* מבטיח שהכפתור לא יחרוג מהרוחב */
         }
-        .btn:active { transform: scale(0.98); }
+
         .btn-blue { background: #4299e1; }
         .btn-orange { background: #ed8936; }
         .btn-red { background: #f56565; }
         .btn-green { background: #48bb78; }
         .btn-gold { background: #ecc94b; color: #744210; }
-        
-        #lock { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .spin { font-size: 70px; animation: rotate 4s linear infinite; cursor: pointer; }
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .hidden { display: none !important; }
 
-        h1 { margin-bottom: 5px; font-size: 1.8rem; }
+        /* ביטול מסך הנעילה אם כבר נכנסנו */
+        .hidden { display: none !important; }
+        #lock { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
     <div id="lock">
-        <div onclick="unlock()"><div class="spin">⚙️</div><h1>בשיפוצים...</h1></div>
+        <div onclick="unlock()">⚙️<h1>בשיפוצים...</h1></div>
     </div>
 
     <div class="container">
-        <a href="settings.html" class="settings-link">⚙️</a>
-        <h1>🎓 האקדמיה</h1>
-        <p style="margin-bottom: 20px;">שלום, <span id="u-n">אלוף</span>! (רמה <span id="u-l">1</span>)</p>
+        <a href="./settings.html" class="settings-link">⚙️</a>
+        <h1 style="margin: 0 0 10px 0;">🎓 האקדמיה</h1>
+        <p>שלום, <span id="u-n">אלוף</span>!</p>
         
-        <a href="add_sub.html" class="btn btn-blue">➕ חיבור וחיסור</a>
-        <a href="mul_div.html" class="btn btn-orange">✖️ כפל וחילוק</a>
-        <a href="vertical.html" class="btn btn-red">📝 חשבון מאונך</a>
-        <a href="stories.html" class="btn btn-green">📖 בעיות מילוליות</a>
-        <a href="trophies.html" class="btn btn-gold">🏆 הגביעים שלי</a>
+        <a href="./add_sub.html" class="btn btn-blue">➕ חיבור וחיסור</a>
+        <a href="./mul_div.html" class="btn btn-orange">✖️ כפל וחילוק</a>
+        <a href="./vertical.html" class="btn btn-red">📝 חשבון מאונך</a>
+        <a href="./stories.html" class="btn btn-green">📖 בעיות מילוליות</a>
+        <a href="./trophies.html" class="btn btn-gold">🏆 הגביעים שלי</a>
     </div>
 
     <script>
+        // פונקציית פתיחה
         function unlock() {
             let c = (parseInt(sessionStorage.getItem('clks')) || 0) + 1;
             sessionStorage.setItem('clks', c);
@@ -102,10 +93,10 @@
         }
         if(sessionStorage.getItem('unl') === '1') document.getElementById('lock').classList.add('hidden');
 
-        const data = JSON.parse(localStorage.getItem('math_pro_v17') || '{"name":"אלוף","lvl":1,"theme":"light"}');
-        document.getElementById('u-n').innerText = data.name;
-        document.getElementById('u-l').innerText = data.lvl;
-        document.documentElement.setAttribute('data-theme', data.theme);
+        // טעינת עיצוב
+        const s = JSON.parse(localStorage.getItem('math_pro_v17') || '{"name":"אלוף","theme":"light"}');
+        document.getElementById('u-n').innerText = s.name;
+        document.documentElement.setAttribute('data-theme', s.theme);
     </script>
 </body>
 </html>
