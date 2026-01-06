@@ -4,30 +4,35 @@
     <meta charset="UTF-8">
     <title>הגדרות - אקדמיית המתמטיקה</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f7fafc; display: flex; justify-content: center; padding-top: 50px; direction: rtl; }
-        .container { width: 90%; max-width: 400px; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); text-align: center; }
-        select, input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; box-sizing: border-box; }
-        .btn-save { background: #4a90e2; color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; }
-        .back-link { display: block; margin-top: 20px; color: #718096; text-decoration: none; }
+        :root { --bg: #f7fafc; --text: #1a202c; --card: white; }
+        /* הגדרת צבעים למצבים השונים */
+        [data-theme="dark"] { --bg: #1a202c; --text: #f7fafc; --card: #2d3748; }
+        [data-theme="kids"] { --bg: #feebc8; --text: #c05621; --card: #fffaf0; }
+
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; transition: 0.3s; }
+        .container { width: 90%; max-width: 400px; background: var(--card); padding: 30px; border-radius: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; }
+        select, input { width: 100%; padding: 12px; margin: 15px 0; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; box-sizing: border-box; background: var(--card); color: var(--text); }
+        .btn-save { background: #4a90e2; color: white; border: none; padding: 15px; width: 100%; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
+        .back-link { display: inline-block; margin-top: 20px; color: #718096; text-decoration: none; font-weight: bold; }
+        h2 { margin-top: 0; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>⚙️ הגדרות</h2>
+        <h2>⚙️ הגדרות מראה</h2>
         
-        <label>שם התלמיד/ה:</label>
+        <label>שם הגיבור/ה:</label>
         <input type="text" id="kid-name">
 
-        <label>מראה האתר:</label>
-        <select id="theme-select">
-            <option value="light">☀️ בהיר</option>
-            <option value="dark">🌙 כהה</option>
-            <option value="kids">🎨 צבעוני (ילדים)</option>
+        <label>בחר עיצוב לאתר:</label>
+        <select id="theme-select" onchange="previewTheme(this.value)">
+            <option value="light">☀️ מצב בהיר (רגיל)</option>
+            <option value="dark">🌙 מצב כהה (לילה)</option>
+            <option value="kids">🎨 מצב ילדים (צבעוני)</option>
         </select>
 
-        <button class="btn-save" onclick="saveSettings()">שמור הגדרות ✅</button>
-        
-        <a href="index.html" class="back-link">🔙 חזרה לדף הבית</a>
+        <button class="btn-save" onclick="saveSettings()">שמור וחזור לבית ✅</button>
+        <a href="index.html" class="back-link">🔙 בטל וחזור</a>
     </div>
 
     <script>
@@ -35,13 +40,18 @@
         
         document.getElementById('kid-name').value = stats.name;
         document.getElementById('theme-select').value = stats.theme || 'light';
+        document.documentElement.setAttribute('data-theme', stats.theme);
+
+        function previewTheme(t) {
+            document.documentElement.setAttribute('data-theme', t);
+        }
 
         function saveSettings() {
-            stats.name = document.getElementById('kid-name').value;
+            stats.name = document.getElementById('kid-name').value || "אלוף";
             stats.theme = document.getElementById('theme-select').value;
             localStorage.setItem('math_pro_v17', JSON.stringify(stats));
-            alert("ההגדרות נשמרו בהצלחה!");
-            location.href = 'index.html'; // מעבר אוטומטי לדף הבית המעודכן
+            // העברה לדף המקומי ולא ל-GitHub
+            location.href = 'index.html';
         }
     </script>
 </body>
