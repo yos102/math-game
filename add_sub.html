@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>חיבור וחיסור</title>
+    <link rel="stylesheet" href="style.css"> <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #ebf8ff; text-align: center; }
+        .container { max-width: 500px; margin: 20px auto; background: white; padding: 25px; border-radius: 20px; }
+        .math-row { font-size: 3rem; margin: 20px; direction: ltr; }
+        .ans-input { width: 120px; font-size: 2rem; text-align: center; border: 3px solid #4a90e2; border-radius: 10px; }
+        .btn { padding: 15px; border-radius: 10px; border: none; cursor: pointer; width: 100%; margin: 5px 0; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="setup">
+            <h2>בחר טווח מספרים:</h2>
+            <button class="btn" style="background:#4a90e2; color:white;" onclick="start(10)">עד 10</button>
+            <button class="btn" style="background:#4a90e2; color:white;" onclick="start(100)">עד 100</button>
+            <button class="btn" style="background:#4a90e2; color:white;" onclick="start(1000)">עד 1000</button>
+            <br><br>
+            <a href="index.html">חזור לתפריט הראשי</a>
+        </div>
+
+        <div id="game" class="hidden">
+            <div id="quest" class="math-row"></div>
+            <input type="number" id="ans" class="ans-input"><br><br>
+            <button class="btn" style="background:#48bb78; color:white;" onclick="check()">בדיקה ✅</button>
+            <p id="feedback"></p>
+            <button class="btn" onclick="location.reload()">חזור לבחירת טווח</button>
+        </div>
+    </div>
+
+    <script>
+        let max, currentAns;
+        function start(m) {
+            max = m;
+            document.getElementById('setup').classList.add('hidden');
+            document.getElementById('game').classList.remove('hidden');
+            next();
+        }
+        function next() {
+            let n1 = Math.floor(Math.random() * max), n2 = Math.floor(Math.random() * max);
+            currentAns = n1 + n2;
+            document.getElementById('quest').innerText = `? = ${n2} + ${n1}`;
+            document.getElementById('ans').value = '';
+            document.getElementById('ans').focus();
+        }
+        function check() {
+            let val = parseInt(document.getElementById('ans').value);
+            if(val === currentAns) {
+                document.getElementById('feedback').innerHTML = "נכון! ✨";
+                saveXP(20);
+                setTimeout(next, 1000);
+            } else { document.getElementById('feedback').innerHTML = "נסה שוב"; }
+        }
+        function saveXP(v) {
+            let stats = JSON.parse(localStorage.getItem('math_pro_v17') || '{"xp":0, "lvl":1}');
+            stats.xp += v;
+            if(stats.xp % 100 === 0) stats.lvl++;
+            localStorage.setItem('math_pro_v17', JSON.stringify(stats));
+        }
+    </script>
+    <style>.hidden { display: none; }</style>
+</body>
+</html>
