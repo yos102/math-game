@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>חשבון מאונך</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #faf5ff; text-align: center; }
+        .container { max-width: 500px; margin: 20px auto; background: white; padding: 25px; border-radius: 20px; }
+        .vertical-math { display: grid; grid-template-columns: repeat(5, 40px); gap: 5px; justify-content: center; direction: ltr; margin: 20px; }
+        .ans-input { width: 35px; height: 45px; text-align: center; font-size: 1.5rem; border: 2px solid #9f7aea; }
+        .line { grid-column: 1 / span 5; height: 2px; background: black; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>חשבון מאונך</h2>
+        <div id="menu">
+            <button onclick="start('add')" style="padding:10px; width:80%; margin:5px; background:#9f7aea; color:white; border:none; border-radius:10px;">חיבור מאונך</button>
+            <button onclick="start('sub')" style="padding:10px; width:80%; margin:5px; background:#f56565; color:white; border:none; border-radius:10px;">חיסור מאונך</button>
+            <br><br>
+            <a href="index.html">חזור</a>
+        </div>
+
+        <div id="game" class="hidden">
+            <button onclick="showStepByStep()" style="background:gold; border:none; border-radius:50%; width:40px; height:40px;">💡</button>
+            <div id="exercise" class="vertical-math"></div>
+            <button onclick="check()" style="padding:15px; width:100%; background:#48bb78; color:white; border:none; border-radius:10px;">בדיקה</button>
+            <button onclick="location.reload()" style="margin-top:10px; background:none; border:none; color:gray;">חזור</button>
+        </div>
+    </div>
+
+    <script>
+        let type = 'add', n1, n2, ans;
+        function start(t) {
+            type = t;
+            document.getElementById('menu').classList.add('hidden');
+            document.getElementById('game').classList.remove('hidden');
+            next();
+        }
+        function next() {
+            n1 = 456; n2 = 127; // דוגמה קבועה לטובת המבנה
+            ans = (type === 'add') ? n1 + n2 : n1 - n2;
+            let op = (type === 'add') ? '+' : '-';
+            let content = `
+                <div></div><div>4</div><div>5</div><div>6</div><div></div>
+                <div>${op}</div><div>1</div><div>2</div><div>7</div><div></div>
+                <div class="line"></div>
+                <div></div><input id="v2" class="ans-input" tabindex="3">
+                <input id="v1" class="ans-input" tabindex="2">
+                <input id="v0" class="ans-input" tabindex="1"><div></div>
+            `;
+            document.getElementById('exercise').innerHTML = content;
+        }
+        function check() {
+            let userAns = parseInt(document.getElementById('v2').value + document.getElementById('v1').value + document.getElementById('v0').value);
+            if(userAns === ans) alert("מעולה!");
+        }
+    </script>
+</body>
+</html>
