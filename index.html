@@ -30,7 +30,7 @@
             position: relative; /* חשוב ליישור גלגל השיניים */
         }
 
-        /* גלגל שיניים - עכשיו הוא מיושר ולא דוחף שום דבר */
+        /* גלגל שיניים */
         .settings-link { 
             position: absolute; 
             top: 20px; 
@@ -43,7 +43,7 @@
 
         .btn { 
             display: block;
-            width: 100%; /* רוחב מלא בתוך המכולה */
+            width: 100%; 
             padding: 18px 0; 
             margin: 12px 0; 
             border-radius: 15px; 
@@ -52,7 +52,7 @@
             font-weight: bold; 
             color: white; 
             text-decoration: none; 
-            box-sizing: border-box; /* מבטיח שה-Padding לא יהרוס את היישור */
+            box-sizing: border-box; 
             transition: 0.2s;
         }
 
@@ -62,7 +62,17 @@
         .btn-green { background: #48bb78; }
         .btn-gold { background: #ecc94b; color: #744210; }
 
-        /* ביטול מסך הנעילה אם כבר נכנסנו */
+        /* עיצוב מספר הגרסה */
+        .version-tag {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            font-size: 0.8rem;
+            color: var(--text);
+            opacity: 0.4;
+            pointer-events: none; /* שלא יפריע ללחיצות */
+        }
+
         .hidden { display: none !important; }
         #lock { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     </style>
@@ -84,8 +94,9 @@
         <a href="./trophies.html" class="btn btn-gold">🏆 הגביעים שלי</a>
     </div>
 
+    <div class="version-tag">v1.0.2</div>
+
     <script>
-        // פונקציית פתיחה
         function unlock() {
             let c = (parseInt(sessionStorage.getItem('clks')) || 0) + 1;
             sessionStorage.setItem('clks', c);
@@ -93,7 +104,6 @@
         }
         if(sessionStorage.getItem('unl') === '1') document.getElementById('lock').classList.add('hidden');
 
-        // טעינת עיצוב
         const s = JSON.parse(localStorage.getItem('math_pro_v17') || '{"name":"אלוף","theme":"light"}');
         document.getElementById('u-n').innerText = s.name;
         document.documentElement.setAttribute('data-theme', s.theme);
