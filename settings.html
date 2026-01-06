@@ -4,40 +4,45 @@
     <meta charset="UTF-8">
     <title>הגדרות</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; display: flex; justify-content: center; padding-top: 50px; }
-        .card { width: 90%; max-width: 380px; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); text-align: center; }
-        select, input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; }
-        .save-btn { background: #4a90e2; color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .back { display: block; margin-top: 20px; color: #718096; text-decoration: none; }
+        :root { --bg: #f7fafc; --text: #1a202c; --card: white; }
+        [data-theme="dark"] { --bg: #1a202c; --text: #f7fafc; --card: #2d3748; }
+        [data-theme="kids"] { --bg: #feebc8; --text: #c05621; --card: #fffaf0; }
+
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; padding-top: 50px; transition: 0.3s; }
+        .card { width: 90%; max-width: 380px; background: var(--card); padding: 30px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); text-align: center; }
+        select, input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; background: var(--card); color: var(--text); }
+        .save-btn { background: #4a90e2; color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
+        .back-link { display: block; margin-top: 20px; color: #718096; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="card">
-        <h2>⚙️ הגדרות אישיות</h2>
+        <h2>⚙️ הגדרות</h2>
         <label>שם הילד/ה:</label>
-        <input type="text" id="name-input">
+        <input type="text" id="name-in">
         
-        <label>ערכת נושא:</label>
-        <select id="theme-select">
+        <label>מראה האתר:</label>
+        <select id="theme-in" onchange="document.documentElement.setAttribute('data-theme', this.value)">
             <option value="light">☀️ בהיר</option>
             <option value="dark">🌙 כהה</option>
             <option value="kids">🎨 ילדים</option>
         </select>
 
-        <button class="save-btn" onclick="save()">שמור וחזור הביתה ✅</button>
-        <a href="index.html" class="back">ביטול</a>
+        <button class="save-btn" onclick="save()">שמור הכל ✅</button>
+        <a href="index.html" class="back-link">🔙 חזור בלי לשמור</a>
     </div>
 
     <script>
-        const stats = JSON.parse(localStorage.getItem('math_pro_v17') || '{"name":"אלוף","theme":"light"}');
-        document.getElementById('name-input').value = stats.name;
-        document.getElementById('theme-select').value = stats.theme || 'light';
+        let s = JSON.parse(localStorage.getItem('math_pro_v17') || '{"name":"אלוף","theme":"light"}');
+        document.getElementById('name-in').value = s.name;
+        document.getElementById('theme-in').value = s.theme;
+        document.documentElement.setAttribute('data-theme', s.theme);
 
         function save() {
-            stats.name = document.getElementById('name-input').value;
-            stats.theme = document.getElementById('theme-select').value;
-            localStorage.setItem('math_pro_v17', JSON.stringify(stats));
-            location.href = 'index.html'; // חשוב: מעביר לקובץ המקומי
+            s.name = document.getElementById('name-in').value;
+            s.theme = document.getElementById('theme-in').value;
+            localStorage.setItem('math_pro_v17', JSON.stringify(s));
+            location.href = 'index.html'; // מעביר לקובץ המקומי בתיקייה
         }
     </script>
 </body>
