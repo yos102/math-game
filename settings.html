@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>הגדרות</title>
+    <title>הגדרות - Beta v0.17</title>
     <style>
         :root { --bg: #f7fafc; --text: #1a202c; --card: white; }
         [data-theme="dark"] { --bg: #1a202c; --text: #f7fafc; --card: #2d3748; }
@@ -10,9 +10,9 @@
 
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; padding-top: 50px; transition: 0.3s; }
         .card { width: 90%; max-width: 380px; background: var(--card); padding: 30px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); text-align: center; }
-        select, input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem; background: var(--card); color: var(--text); }
-        .save-btn { background: #4a90e2; color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
-        .back-link { display: block; margin-top: 20px; color: #718096; text-decoration: none; font-weight: bold; }
+        select, input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #e2e8f0; border-radius: 10px; background: var(--card); color: var(--text); }
+        .save-btn { background: #4a90e2; color: white; border: none; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .back-link { display: block; margin-top: 20px; color: #718096; text-decoration: none; }
     </style>
 </head>
 <body>
@@ -33,7 +33,8 @@
     </div>
 
     <script>
-        let s = JSON.parse(localStorage.getItem('math_pro_v17') || '{"name":"אלוף","theme":"light"}');
+        // שימוש במפתח הגרסה הנכון
+        let s = JSON.parse(localStorage.getItem('math_pro_v0.17') || '{"name":"אלוף","theme":"light"}');
         document.getElementById('name-in').value = s.name;
         document.getElementById('theme-in').value = s.theme;
         document.documentElement.setAttribute('data-theme', s.theme);
@@ -41,8 +42,8 @@
         function save() {
             s.name = document.getElementById('name-in').value;
             s.theme = document.getElementById('theme-in').value;
-            localStorage.setItem('math_pro_v17', JSON.stringify(s));
-            location.href = 'index.html'; // מעביר לקובץ המקומי בתיקייה
+            localStorage.setItem('math_pro_v0.17', JSON.stringify(s));
+            location.href = './'; // חזרה לכתובת הנקייה
         }
     </script>
 </body>
