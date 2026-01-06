@@ -104,9 +104,10 @@
         }
         if(sessionStorage.getItem('unl') === '1') document.getElementById('lock').classList.add('hidden');
 
-        const s = JSON.parse(localStorage.getItem('math_pro_v0.17') || '{"name":"אלוף","theme":"light"}');
+        const s = JSON.parse(localStorage.getItem('math_pro_v0.18') || '{"name":"אלוף","theme":"light"}');
         document.getElementById('u-n').innerText = s.name;
         document.documentElement.setAttribute('data-theme', s.theme);
     </script>
 </body>
 </html>
+
