@@ -79,8 +79,9 @@
             color: var(--text);
             opacity: 0.3; 
             font-family: monospace;
-            cursor: pointer;
+            cursor: default; /* שינוי לסמן רגיל כדי שלא יראה לחיץ */
             padding: 5px;
+            user-select: none; /* מניעת סימון טקסט בטעות בלחיצות */
         }
 
         .hidden { display: none !important; }
@@ -129,7 +130,7 @@
                 });
 
                 document.getElementById('v-tag').innerText = "Developer Mode 🛠️";
-                alert("מצב מפתח הופעל! הכפתורים זמינים.");
+                // alert("מצב מפתח הופעל!"); // אפשר להשאיר או להסיר לדיסקרטיות מלאה
                 sessionStorage.setItem('dev_mode', '1');
             }
         }
