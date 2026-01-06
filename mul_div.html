@@ -57,7 +57,6 @@
 
         .hidden { display: none !important; }
 
-        /* כפתור יציאה */
         .exit-btn {
             position: absolute;
             top: 20px;
@@ -77,7 +76,6 @@
         }
         .exit-btn:hover { background: #fff5f5; border-color: #feb2b2; }
 
-        /* לוח כפל מלא - מודאל */
         #table-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 4000; padding: 10px; align-items: center; justify-content: center; }
         .table-card { background: white; padding: 15px; border-radius: 20px; width: 95%; max-width: 550px; position: relative; max-height: 90vh; overflow-y: auto; }
         
@@ -85,19 +83,15 @@
         .multiplication-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; table-layout: fixed; direction: ltr; }
         .multiplication-table th, .multiplication-table td { border: 1px solid #eee; padding: 12px 2px; text-align: center; transition: 0.1s; }
         
-        /* כותרות דביקות */
         .multiplication-table th { background: #edf2f7; color: #ed8936; font-weight: bold; position: sticky; top: 0; z-index: 2; }
         .multiplication-table td.header-col { background: #edf2f7; color: #ed8936; font-weight: bold; position: sticky; left: 0; z-index: 1; }
 
-        /* אפקט ריחוף/מגע */
         @media (hover: hover) {
             .multiplication-table tr:hover td { background: #f7fafc; }
             .multiplication-table td:hover { background: #ed8936 !important; color: white; transform: scale(1.1); font-weight: bold; z-index: 5; }
         }
         .touch-highlight { background: #ed8936 !important; color: white !important; font-weight: bold; transform: scale(1.1); }
-        .multiplication-table td.highlight { background: #fff3e0; border: 2px solid #ed8936; font-weight: bold; color: #c05621; }
 
-        /* עיצוב טיוטה */
         .draft-btn-container { position: absolute; top: 20px; right: 20px; width: 45px; height: 45px; border-radius: 12px; background: #ed8936; color: white; border: none; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; }
         #draft-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; padding: 15px; flex-direction: column; align-items: center; justify-content: center; }
         .draft-card { background: white; width: 100%; max-width: 600px; height: 80vh; border-radius: 20px; position: relative; display: flex; flex-direction: column; overflow: hidden; }
@@ -231,10 +225,9 @@
             const modal = document.getElementById('table-modal');
             const isOpening = modal.style.display !== 'flex';
             modal.style.display = isOpening ? 'flex' : 'none';
+            // הוסר הקוד שהיה מסמן את התא עם התשובה הנכונה
             if (isOpening) {
                 document.querySelectorAll('.multiplication-table td').forEach(td => td.classList.remove('highlight'));
-                const cell = document.getElementById(`cell-${currentTable}-${currentN2}`) || document.getElementById(`cell-${currentN2}-${currentTable}`);
-                if (cell) cell.classList.add('highlight');
             }
         }
 
