@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>כפל וחילוק</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #fffaf0; text-align: center; }
+        .container { max-width: 500px; margin: 20px auto; background: white; padding: 25px; border-radius: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
+        .btn-op { padding: 15px; border: 2px solid #ccc; border-radius: 10px; cursor: pointer; background: white; font-weight: bold; }
+        .selected { border-color: #ed8936; background: #fff3e0; }
+        .math-row { font-size: 3rem; direction: ltr; margin: 20px; }
+        .ans-input { width: 100px; font-size: 2rem; border: 3px solid #ed8936; border-radius: 10px; text-align: center; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="setup">
+            <h2>כפל וחילוק</h2>
+            <div class="grid-3">
+                <button class="btn-op" onclick="setOp('mul', this)">✖️ כפל</button>
+                <button class="btn-op" onclick="setOp('div', this)">➗ חילוק</button>
+                <button class="btn-op" onclick="setOp('both', this)">🔄 שניהם</button>
+            </div>
+            <p>בחר לוח כפל:</p>
+            <div id="targets" style="display:grid; grid-template-columns: repeat(5, 1fr); gap: 5px;"></div>
+            <br>
+            <button onclick="start()" style="padding:15px; width:100%; background:#ed8936; color:white; border:none; border-radius:10px; font-weight:bold;">התחל!</button>
+            <br><br>
+            <a href="index.html">חזור</a>
+        </div>
+
+        <div id="game" class="hidden">
+            <div id="quest" class="math-row"></div>
+            <input type="number" id="ans" class="ans-input"><br><br>
+            <button onclick="check()" style="padding:15px; width:100%; background:#48bb78; color:white; border:none; border-radius:10px;">בדיקה</button>
+            <p id="feedback"></p>
+            <button onclick="location.reload()" style="background:none; border:none; color:blue; cursor:pointer;">חזור להגדרות</button>
+        </div>
+    </div>
+
+    <script>
+        let op = 'mul', table = 2, currentAns;
+        const tg = document.getElementById('targets');
+        for(let i=2; i<=10; i++) {
+            tg.innerHTML += `<button onclick="table=${i}; highlight(this)" class="btn-op" style="padding:5px;">${i}</button>`;
+        }
+        function highlight(b) {
+            b.parentElement.querySelectorAll('button').forEach(btn => btn.classList.remove('selected'));
+            b.classList.add('selected');
+        }
+        function setOp(o, b) {
+            op = o;
+            b.parentElement.querySelectorAll('button').forEach(btn => btn.classList.remove('selected'));
+            b.classList.add('selected');
+        }
+        function start() {
+            document.getElementById('setup').classList.add('hidden');
+            document.getElementById('game').classList.remove('hidden');
+            next();
+        }
+        function next() {
+            let n2 = Math.floor(Math.random() * 10) + 1;
+            let currentOp = (op === 'both') ? (Math.random() > 0.5 ? 'mul' : 'div') : op;
+            
+            if(currentOp === 'mul') {
+                currentAns = table * n2;
+                document.getElementById('quest').innerText = `? = ${n2} × ${table}`;
+            } else {
+                currentAns = n2;
+                document.getElementById('quest').innerText = `? = ${table} ÷ ${table * n2}`;
+            }
+            document.getElementById('ans').value = '';
+            document.getElementById('ans').focus();
+        }
+        function check() {
+            if(parseInt(document.getElementById('ans').value) === currentAns) {
+                document.getElementById('feedback').innerText = "מעולה!";
+                setTimeout(next, 1000);
+            }
+        }
+    </script>
+</body>
+</html>
