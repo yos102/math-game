@@ -5,10 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>חיבור וחיסור - אקדמיית המתמטיקה</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #ebf8ff; text-align: center; margin: 0; padding: 0; }
-        .container { max-width: 500px; margin: 20px auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        body { font-family: 'Segoe UI', sans-serif; background: #ebf8ff; text-align: center; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         
-        /* עיצוב התרגיל LTR */
+        .container { 
+            max-width: 500px; 
+            width: 90%;
+            margin: 20px auto; 
+            background: white; 
+            padding: 25px; 
+            border-radius: 30px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+            position: relative; /* מאפשר הצמדה של כפתור הטיוטה למסגרת */
+        }
+        
         .math-row { 
             font-size: 3.5rem; 
             margin: 20px 0; 
@@ -26,7 +35,6 @@
 
         .btn { padding: 15px; border-radius: 12px; border: none; cursor: pointer; width: 100%; margin: 8px 0; font-weight: bold; font-size: 1.1rem; transition: 0.2s; }
         
-        /* כפתור בדיקה מעוצב בסגנון תלת-ממדי */
         .btn-check { 
             background: #48bb78; 
             color: white; 
@@ -37,7 +45,6 @@
         .btn-check:hover { background: #38a169; }
         .btn-check:active { transform: translateY(3px); box-shadow: 0 2px 0 #2f855a; }
 
-        /* כפתורי עזר קטנים ועדינים יותר */
         .helper-group { display: flex; gap: 12px; margin-top: 10px; }
         .btn-helper { 
             background: #f7fafc; 
@@ -51,17 +58,38 @@
 
         .hidden { display: none !important; }
 
-        /* לוח טיוטה */
+        /* כפתור טיוטה בתוך המסגרת הלבנה */
+        .draft-btn-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: #ed8936;
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(237,137,54,0.3);
+            transition: 0.2s;
+        }
+        .draft-btn-container:hover { transform: scale(1.05); background: #dd6b20; }
+
+        /* לוח טיוטה (המודאל נשאר מעל הכל) */
         #draft-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; padding: 15px; flex-direction: column; align-items: center; justify-content: center; }
         .draft-card { background: white; width: 100%; max-width: 600px; height: 80vh; border-radius: 20px; position: relative; display: flex; flex-direction: column; overflow: hidden; }
         .draft-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; background: #f8fafc; }
         #draft-canvas { flex-grow: 1; cursor: crosshair; touch-action: none; background: #fff; }
-        .draft-btn-open { position: fixed; bottom: 20px; right: 20px; width: 65px; height: 65px; border-radius: 50%; background: #ed8936; color: white; border: none; font-size: 28px; cursor: pointer; z-index: 2000; box-shadow: 0 4px 15px rgba(237,137,54,0.4); transition: 0.3s; }
-        .draft-btn-open:hover { transform: scale(1.1); }
     </style>
 </head>
 <body>
     <div class="container">
+        <button class="draft-btn-container" id="draft-trigger" onclick="toggleDraft()" title="פתח טיוטה" class="hidden">📝</button>
+
         <div id="setup">
             <h2 style="color: #2d3748;">מוכנים להתחיל? בחר טווח:</h2>
             <button class="btn" style="background:#4299e1; color:white; box-shadow: 0 4px 0 #2b6cb0;" onclick="start(10)">עד 10 🔢</button>
@@ -88,8 +116,6 @@
         </div>
     </div>
 
-    <button class="draft-btn-open" onclick="toggleDraft()" title="פתח טיוטה">📝</button>
-
     <div id="draft-modal">
         <div class="draft-card">
             <div class="draft-header">
@@ -110,12 +136,13 @@
             max = m;
             document.getElementById('setup').classList.add('hidden');
             document.getElementById('game').classList.remove('hidden');
+            // הצגת כפתור הטיוטה רק כשהמשחק מתחיל
+            document.getElementById('draft-trigger').classList.remove('hidden');
             next();
         }
 
         function next() {
             let n1 = Math.floor(Math.random() * max), n2 = Math.floor(Math.random() * max);
-            // הגרלת סוג תרגיל: חיבור או חיסור (אם חיסור - נוודא שהתוצאה חיובית)
             let isPlus = Math.random() > 0.5;
             
             if (isPlus) {
@@ -146,7 +173,7 @@
 
         function revealSolution() {
             document.getElementById('ans').value = currentAns;
-            document.getElementById('feedback').innerHTML = "<span style='color:#718096'>הפתרון הוא " + currentAns + ". נסה לראות איך הגענו אליו!</span>";
+            document.getElementById('feedback').innerHTML = "<span style='color:#718096'>הפתרון הוא " + currentAns + "</span>";
         }
 
         function saveXP(v) {
